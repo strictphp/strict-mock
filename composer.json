@@ -4,7 +4,7 @@
     "description": "Strict mock is a strict type safe mock generated from your interfaces to use with any testing framework.",
     "keywords": ["laravel", "php", "strictphp", "strict", "mockery"],
     "license": "MIT",
-    "homepage": "https://github.com/wrk-flow/larastrict",
+    "homepage": "https://github.com/larastrict/strict-mock",
     "authors": [
         {
             "name": "Martin Kluska",

@@ -1,4 +1,4 @@
-# LaraStrict contribution
+# Contributing
 
 Feel free to contribute. Guide lines contributions:
 
@@ -51,19 +51,6 @@ composer run check
 composer run check
 ```
 
-## Clone Larastrict repository in our project and use it
-
-1. `git submodule add git@github.com:wrk-flow/larastrict.git core`
-2. Add this to your `composer.json` and `repositories` key.
-```php
-{
-  "type": "path",
-  "url": "./core"
-}
-```
-2. `composer require wrkflow/larastrict:*`
-4. (optional, IDEA) Mark `core/src` directory as `Sources root` and set `Larastrict` as the namespace.
-
 ## Stubfiles
 
 For MakeExpectationCommand we are using stubs. If you want to generate the stub files from current command output then run:
@@ -71,6 +58,3 @@ For MakeExpectationCommand we are using stubs. If you want to generate the stub 
 - Composer: `composer test:stubs`
 - PHPStorm run configuration: `test:stubs`
 
-## Fixes
-
-- `nikic/php-parser` - on `v4.13.0` enum with value named Array fails to be parsed, `v4.14.0` works
