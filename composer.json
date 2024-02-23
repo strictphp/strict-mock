@@ -1,0 +1,72 @@
+{
+    "name": "larastrict/strict-mock",
+    "type": "project",
+    "description": "Strict mock is a strict type safe mock generated from your interfaces to use with any testing framework.",
+    "keywords": ["laravel", "php", "strictphp", "strict", "mockery"],
+    "license": "MIT",
+    "homepage": "https://github.com/wrk-flow/larastrict",
+    "authors": [
+        {
+            "name": "Martin Kluska",
+            "email": "martin@kluska.cz"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "nette/php-generator": "v4.0.5",
+        "nikic/php-parser": "v4.15.2"
+    },
+    "require-dev": {
+        "laravel/framework": "^9",
+        "nunomaduro/larastan": "2.2.9",
+        "orchestra/testbench": "^v7.13.0",
+        "phpstan/phpdoc-parser": "^1.13",
+        "phpstan/phpstan": "1.9.4",
+        "phpstan/phpstan-deprecation-rules": "^1.0.0",
+        "phpstan/phpstan-mockery": "^1.1.0",
+        "phpstan/phpstan-phpunit": "^1.1.1",
+        "phpunit/phpunit": "^9.5.27",
+        "rector/rector": "0.15.1",
+        "symplify/easy-coding-standard": "11.1.20"
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php ./vendor/bin/testbench package:discover --ansi"
+        ],
+        "check": "composer lint && composer test && composer lint:stan",
+        "lint:check": "./vendor/bin/ecs",
+        "lint:fix": "./vendor/bin/ecs --fix",
+        "lint:stan": "./vendor/bin/phpstan",
+        "lint:upgrade:check": "vendor/bin/rector process --dry-run",
+        "lint:upgrade": "vendor/bin/rector process",
+        "lint": "composer lint:upgrade && composer lint:fix && composer lint:stan",
+        "test": "./vendor/bin/phpunit",
+        "test:stubs": "STUBS_GENERATE=true ./vendor/bin/phpunit",
+        "test:coverage": "./vendor/bin/phpunit --coverage-text"
+    },
+    "autoload": {
+        "psr-4": {
+            "LaraStrict\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\LaraStrict\\Feature\\": "tests/Feature/",
+            "Tests\\LaraStrict\\Unit\\": "tests/Unit/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LaraStrict\\Laravel\\StrictMockServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
