@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\Testing\Entities;
+namespace LaraStrict\StrictMock\Testing\Entities;
 
 use Closure;
 

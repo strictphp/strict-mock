@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\Testing\Constants;
+namespace LaraStrict\StrictMock\Testing\Constants;
 
-class StubConstants
+final class StubConstants
 {
-    final public const NameSpaceSeparator = '\\';
+    public const NameSpaceSeparator = '\\';
+
 }

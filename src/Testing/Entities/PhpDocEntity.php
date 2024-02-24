@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\Testing\Entities;
+namespace LaraStrict\StrictMock\Testing\Entities;
 
-use LaraStrict\Testing\Enums\PhpType;
+use LaraStrict\StrictMock\Testing\Enums\PhpType;
 
 class PhpDocEntity
 {

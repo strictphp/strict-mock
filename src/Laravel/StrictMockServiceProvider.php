@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\Laravel;
+namespace LaraStrict\StrictMock\Laravel;
 
 use Illuminate\Support\ServiceProvider;
-use LaraStrict\Testing\Actions\GetBasePathForStubsAction;
-use LaraStrict\Testing\Actions\GetNamespaceForStubsAction;
-use LaraStrict\Testing\Commands\MakeExpectationCommand;
-use LaraStrict\Testing\Contracts\GetBasePathForStubsActionContract;
-use LaraStrict\Testing\Contracts\GetNamespaceForStubsActionContract;
+use LaraStrict\StrictMock\Laravel\Commands\MakeExpectationCommand;
+use LaraStrict\StrictMock\Testing\Actions\GetBasePathForStubsAction;
+use LaraStrict\StrictMock\Testing\Actions\GetNamespaceForStubsAction;
+use LaraStrict\StrictMock\Testing\Contracts\GetBasePathForStubsActionContract;
+use LaraStrict\StrictMock\Testing\Contracts\GetNamespaceForStubsActionContract;
 
 final class StrictMockServiceProvider extends ServiceProvider
 {
@@ -17,6 +17,7 @@ final class StrictMockServiceProvider extends ServiceProvider
         GetBasePathForStubsActionContract::class => GetBasePathForStubsAction::class,
         GetNamespaceForStubsActionContract::class => GetNamespaceForStubsAction::class,
     ];
+
 
     // TODO register command
     public function register(): void

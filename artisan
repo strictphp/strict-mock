@@ -2,10 +2,10 @@
 <?php
 
 use Illuminate\Foundation\PackageManifest;
-use LaraStrict\Testing\Actions\GetDevBasePathForStubs;
-use LaraStrict\Testing\Actions\GetDevNamespaceForStubsAction;
-use LaraStrict\Testing\Contracts\GetBasePathForStubsActionContract;
-use LaraStrict\Testing\Contracts\GetNamespaceForStubsActionContract;
+use LaraStrict\StrictMock\Testing\Actions\GetDevBasePathForStubs;
+use LaraStrict\StrictMock\Testing\Actions\GetDevNamespaceForStubsAction;
+use LaraStrict\StrictMock\Testing\Contracts\GetBasePathForStubsActionContract;
+use LaraStrict\StrictMock\Testing\Contracts\GetNamespaceForStubsActionContract;
 
 define('LARAVEL_START', microtime(true));
 

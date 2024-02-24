@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\Testing\Assert;
+namespace LaraStrict\StrictMock\Testing\Assert;
 
 use PHPUnit\Framework\Assert;
 use Throwable;

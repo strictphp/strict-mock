@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\Testing\Contracts;
+namespace LaraStrict\StrictMock\Testing\Contracts;
 
 use Illuminate\Console\Command;
-use LaraStrict\Testing\Entities\NamespaceEntity;
+use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
 
 interface GetNamespaceForStubsActionContract
 {
-    public function execute(Command $command, string $basePath, string $inputClass): NamespaceEntity;
+    public function execute(Command $command, string $inputClass): FileSetupEntity;
 }

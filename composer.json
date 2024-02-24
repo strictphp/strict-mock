@@ -13,26 +13,24 @@
     ],
     "require": {
         "php": ">=8.1",
-        "nette/php-generator": "v4.0.5",
-        "nikic/php-parser": "v4.15.2"
+        "league/flysystem": "^3.24",
+        "nette/php-generator": "^v4.0.5",
+        "nikic/php-parser": "^v5.0"
     },
     "require-dev": {
-        "laravel/framework": "^9",
-        "nunomaduro/larastan": "2.2.9",
-        "orchestra/testbench": "^v7.13.0",
+        "larastan/larastan": "^v2.9",
+        "laravel/framework": "^10.0",
+        "orchestra/testbench": "^v8.21",
         "phpstan/phpdoc-parser": "^1.13",
-        "phpstan/phpstan": "1.9.4",
-        "phpstan/phpstan-deprecation-rules": "^1.0.0",
-        "phpstan/phpstan-mockery": "^1.1.0",
-        "phpstan/phpstan-phpunit": "^1.1.1",
-        "phpunit/phpunit": "^9.5.27",
-        "rector/rector": "0.15.1",
-        "symplify/easy-coding-standard": "11.1.20"
+        "phpstan/phpstan": "^1.9",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-mockery": "^1.1",
+        "phpstan/phpstan-phpunit": "^1.1",
+        "phpunit/phpunit": "^10.0",
+        "rector/rector": "^1.0",
+        "symplify/easy-coding-standard": "^12.0"
     },
     "scripts": {
-        "post-autoload-dump": [
-            "@php ./vendor/bin/testbench package:discover --ansi"
-        ],
         "check": "composer lint && composer test && composer lint:stan",
         "lint:check": "./vendor/bin/ecs",
         "lint:fix": "./vendor/bin/ecs --fix",
@@ -46,13 +44,13 @@
     },
     "autoload": {
         "psr-4": {
-            "LaraStrict\\": "src/"
+            "LaraStrict\\StrictMock\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\LaraStrict\\Feature\\": "tests/Feature/",
-            "Tests\\LaraStrict\\Unit\\": "tests/Unit/"
+            "Tests\\LaraStrict\\StrictMock\\Feature\\": "tests/Feature/",
+            "Tests\\LaraStrict\\StrictMock\\Unit\\": "tests/Unit/"
         }
     },
     "extra": {

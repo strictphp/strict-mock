@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\Testing\Entities;
+namespace LaraStrict\StrictMock\Testing\Entities;
 
-class NamespaceEntity
+class FileSetupEntity
 {
     public function __construct(
         public readonly string $folder,
-        public readonly string $baseNamespace,
+        public readonly string $namespace,
     ) {
     }
 }
