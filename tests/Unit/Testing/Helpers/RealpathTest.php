@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\LaraStrict\StrictMock\Feature\Testing\Helpers;
+namespace Tests\LaraStrict\StrictMock\Unit\Testing\Helpers;
 
 use Closure;
 use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
