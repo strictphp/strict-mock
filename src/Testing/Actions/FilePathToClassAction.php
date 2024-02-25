@@ -53,8 +53,6 @@ final class FilePathToClassAction
     {
         if (is_file($path)) {
             $path = dirname($path);
-        } else if (is_dir($path) === false) {
-            throw new DirectoryDoesNotExistsException($path);
         }
 
         while ($this->composerJsonService->isExist($path) === false) {

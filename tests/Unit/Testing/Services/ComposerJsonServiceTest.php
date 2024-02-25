@@ -10,6 +10,7 @@ use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
 use LaraStrict\StrictMock\Testing\Services\ComposerJsonService;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use Tests\LaraStrict\StrictMock\Feature\Json;
 
 final class ComposerJsonServiceTest extends TestCase
 {
@@ -42,6 +43,7 @@ final class ComposerJsonServiceTest extends TestCase
 
     /**
      * @param Closure(static):void $assert
+     *
      * @dataProvider dataIsExist
      */
     public function testIsExist(Closure $assert): void
@@ -53,8 +55,7 @@ final class ComposerJsonServiceTest extends TestCase
     public function assertIsExist(
         string $path,
         bool $expected,
-    ): void
-    {
+    ): void {
         Assert::assertSame($expected, (new ComposerJsonService())->isExist($path));
     }
 
@@ -66,10 +67,11 @@ final class ComposerJsonServiceTest extends TestCase
     {
         return [
             [
+
                 function (self $self) {
                     $self->assertContent(
                         __DIR__ . '/../../../..',
-                        json_decode(file_get_contents(__DIR__ . '/../../../../composer.json'), true),
+                        Json::loadFromFile(__DIR__ . '/../../../../composer.json'),
                     );
                 },
             ],
@@ -87,6 +89,7 @@ final class ComposerJsonServiceTest extends TestCase
 
     /**
      * @param Closure(static):void $assert
+     *
      * @dataProvider dataContent
      */
     public function testContent(Closure $assert): void
@@ -98,8 +101,7 @@ final class ComposerJsonServiceTest extends TestCase
     public function assertContent(
         string $path,
         array|Exception $expected,
-    ): void
-    {
+    ): void {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
