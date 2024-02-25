@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Contracts;
 
-use Symfony\Component\Finder\Finder;
+use SplFileInfo;
 
 interface FinderFactoryContract
 {
-    public function create(): Finder;
+    /**
+     * @return iterable<SplFileInfo>
+     */
+    public function create(): iterable;
 }

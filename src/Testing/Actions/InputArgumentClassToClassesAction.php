@@ -5,6 +5,7 @@ namespace LaraStrict\StrictMock\Testing\Actions;
 use Generator;
 use LaraStrict\StrictMock\Testing\Contracts\FindAllClassesActionContract;
 use LaraStrict\StrictMock\Testing\Factories\ReflectionClassFactory;
+use ReflectionClass;
 
 final class InputArgumentClassToClassesAction
 {
@@ -17,7 +18,7 @@ final class InputArgumentClassToClassesAction
     /**
      * @param class-string|string|array<string>|array<class-string> $inputs
      *
-     * @return Generator<class-string>
+     * @return Generator<ReflectionClass>
      */
     public function execute(string|array $inputs): Generator
     {

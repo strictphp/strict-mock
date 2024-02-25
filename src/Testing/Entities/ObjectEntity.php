@@ -19,7 +19,9 @@ final class ObjectEntity
         public readonly string $shortClassName,
         public readonly PhpFile $content,
     ) {
-        $this->class = $this->exportSetup->namespace . StubConstants::NameSpaceSeparator . $this->shortClassName;
+        /** @var class-string $class */
+        $class = $this->exportSetup->namespace . StubConstants::NameSpaceSeparator . $this->shortClassName;
+        $this->class = $class;
         $this->pathname = $this->exportSetup->folder . DIRECTORY_SEPARATOR . $this->shortClassName . '.php';
     }
 }
