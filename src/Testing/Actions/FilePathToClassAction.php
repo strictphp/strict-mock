@@ -6,7 +6,6 @@ namespace LaraStrict\StrictMock\Testing\Actions;
 
 use LaraStrict\StrictMock\Testing\Constants\ComposerConstants;
 use LaraStrict\StrictMock\Testing\Constants\StubConstants;
-use LaraStrict\StrictMock\Testing\Exceptions\ClassNotFoundException;
 use LaraStrict\StrictMock\Testing\Exceptions\DirectoryDoesNotExistsException;
 use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
 use LaraStrict\StrictMock\Testing\Helpers\Realpath;
@@ -47,7 +46,7 @@ final class FilePathToClassAction
             }
         }
 
-        throw new ClassNotFoundException($realPath);
+        throw new DirectoryDoesNotExistsException($realPath . ', not found in composer by psr-4.');
     }
 
 
@@ -86,7 +85,7 @@ final class FilePathToClassAction
         $data = $this->composerJsonService->content($basePath);
         $dirs = [];
 
-        foreach ([ComposerConstants::AutoLoad] as $section) {
+        foreach ([ComposerConstants::AutoLoad, ComposerConstants::AutoLoadDev] as $section) {
             if (isset($data[$section][ComposerConstants::Psr4]) === false || is_array($data[$section][ComposerConstants::Psr4]) === false) {
                 continue;
             }

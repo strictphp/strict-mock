@@ -2,14 +2,17 @@
 
 namespace LaraStrict\StrictMock\Testing\Actions;
 
+use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
+use Nette\PhpGenerator\PsrPrinter;
+
 final class WritePhpFileAction
 {
 
-    public function execute(string $directory, string $className, string $content): string
+    public function execute(ObjectEntity $object): void
     {
-        $filePath = $directory . DIRECTORY_SEPARATOR . $className . '.php';
-        file_put_contents($filePath, $content);
-
-        return $filePath;
+        if (is_dir($object->exportSetup->folder) === false) {
+            mkdir($object->exportSetup->folder, 0o755, true);
+        }
+        file_put_contents($object->pathname, (new PsrPrinter())->printFile($object->content));
     }
 }

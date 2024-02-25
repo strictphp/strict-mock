@@ -3,10 +3,15 @@
 namespace LaraStrict\StrictMock\Testing\Assert\Actions;
 
 use LaraStrict\StrictMock\Testing\Actions\WritePhpFileAction;
+use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
+use LaraStrict\StrictMock\Testing\Assert\Factories\AssertFileStateEntityFactory;
+use LaraStrict\StrictMock\Testing\Attributes\Expectation;
+use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
+use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
 use LaraStrict\StrictMock\Testing\Exceptions\LogicException;
 use LaraStrict\StrictMock\Testing\Expectation\Actions\ExpectationFileContentAction;
-use LaraStrict\StrictMock\Testing\Factories\AssertFileStateEntityFactory;
 use LaraStrict\StrictMock\Testing\Factories\PhpDocEntityFactory;
+use Nette\PhpGenerator\Literal;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -25,40 +30,42 @@ final class GenerateAssertClassAction
 
     /**
      * @param ReflectionClass<object> $class
-     * @return array<string, string>
+     * @return array<ObjectEntity>
      */
     public function execute(
         ReflectionClass $class,
+        ?FileSetupEntity $exportSetup = null,
     ): array
     {
-        $assertFileState = $this->assertFileStateEntityFactory->create($class);
         // @todo check if exists and remove old
 
-        $assertClassName = $assertFileState->class->getName();
-        assert(is_string($assertClassName));
+        $assertFileState = $this->assertFileStateEntityFactory->create($class, $exportSetup);
 
-        $expectations = [];
+        $generatedFiles = [$assertFileState->object];
         foreach (self::makeMethods($class) as $method) {
             $phpDoc = $this->parsePhpDocAction->create($method);
 
-            $expectation = $this->expectationFileAction->execute(
+            $generatedFiles[] = $expectation = $this->expectationFileAction->execute(
                 class: $class,
-                fileSetup: $assertFileState->fileSetup,
+                assertFileState: $assertFileState,
                 method: $method,
                 phpDoc: $phpDoc,
             );
-            $expectations[$expectation->folder] = $expectation->namespace;
 
             $this->generateAssertMethodAction->execute(
-                assertClass: $assertFileState->class,
+                assertFileState: $assertFileState,
                 method: $method,
+                expectationObject: $expectation,
                 phpDoc: $phpDoc,
             );
 
-
-            $assertFileState->expectationClasses[$method->getName()] = $expectation->namespace;
+            $assertFileState->expectationClasses[$method->getName()] = $expectation->shortClassName;
         }
-        // $this->writePhpFileAction->execute();
+        $this->addAttributes($assertFileState);
+
+        $this->writePhpFileAction->execute($assertFileState->object);
+
+        return $generatedFiles;
     }
 
 
@@ -77,6 +84,39 @@ final class GenerateAssertClassAction
         }
 
         return $methods;
+    }
+
+
+    private function addAttributes(AssertFileStateEntity $assertFileState): void
+    {
+        if ($assertFileState->expectationClasses === []) {
+            return;
+        }
+
+        $assertFileState->namespace->addUse(Expectation::class);
+
+        foreach ($assertFileState->expectationClasses as $methodName => $expectationClass) {
+            $assertFileState->constructor->addComment(sprintf(
+                '@param array<%s|null> $%s',
+                $expectationClass,
+                $methodName,
+            ));
+
+            $assertFileState->constructor->addBody(sprintf(
+                '$this->setExpectations(%s::class, $%s);',
+                $expectationClass,
+                $methodName,
+            ));
+
+            $assertFileState->constructor
+                ->addParameter($methodName)
+                ->setType('array')
+                ->setDefaultValue(new Literal('[]'));
+
+            $assertFileState->class->addAttribute(Expectation::class, [
+                'class' => new Literal($expectationClass . '::class'),
+            ]);
+        }
     }
 
 }

@@ -2,29 +2,35 @@
 
 namespace LaraStrict\StrictMock\Testing\Assert\Actions;
 
+use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
+use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
 use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
-use Nette\PhpGenerator\ClassType;
+use LaraStrict\StrictMock\Testing\Enums\PhpType;
 use Nette\PhpGenerator\Factory;
 use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionUnionType;
 
 final class GenerateAssertMethodAction
 {
+    private const HookProperty = '_hook';
+
 
     public function execute(
-        ClassType $assertClass,
+        AssertFileStateEntity $assertFileState,
         ReflectionMethod $method,
-        string $expectationClassName,
+        ObjectEntity $expectationObject,
         PhpDocEntity $phpDoc,
     ): void
     {
         $parameters = $method->getParameters();
 
         $assertMethod = (new Factory())->fromMethodReflection($method);
-        $assertClass->addMember($assertMethod);
+        $assertFileState->class->addMember($assertMethod);
 
         $assertMethod->addBody(sprintf(
-            '$_expectation = $this->getExpectation(%s);',
-            $expectationClassName . '::class'
+            '$_expectation = $this->getExpectation(%s::class);',
+            $expectationObject->shortClassName,
         ));
 
         $hookParameters = [];
@@ -47,10 +53,10 @@ final class GenerateAssertMethodAction
 
         $assertMethod->addBody('');
 
-        $assertMethod->addBody(sprintf('if (is_callable($_expectation->%s)) {', ExpectationFileContentAction::HookProperty));
+        $assertMethod->addBody(sprintf('if (is_callable($_expectation->%s)) {', self::HookProperty));
         $assertMethod->addBody(sprintf(
             '    call_user_func($_expectation->%s, %s);',
-            ExpectationFileContentAction::HookProperty,
+            self::HookProperty,
             implode(', ', $hookParameters),
         ));
         $assertMethod->addBody('}');

@@ -3,16 +3,15 @@
 namespace LaraStrict\StrictMock\Testing\Expectation\Actions;
 
 use Closure;
-use Illuminate\Support\Str;
 use LaraStrict\StrictMock\Testing\Actions\WritePhpFileAction;
+use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use LaraStrict\StrictMock\Testing\Constants\StubConstants;
-use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
+use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
 use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
 use LaraStrict\StrictMock\Testing\Enums\PhpType;
-use LaraStrict\StrictMock\Testing\Factories\PhpFileFactory;
+use LaraStrict\StrictMock\Testing\Expectation\Factories\ExpectationObjectEntityFactory;
 use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\PromotedParameter;
-use Nette\PhpGenerator\PsrPrinter;
 use ReflectionClass;
 use ReflectionIntersectionType;
 use ReflectionMethod;
@@ -27,7 +26,7 @@ final class ExpectationFileContentAction
 
 
     public function __construct(
-        private readonly PhpFileFactory $phpFileFactory,
+        private readonly ExpectationObjectEntityFactory $expectationObjectEntityFactory,
         private readonly WritePhpFileAction $writePhpFileAction,
     )
     {
@@ -36,18 +35,17 @@ final class ExpectationFileContentAction
 
     public function execute(
         ReflectionClass $class,
-        FileSetupEntity $fileSetup,
+        AssertFileStateEntity $assertFileState,
         ReflectionMethod $method,
         PhpDocEntity $phpDoc,
-    ): FileSetupEntity
+    ): ObjectEntity
     {
-        $className = self::makeExpectationClassName($class, $method);
+        $expectationObject = $this->expectationObjectEntityFactory->create($assertFileState->object, $class, $method);
         $parameters = $method->getParameters();
 
-        $file = $this->phpFileFactory->create();
-        $class = $file->addNamespace($fileSetup->namespace)
+        $class = $expectationObject->content->addNamespace($expectationObject->exportSetup->namespace)
             ->addUse(Closure::class)
-            ->addClass($className);
+            ->addClass($expectationObject->shortClassName);
 
         $constructor = $class
             ->setFinal()
@@ -86,9 +84,9 @@ final class ExpectationFileContentAction
             sprintf('@param %s(%s):void|null $%s', Closure::class, implode(',', $parameterTypes), self::HookProperty)
         );
 
-        $file = $this->writePhpFileAction->execute($fileSetup->folder, $className, (new PsrPrinter())->printFile($file));
+        $this->writePhpFileAction->execute($expectationObject);
 
-        return new FileSetupEntity($file, $fileSetup->namespace . StubConstants::NameSpaceSeparator . $className);
+        return $expectationObject;
     }
 
 
@@ -194,11 +192,4 @@ final class ExpectationFileContentAction
         }
     }
 
-
-    private static function makeExpectationClassName(ReflectionClass $class, ReflectionMethod $method): string
-    {
-        $methodSuffix = Str::ucfirst($method->getName());
-
-        return $class->getShortName() . $methodSuffix . 'Expectation';
-    }
 }
