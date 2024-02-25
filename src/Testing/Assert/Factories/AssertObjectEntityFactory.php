@@ -13,10 +13,8 @@ final class AssertObjectEntityFactory
     public function __construct(
         private readonly ReflectionClassToFileSetupEntity $reflectionClassToFileSetupEntity,
         private readonly PhpFileFactory $phpFileFactory,
-    )
-    {
+    ) {
     }
-
 
     public function create(ReflectionClass $class, ?FileSetupEntity $fileSetupEntity = null): ObjectEntity
     {

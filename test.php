@@ -4,6 +4,7 @@ use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
 use LaraStrict\StrictMock\Testing\Actions\WritePhpFileAction;
 use LaraStrict\StrictMock\Testing\Assert\Actions\GenerateAssertClassAction;
 use LaraStrict\StrictMock\Testing\Assert\Actions\GenerateAssertMethodAction;
+use LaraStrict\StrictMock\Testing\Assert\Actions\RemoveAssertFileAction;
 use LaraStrict\StrictMock\Testing\Assert\Factories\AssertFileStateEntityFactory;
 use LaraStrict\StrictMock\Testing\Assert\Factories\AssertObjectEntityFactory;
 use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
@@ -24,7 +25,10 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 require __DIR__ . '/vendor/autoload.php';
 
 { // setup
-    $file = 'src/Testing/Contracts/FindAllClassesActionContract.php';
+    $files = [
+        'src/Testing/Contracts/FindAllClassesActionContract.php',
+        'src/Testing/Contracts/ComposerJsonServiceContract.php',
+    ];
     $projectDir = __DIR__ . '/src';
     $exportDir = __DIR__ . '/tests/Feature';
 }
@@ -36,7 +40,7 @@ require __DIR__ . '/vendor/autoload.php';
 
     $projectRoot = new FileSetupEntity($projectDir, $filePathToClassAction->execute($projectDir));
     $exportRoot = new FileSetupEntity($exportDir, $filePathToClassAction->execute($exportDir));
-    $setup = new ProjectSetupEntity($projectRoot, $exportRoot);
+    $setup = new ProjectSetupEntity($projectRoot, $exportRoot, false);
 
     $phpFileFactory = new PhpFileFactory();
     $writePhpFileAction = new WritePhpFileAction();
@@ -48,13 +52,28 @@ require __DIR__ . '/vendor/autoload.php';
     $phpDocEntityFactory = new PhpDocEntityFactory(new PhpDocStringResolver(new Lexer(), new PhpDocParser(new TypeParser(), new ConstExprParser())));
     $expectationFileContentAction = new ExpectationFileContentAction($expectationObjectEntityFactory, $writePhpFileAction);
 
+    $removeAssertFileAction = new RemoveAssertFileAction();
+
     $generateAssertMethodAction = new GenerateAssertMethodAction();
-    $assertFileStateEntityFactory = new AssertFileStateEntityFactory($assertObjectEntityFactory);
-    $generateAssertClass = new GenerateAssertClassAction($assertFileStateEntityFactory, $phpDocEntityFactory, $expectationFileContentAction, $writePhpFileAction, $generateAssertMethodAction);
+    $assertFileStateEntityFactory = new AssertFileStateEntityFactory($assertObjectEntityFactory, $setup);
+    $generateAssertClass = new GenerateAssertClassAction(
+        $removeAssertFileAction,
+        $assertFileStateEntityFactory,
+        $phpDocEntityFactory,
+        $expectationFileContentAction,
+        $writePhpFileAction,
+        $generateAssertMethodAction
+    );
 
     $reflectionClassFactory = new ReflectionClassFactory($setup, $filePathToClassAction);
 }
 
-$generateAssertClass->execute(
-    $reflectionClassFactory->create($file)
-);
+foreach ($files as $file) {
+    $results = $generateAssertClass->execute(
+        $reflectionClassFactory->create($file)
+    );
+
+    foreach ($results as $source) {
+        echo sprintf('Class %s as file %s%s', $source->class, $source->pathname, PHP_EOL);
+    }
+}

@@ -14,10 +14,8 @@ final class FinderFactory implements FinderFactoryContract
     public function __construct(
         private readonly FilePathToClassAction $filePathToClassAction,
         private readonly ProjectSetupEntity $projectSetupEntity,
-    )
-    {
+    ) {
     }
-
 
     public function create(): Finder
     {

@@ -6,10 +6,10 @@ namespace LaraStrict\StrictMock\Testing\Actions;
 
 use LaraStrict\StrictMock\Testing\Constants\ComposerConstants;
 use LaraStrict\StrictMock\Testing\Constants\StubConstants;
+use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
 use LaraStrict\StrictMock\Testing\Exceptions\DirectoryDoesNotExistsException;
 use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
 use LaraStrict\StrictMock\Testing\Helpers\Realpath;
-use LaraStrict\StrictMock\Testing\Services\ComposerJsonService;
 
 final class FilePathToClassAction
 {
@@ -18,13 +18,10 @@ final class FilePathToClassAction
      */
     private array $dirs = [];
 
-
     public function __construct(
-        private readonly ComposerJsonService $composerJsonService,
-    )
-    {
+        private readonly ComposerJsonServiceContract $composerJsonService,
+    ) {
     }
-
 
     public function execute(string $filepath): string
     {
@@ -38,7 +35,7 @@ final class FilePathToClassAction
                 $preClass = preg_replace(
                     '/\.php$/i',
                     '',
-                    str_replace('/', StubConstants::NameSpaceSeparator, $relative)
+                    str_replace('/', StubConstants::NameSpaceSeparator, $relative),
                 );
                 assert($preClass !== null);
 
@@ -49,7 +46,6 @@ final class FilePathToClassAction
         throw new DirectoryDoesNotExistsException($realPath . ', not found in composer by psr-4.');
     }
 
-
     /**
      * @return array<string>
      */
@@ -57,7 +53,7 @@ final class FilePathToClassAction
     {
         if (is_file($path)) {
             $path = dirname($path);
-        } elseif (is_dir($path) === false) {
+        } else if (is_dir($path) === false) {
             throw new DirectoryDoesNotExistsException($path);
         }
 
@@ -71,7 +67,6 @@ final class FilePathToClassAction
 
         return $path;
     }
-
 
     /**
      * @return array<string, string>

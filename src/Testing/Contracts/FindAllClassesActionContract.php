@@ -4,8 +4,8 @@ namespace LaraStrict\StrictMock\Testing\Contracts;
 
 interface FindAllClassesActionContract
 {
-	/**
-	 * @return array<class-string>
-	 */
-	public function execute(): array;
+    /**
+     * @return array<class-string>
+     */
+    public function execute(): array;
 }

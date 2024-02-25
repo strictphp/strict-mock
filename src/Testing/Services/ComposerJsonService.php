@@ -4,22 +4,16 @@ declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Services;
 
+use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
 use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
 use stdClass;
 
-final class ComposerJsonService
+final class ComposerJsonService implements ComposerJsonServiceContract
 {
     /**
      * @var array<string, stdClass>
      */
     private array $cache = [];
-
-
-    public function isExist(string $basePath): bool
-    {
-        return is_file(self::composerJson($basePath));
-    }
-
 
     public function content(string $path): mixed
     {
@@ -37,13 +31,17 @@ final class ComposerJsonService
             $content,
             true,
             512,
-            JSON_THROW_ON_ERROR
+            JSON_THROW_ON_ERROR,
         );
     }
-
 
     private static function composerJson(string $path): string
     {
         return $path . '/composer.json';
+    }
+
+    public function isExist(string $basePath): bool
+    {
+        return is_file(self::composerJson($basePath));
     }
 }

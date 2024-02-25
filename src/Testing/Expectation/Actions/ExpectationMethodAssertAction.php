@@ -21,8 +21,7 @@ final class ExpectationMethodAssertAction
         ReflectionMethod $method,
         string $expectationClassName,
         PhpDocEntity $phpDoc,
-    ): void
-    {
+    ): void {
         $parameters = $method->getParameters();
 
         $assertMethod = (new Factory())->fromMethodReflection($method);
@@ -30,7 +29,7 @@ final class ExpectationMethodAssertAction
 
         $assertMethod->addBody(sprintf(
             '$_expectation = $this->getExpectation(%s);',
-            $expectationClassName . '::class'
+            $expectationClassName . '::class',
         ));
 
         $hookParameters = [];
@@ -44,7 +43,7 @@ final class ExpectationMethodAssertAction
                 $assertMethod->addBody(sprintf(
                     'Assert::assertEquals($_expectation->%s, $%s, $_message);',
                     $parameter->name,
-                    $parameter->name
+                    $parameter->name,
                 ));
             }
         }
@@ -65,7 +64,7 @@ final class ExpectationMethodAssertAction
 
         if ($returnType instanceof ReflectionNamedType) {
             $enumReturnType = PhpType::tryFrom($returnType->getName()) ?? PhpType::Mixed;
-        } elseif ($returnType instanceof ReflectionUnionType) {
+        } else if ($returnType instanceof ReflectionUnionType) {
             $enumReturnType = PhpType::Mixed;
         } else {
             $enumReturnType = $phpDoc->returnType;

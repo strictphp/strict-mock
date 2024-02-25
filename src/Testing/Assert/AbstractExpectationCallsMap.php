@@ -28,23 +28,12 @@ abstract class AbstractExpectationCallsMap
         AssertExpectationManager::getInstance()->register($this);
     }
 
+    /**
+     * @deprecated no replace
+     */
     public function addExpectation(object $expectation): self
     {
         $this->_expectationMap[$expectation::class][] = $expectation;
-
-        return $this;
-    }
-
-    /**
-     * @template TExpectation
-     *
-     * @param class-string<TExpectation> $class
-     * @param array<TExpectation|null>        $expectations
-     */
-    public function setExpectations(string $class, array $expectations): self
-    {
-        $this->_expectationMap[$class] = array_values(array_filter($expectations));
-        $this->_callStep[$class] = 0;
 
         return $this;
     }
@@ -67,6 +56,20 @@ abstract class AbstractExpectationCallsMap
         }
 
         throw new LogicException(implode(PHP_EOL, array_map(static fn (string $e) => $e, $errors)));
+    }
+
+    /**
+     * @template TExpectation
+     *
+     * @param class-string<TExpectation> $class
+     * @param array<TExpectation|null>   $expectations
+     */
+    public function setExpectations(string $class, array $expectations): self
+    {
+        $this->_expectationMap[$class] = array_values(array_filter($expectations));
+        $this->_callStep[$class] = 0;
+
+        return $this;
     }
 
     /**
@@ -103,7 +106,7 @@ abstract class AbstractExpectationCallsMap
             $caller['class'] ?? static::class,
             $caller['function'],
             $reason,
-            $callStep ?? $this->_currentDebugStep
+            $callStep ?? $this->_currentDebugStep,
         );
     }
 }

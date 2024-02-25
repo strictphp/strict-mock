@@ -2,7 +2,9 @@
 
 namespace LaraStrict\StrictMock\Testing\Exceptions;
 
-final class LogicException extends \RuntimeException
+use RuntimeException;
+
+final class LogicException extends RuntimeException
 {
 
     /**

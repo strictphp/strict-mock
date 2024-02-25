@@ -12,10 +12,8 @@ final class FindAllClassesAction implements FindAllClassesActionContract
     public function __construct(
         private readonly FinderFactoryContract $finderFactory,
         private readonly FilePathToClassAction $filePathToClassAction,
-    )
-    {
+    ) {
     }
-
 
     /**
      * @return array<class-string>

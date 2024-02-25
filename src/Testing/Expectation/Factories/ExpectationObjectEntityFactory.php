@@ -11,10 +11,8 @@ final class ExpectationObjectEntityFactory
 {
     public function __construct(
         public readonly PhpFileFactory $phpFileFactory,
-    )
-    {
+    ) {
     }
-
 
     public function create(ObjectEntity $assertObject, ReflectionClass $class, ReflectionMethod $method): ObjectEntity
     {
@@ -23,7 +21,7 @@ final class ExpectationObjectEntityFactory
         return new ObjectEntity(
             $assertObject->exportSetup,
             $className,
-            $this->phpFileFactory->create()
+            $this->phpFileFactory->create(),
         );
     }
 

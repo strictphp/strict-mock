@@ -19,8 +19,8 @@ class AssertFileStateEntity
         public readonly PhpNamespace $namespace,
         public readonly Method $constructor,
         public readonly ObjectEntity $object,
+        public readonly bool $oneParameterOneExpectation,
         public array $expectationClasses = [],
-    )
-    {
+    ) {
     }
 }

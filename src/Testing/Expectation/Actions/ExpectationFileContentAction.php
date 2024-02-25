@@ -9,6 +9,7 @@ use LaraStrict\StrictMock\Testing\Constants\StubConstants;
 use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
 use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
 use LaraStrict\StrictMock\Testing\Enums\PhpType;
+use LaraStrict\StrictMock\Testing\Expectation\AbstractExpectation;
 use LaraStrict\StrictMock\Testing\Expectation\Factories\ExpectationObjectEntityFactory;
 use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\PromotedParameter;
@@ -24,28 +25,26 @@ final class ExpectationFileContentAction
 {
     public const HookProperty = '_hook';
 
-
     public function __construct(
         private readonly ExpectationObjectEntityFactory $expectationObjectEntityFactory,
         private readonly WritePhpFileAction $writePhpFileAction,
-    )
-    {
+    ) {
     }
-
 
     public function execute(
         ReflectionClass $class,
         AssertFileStateEntity $assertFileState,
         ReflectionMethod $method,
         PhpDocEntity $phpDoc,
-    ): ObjectEntity
-    {
+    ): ObjectEntity {
         $expectationObject = $this->expectationObjectEntityFactory->create($assertFileState->object, $class, $method);
         $parameters = $method->getParameters();
 
         $class = $expectationObject->content->addNamespace($expectationObject->exportSetup->namespace)
             ->addUse(Closure::class)
-            ->addClass($expectationObject->shortClassName);
+            ->addUse(AbstractExpectation::class)
+            ->addClass($expectationObject->shortClassName)
+            ->setExtends(AbstractExpectation::class);
 
         $constructor = $class
             ->setFinal()
@@ -81,14 +80,13 @@ final class ExpectationFileContentAction
             ->setDefaultValue(null);
 
         $constructor->addComment(
-            sprintf('@param %s(%s):void|null $%s', Closure::class, implode(',', $parameterTypes), self::HookProperty)
+            sprintf('@param %s(%s):void|null $%s', Closure::class, implode(',', $parameterTypes), self::HookProperty),
         );
 
         $this->writePhpFileAction->execute($expectationObject);
 
         return $expectationObject;
     }
-
 
     private static function canReturnExpectation(ReflectionNamedType $returnType): bool
     {
@@ -97,12 +95,10 @@ final class ExpectationFileContentAction
             && $returnType->getName() !== PhpType::Static->value;
     }
 
-
     private function setParameterType(
         ReflectionType|ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $type,
-        PromotedParameter $constructorParameter
-    ): string
-    {
+        PromotedParameter $constructorParameter,
+    ): string {
         $proposedType = '';
 
         $allowNull = false;
@@ -135,10 +131,10 @@ final class ExpectationFileContentAction
             }
 
             $constructorParameter->setNullable($type->allowsNull());
-        } elseif ($type instanceof ReflectionUnionType) {
+        } else if ($type instanceof ReflectionUnionType) {
             $allowNull = $type->allowsNull();
             $proposedType = implode('|', array_filter(array_map($mapToName, $type->getTypes())));
-        } elseif ($type instanceof ReflectionIntersectionType) {
+        } else if ($type instanceof ReflectionIntersectionType) {
             $allowNull = $type->allowsNull();
             $proposedType = implode('&', array_filter(array_map($mapToName, $type->getTypes())));
         }
@@ -161,12 +157,10 @@ final class ExpectationFileContentAction
         return $proposedType;
     }
 
-
     private function setParameterDefaultValue(
         ReflectionParameter $parameter,
-        PromotedParameter $constructorParameter
-    ): void
-    {
+        PromotedParameter $constructorParameter,
+    ): void {
         if ($parameter->isDefaultValueAvailable() === false) {
             return;
         }
@@ -184,7 +178,7 @@ final class ExpectationFileContentAction
 
         if (is_object($defaultValue)) {
             $objectLiteral = new Literal(
-                'new ' . StubConstants::NameSpaceSeparator . $defaultValue::class . '(/* unknown */)'
+                'new ' . StubConstants::NameSpaceSeparator . $defaultValue::class . '(/* unknown */)',
             );
             $constructorParameter->setDefaultValue($objectLiteral);
         } else {

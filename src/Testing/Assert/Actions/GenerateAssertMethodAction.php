@@ -15,14 +15,12 @@ final class GenerateAssertMethodAction
 {
     private const HookProperty = '_hook';
 
-
     public function execute(
         AssertFileStateEntity $assertFileState,
         ReflectionMethod $method,
         ObjectEntity $expectationObject,
         PhpDocEntity $phpDoc,
-    ): void
-    {
+    ): void {
         $parameters = $method->getParameters();
 
         $assertMethod = (new Factory())->fromMethodReflection($method);
@@ -44,7 +42,7 @@ final class GenerateAssertMethodAction
                 $assertMethod->addBody(sprintf(
                     'Assert::assertEquals($_expectation->%s, $%s, $_message);',
                     $parameter->name,
-                    $parameter->name
+                    $parameter->name,
                 ));
             }
         }
@@ -55,7 +53,7 @@ final class GenerateAssertMethodAction
 
         $assertMethod->addBody(sprintf('if (is_callable($_expectation->%s)) {', self::HookProperty));
         $assertMethod->addBody(sprintf(
-            '    call_user_func($_expectation->%s, %s);',
+            '    ($_expectation->%s)(%s);',
             self::HookProperty,
             implode(', ', $hookParameters),
         ));
@@ -65,7 +63,7 @@ final class GenerateAssertMethodAction
 
         if ($returnType instanceof ReflectionNamedType) {
             $enumReturnType = PhpType::tryFrom($returnType->getName()) ?? PhpType::Mixed;
-        } elseif ($returnType instanceof ReflectionUnionType) {
+        } else if ($returnType instanceof ReflectionUnionType) {
             $enumReturnType = PhpType::Mixed;
         } else {
             $enumReturnType = $phpDoc->returnType;

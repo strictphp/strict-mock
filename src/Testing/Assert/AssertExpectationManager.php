@@ -30,11 +30,6 @@ final class AssertExpectationManager
         self::$singleton = null;
     }
 
-    public function register(AbstractExpectationCallsMap $map): void
-    {
-        $this->currentExpectations[] = $map;
-    }
-
     public function assertCalled(): void
     {
         $errors = [];
@@ -49,6 +44,7 @@ final class AssertExpectationManager
         // We must some assert due the assertion count
         if ($errors === []) {
             Assert::assertEmpty($errors);
+
             return;
         }
 
@@ -58,6 +54,11 @@ final class AssertExpectationManager
     public function hasExpectations(): bool
     {
         return $this->currentExpectations !== [];
+    }
+
+    public function register(AbstractExpectationCallsMap $map): void
+    {
+        $this->currentExpectations[] = $map;
     }
 
     public function reset(): void

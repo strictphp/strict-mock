@@ -12,11 +12,9 @@ final class ReflectionClassFactory
 {
     public function __construct(
         private readonly ProjectSetupEntity $projectSetup,
-        private readonly FilePathToClassAction $filePathToClassAction
-    )
-    {
+        private readonly FilePathToClassAction $filePathToClassAction,
+    ) {
     }
-
 
     /**
      * @throws FileDoesNotExistsException
@@ -28,7 +26,7 @@ final class ReflectionClassFactory
             $full = $this->projectSetup->projectRoot->folder . DIRECTORY_SEPARATOR . $classOrPath;
             if (is_file($full)) {
                 $classOrPath = $full;
-            } elseif (is_file($classOrPath) === false) {
+            } else if (is_file($classOrPath) === false) {
                 throw new FileDoesNotExistsException($classOrPath);
             }
             $classOrPath = $this->filePathToClassAction->execute($classOrPath);

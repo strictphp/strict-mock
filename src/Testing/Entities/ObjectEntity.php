@@ -7,17 +7,18 @@ use Nette\PhpGenerator\PhpFile;
 
 final class ObjectEntity
 {
+    /**
+     * @var class-string
+     */
     public readonly string $class;
 
     public readonly string $pathname;
-
 
     public function __construct(
         public readonly FileSetupEntity $exportSetup,
         public readonly string $shortClassName,
         public readonly PhpFile $content,
-    )
-    {
+    ) {
         $this->class = $this->exportSetup->namespace . StubConstants::NameSpaceSeparator . $this->shortClassName;
         $this->pathname = $this->exportSetup->folder . DIRECTORY_SEPARATOR . $this->shortClassName . '.php';
     }

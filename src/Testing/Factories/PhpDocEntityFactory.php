@@ -16,7 +16,6 @@ final class PhpDocEntityFactory
     {
     }
 
-
     public function create(ReflectionMethod $method): PhpDocEntity
     {
         $comment = $method->getDocComment();
