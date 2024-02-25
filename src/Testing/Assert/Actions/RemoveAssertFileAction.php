@@ -2,12 +2,16 @@
 
 namespace LaraStrict\StrictMock\Testing\Assert\Actions;
 
+use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
+use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
 use LaraStrict\StrictMock\Testing\Attributes\Expectation;
 use ReflectionClass;
 
 final class RemoveAssertFileAction
 {
     /**
+     * @param ReflectionClass<AbstractExpectationCallsMap|AbstractExpectationAllInOne> $class
+     *
      * @return array<string, class-string>
      */
     public function execute(ReflectionClass $class): array

@@ -16,6 +16,9 @@ final class AssertObjectEntityFactory
     ) {
     }
 
+    /**
+     * @param ReflectionClass<object> $class
+     */
     public function create(ReflectionClass $class, ?FileSetupEntity $fileSetupEntity = null): ObjectEntity
     {
         $fileSetup = $this->reflectionClassToFileSetupEntity->transform($class, $fileSetupEntity);

@@ -8,7 +8,7 @@ use Nette\PhpGenerator\PhpFile;
 final class ObjectEntity
 {
     /**
-     * @var class-string
+     * @var class-string<object>
      */
     public readonly string $class;
 

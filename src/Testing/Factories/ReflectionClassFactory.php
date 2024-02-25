@@ -17,6 +17,8 @@ final class ReflectionClassFactory
     }
 
     /**
+     * @return ReflectionClass<object>
+     *
      * @throws FileDoesNotExistsException
      * @throws ClassIsNotInterfaceException
      */

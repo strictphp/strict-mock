@@ -18,7 +18,7 @@ final class InputArgumentClassToClassesAction
     /**
      * @param class-string|string|array<string>|array<class-string> $inputs
      *
-     * @return Generator<ReflectionClass>
+     * @return Generator<ReflectionClass<object>>
      */
     public function execute(string|array $inputs): Generator
     {

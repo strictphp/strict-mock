@@ -46,9 +46,6 @@ final class FilePathToClassAction
         throw new DirectoryDoesNotExistsException($realPath . ', not found in composer by psr-4.');
     }
 
-    /**
-     * @return array<string>
-     */
     private function findComposer(string $path): string
     {
         if (is_file($path)) {

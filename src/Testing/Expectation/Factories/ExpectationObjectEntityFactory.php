@@ -14,6 +14,9 @@ final class ExpectationObjectEntityFactory
     ) {
     }
 
+    /**
+     * @param ReflectionClass<object> $class
+     */
     public function create(ObjectEntity $assertObject, ReflectionClass $class, ReflectionMethod $method): ObjectEntity
     {
         $className = $class->getShortName() . ucfirst($method->getName()) . 'Expectation';

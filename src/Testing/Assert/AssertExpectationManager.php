@@ -12,7 +12,7 @@ final class AssertExpectationManager
     private static ?self $singleton = null;
 
     /**
-     * @var array<AbstractExpectationCallsMap>
+     * @var array<AbstractExpectationCallsMap|AbstractExpectationAllInOne>
      */
     private array $currentExpectations = [];
 
@@ -56,7 +56,7 @@ final class AssertExpectationManager
         return $this->currentExpectations !== [];
     }
 
-    public function register(AbstractExpectationCallsMap $map): void
+    public function register(AbstractExpectationCallsMap|AbstractExpectationAllInOne $map): void
     {
         $this->currentExpectations[] = $map;
     }

@@ -31,6 +31,9 @@ final class ExpectationFileContentAction
     ) {
     }
 
+    /**
+     * @param ReflectionClass<object> $class
+     */
     public function execute(
         ReflectionClass $class,
         AssertFileStateEntity $assertFileState,

@@ -13,6 +13,9 @@ final class ReflectionClassToFileSetupEntity
     {
     }
 
+    /**
+     * @param ReflectionClass<object> $class
+     */
     public function transform(ReflectionClass $class, ?FileSetupEntity $exportSetup = null): FileSetupEntity
     {
         $exportSetup ??= $this->projectSetup->exportRoot;
@@ -20,7 +23,9 @@ final class ReflectionClassToFileSetupEntity
         $namespace = $class->getNamespaceName();
         if (str_starts_with($namespace, $projectRoot->namespace)) {
             $exportNamespace = str_replace($projectRoot->namespace, $exportSetup->namespace, $namespace);
-            $exportFile = str_replace($projectRoot->folder, $exportSetup->folder, dirname($class->getFileName()));
+            $path = $class->getFileName();
+            assert(is_string($path));
+            $exportFile = str_replace($projectRoot->folder, $exportSetup->folder, dirname($path));
         } else {
             throw new RuntimeException('not implemented');
         }
