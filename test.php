@@ -2,6 +2,7 @@
 
 use LaraStrict\StrictMock\PHPUnit\Services\TestFrameworkService;
 use LaraStrict\StrictMock\Symfony\Factories\FinderFactory;
+use LaraStrict\StrictMock\Testing\Actions\AddUseByTypeAction;
 use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
 use LaraStrict\StrictMock\Testing\Actions\FindAllGeneratedAssertClassesAction;
 use LaraStrict\StrictMock\Testing\Actions\WritePhpFileAction;
@@ -28,6 +29,7 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 require __DIR__ . '/vendor/autoload.php';
 
 { // setup
+    $fromExists = true;
     $files = [
         'src/Testing/Contracts/FindAllClassesActionContract.php',
         'src/Testing/Contracts/ComposerJsonServiceContract.php',
@@ -37,7 +39,7 @@ require __DIR__ . '/vendor/autoload.php';
 }
 
 { // DI
-
+    $addUseByType = new AddUseByTypeAction();
     $composerJsonService = new ComposerJsonService();
     $filePathToClassAction = new FilePathToClassAction($composerJsonService);
 
@@ -53,11 +55,11 @@ require __DIR__ . '/vendor/autoload.php';
     $assertObjectEntityFactory = new AssertObjectEntityFactory($reflectionClassToFileSetupEntity, $phpFileFactory);
 
     $phpDocEntityFactory = new PhpDocEntityFactory(new PhpDocStringResolver(new Lexer(), new PhpDocParser(new TypeParser(), new ConstExprParser())));
-    $expectationFileContentAction = new ExpectationFileContentAction($expectationObjectEntityFactory, $writePhpFileAction);
+    $expectationFileContentAction = new ExpectationFileContentAction($expectationObjectEntityFactory, $writePhpFileAction, $addUseByType);
 
     $removeAssertFileAction = new RemoveAssertFileAction();
 
-    $generateAssertMethodAction = new GenerateAssertMethodAction(new TestFrameworkService());
+    $generateAssertMethodAction = new GenerateAssertMethodAction(new TestFrameworkService(), $addUseByType);
     $assertFileStateEntityFactory = new AssertFileStateEntityFactory($assertObjectEntityFactory);
     $generateAssertClass = new GenerateAssertClassAction(
         $removeAssertFileAction,
@@ -68,7 +70,6 @@ require __DIR__ . '/vendor/autoload.php';
         $generateAssertMethodAction
     );
 
-    $reflectionClassFactory = new ReflectionClassFactory($setup, $filePathToClassAction);
 
     $finderFactory = new FinderFactory();
     $findAllClassesAction = new FindAllGeneratedAssertClassesAction(
@@ -78,20 +79,23 @@ require __DIR__ . '/vendor/autoload.php';
     );
 }
 
-//foreach ($files as $file) {
-//    $results = $generateAssertClass->execute(
-//        $reflectionClassFactory->create($file)
-//    );
-//
-//    foreach ($results as $source) {
-//        echo sprintf('Class %s as file %s%s', $source->class, $source->pathname, PHP_EOL);
-//    }
-//}
+if ($fromExists) {
+    foreach ($findAllClassesAction->execute() as $class) {
+        $results = $generateAssertClass->execute($class);
 
-foreach ($findAllClassesAction->execute() as $class) {
-    $results = $generateAssertClass->execute($class);
+        foreach ($results as $source) {
+            echo sprintf('Class %s as file %s%s', $source->class, $source->pathname, PHP_EOL);
+        }
+    }
+} else {
+    $reflectionClassFactory = new ReflectionClassFactory($setup, $filePathToClassAction);
+    foreach ($files as $file) {
+        $results = $generateAssertClass->execute(
+            $reflectionClassFactory->create($file)
+        );
 
-    foreach ($results as $source) {
-        echo sprintf('Class %s as file %s%s', $source->class, $source->pathname, PHP_EOL);
+        foreach ($results as $source) {
+            echo sprintf('Class %s as file %s%s', $source->class, $source->pathname, PHP_EOL);
+        }
     }
 }

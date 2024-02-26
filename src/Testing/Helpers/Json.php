@@ -6,6 +6,16 @@ use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
 
 final class Json
 {
+    public static function loadFromFile(string $path): array
+    {
+        $content = file_get_contents($path);
+        if ($content === false) {
+            throw new FileDoesNotExistsException($path);
+        }
+
+        return self::decode($content);
+    }
+
     /**
      * @return array<mixed>
      */
@@ -21,13 +31,5 @@ final class Json
         return $json;
     }
 
-    public static function loadFromFile(string $path): array
-    {
-        $content = file_get_contents($path);
-        if ($content === false) {
-            throw new FileDoesNotExistsException($path);
-        }
 
-        return self::decode($content);
-    }
 }

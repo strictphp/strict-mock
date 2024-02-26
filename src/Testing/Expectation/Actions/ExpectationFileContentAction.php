@@ -3,6 +3,7 @@
 namespace LaraStrict\StrictMock\Testing\Expectation\Actions;
 
 use Closure;
+use LaraStrict\StrictMock\Testing\Actions\AddUseByTypeAction;
 use LaraStrict\StrictMock\Testing\Actions\WritePhpFileAction;
 use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use LaraStrict\StrictMock\Testing\Constants\StubConstants;
@@ -28,6 +29,7 @@ final class ExpectationFileContentAction
     public function __construct(
         private readonly ExpectationObjectEntityFactory $expectationObjectEntityFactory,
         private readonly WritePhpFileAction $writePhpFileAction,
+        private readonly AddUseByTypeAction $addUseByTypeAction,
     ) {
     }
 
@@ -43,10 +45,10 @@ final class ExpectationFileContentAction
         $expectationObject = $this->expectationObjectEntityFactory->create($assertFileState->object, $class, $method);
         $parameters = $method->getParameters();
 
-        $class = $expectationObject->content->addNamespace($expectationObject->exportSetup->namespace)
+        $namespace = $expectationObject->content->addNamespace($expectationObject->exportSetup->namespace)
             ->addUse(Closure::class)
-            ->addUse(AbstractExpectation::class)
-            ->addClass($expectationObject->shortClassName)
+            ->addUse(AbstractExpectation::class);
+        $class = $namespace->addClass($expectationObject->shortClassName)
             ->setExtends(AbstractExpectation::class);
 
         $constructor = $class
@@ -61,6 +63,7 @@ final class ExpectationFileContentAction
                 ->addPromotedParameter('return')
                 ->setReadOnly();
 
+            $this->addUseByTypeAction->execute($namespace, $returnType);
             $this->setParameterType($returnType, $constructorParameter);
         }
 
@@ -69,7 +72,7 @@ final class ExpectationFileContentAction
             $constructorParameter = $constructor
                 ->addPromotedParameter($parameter->name)
                 ->setReadOnly();
-
+            $this->addUseByTypeAction->execute($namespace, $parameter->getType());
             $parameterTypes[] = $this->setParameterType($parameter->getType(), $constructorParameter);
             $this->setParameterDefaultValue($parameter, $constructorParameter);
         }

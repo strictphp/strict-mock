@@ -2,15 +2,13 @@
 
 namespace LaraStrict\StrictMock\Testing\Assert\Actions;
 
+use LaraStrict\StrictMock\Testing\Actions\AddUseByTypeAction;
 use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use LaraStrict\StrictMock\Testing\Contracts\TestFrameworkServiceContract;
 use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
 use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
 use LaraStrict\StrictMock\Testing\Enums\PhpType;
-use LaraStrict\StrictMock\Testing\Exceptions\LogicException;
-use LaraStrict\StrictMock\Testing\Helpers\Php;
 use Nette\PhpGenerator\Factory;
-use ReflectionIntersectionType;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionUnionType;
@@ -21,8 +19,10 @@ final class GenerateAssertMethodAction
     private const MessageProperty = '_message';
     private const HookProperty = '_hook';
 
-    public function __construct(private readonly TestFrameworkServiceContract $testFrameworkService)
-    {
+    public function __construct(
+        private readonly TestFrameworkServiceContract $testFrameworkService,
+        private readonly AddUseByTypeAction $addUseByTypeAction,
+    ) {
     }
 
     public function execute(
@@ -51,7 +51,7 @@ final class GenerateAssertMethodAction
             $assertMethod->addBody('');
 
             foreach ($parameters as $parameter) {
-                self::addUseIfIsClass($assertFileState, $parameter->getType());
+                $this->addUseByTypeAction->execute($assertFileState->namespace, $parameter->getType());
 
                 $hookParameters[] = sprintf('$%s', $parameter->name);
                 $assertMethod->addBody(
@@ -79,7 +79,7 @@ final class GenerateAssertMethodAction
 
         $returnType = $method->getReturnType();
 
-        self::addUseIfIsClass($assertFileState, $returnType);
+        $this->addUseByTypeAction->execute($assertFileState->namespace, $returnType);
         if ($returnType instanceof ReflectionNamedType) {
             $enumReturnType = PhpType::tryFrom($returnType->getName()) ?? PhpType::Mixed;
         } else if ($returnType instanceof ReflectionUnionType) {
@@ -101,25 +101,4 @@ final class GenerateAssertMethodAction
         }
     }
 
-    private static function addUseIfIsClass(AssertFileStateEntity $assertFileState, $type): void
-    {
-        if ($type === null) {
-            return;
-        } elseif ($type instanceof ReflectionIntersectionType) {
-            $types = $type->getTypes();
-        } elseif ($type instanceof ReflectionUnionType) {
-            $types = $type->getTypes();
-        } elseif ($type instanceof ReflectionNamedType) {
-            $types = [$type];
-        } else {
-            throw new LogicException('Missing type %s', $type::class);
-        }
-
-        foreach ($types as $_type) {
-            $class = $_type->getName();
-            if (Php::existClassInterfaceEnum($class)) {
-                $assertFileState->namespace->addUse($class);
-            }
-        }
-    }
 }
