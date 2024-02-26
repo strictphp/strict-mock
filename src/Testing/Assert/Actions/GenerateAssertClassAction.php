@@ -40,13 +40,14 @@ final class GenerateAssertClassAction
         ReflectionClass $class,
         ?FileSetupEntity $exportSetup = null,
     ): array {
-        if ($class->getAttributes(IgnoreGenerateAssert::class) !== []) {
-            throw new IgnoreAssertException($class->getName());
-        }
+        self::checkIgnoreAttribute($class);
 
         $assertFileState = $this->assertFileStateEntityFactory->create($class, $exportSetup);
         if (class_exists($assertFileState->object->class)) {
-            $this->removeAssertFileAction->execute(new ReflectionClass($assertFileState->object->class));
+            $reflectionAssert = new ReflectionClass($assertFileState->object->class);
+            self::checkIgnoreAttribute($reflectionAssert);
+
+            $this->removeAssertFileAction->execute($reflectionAssert);
         }
 
         $generatedFiles = [$assertFileState->object];
@@ -117,7 +118,7 @@ final class GenerateAssertClassAction
         }
     }
 
-    private function addConstructorParameter(Method $contstructor, string $type, ?string $parameter = null): void
+    private function addConstructorParameter(Method $constructor, string $type, ?string $parameter = null): void
     {
         if ($parameter === null) {
             $parameter = 'expectations';
@@ -126,18 +127,28 @@ final class GenerateAssertClassAction
             $body = sprintf('$this->setExpectations(%s::class, $%s);', $type, $parameter);
         }
 
-        $contstructor->addComment(sprintf(
+        $constructor->addComment(sprintf(
             '@param array<%s|null> $%s',
             $type,
             $parameter,
         ));
 
-        $contstructor->addBody($body);
+        $constructor->addBody($body);
 
-        $contstructor
+        $constructor
             ->addParameter($parameter)
             ->setType('array')
             ->setDefaultValue(new Literal('[]'));
+    }
+
+    /**
+     * @throws IgnoreAssertException
+     */
+    private static function checkIgnoreAttribute(ReflectionClass $class): void
+    {
+        if ($class->getAttributes(IgnoreGenerateAssert::class) !== []) {
+            throw new IgnoreAssertException($class->getName());
+        }
     }
 
 }

@@ -17,13 +17,7 @@ final class RemoveAssertFileAction
     public function execute(ReflectionClass $class): array
     {
         $attributes = $class->getAttributes(Expectation::class);
-
-        if ($attributes === []) {
-            return [];
-        }
-
-        $assertFile = $class->getFileName();
-        assert(is_string($assertFile));
+        $assertFile = self::filePath($class);
         $removed[$assertFile] = $class->getName();
 
         foreach ($attributes as $attribute) {
@@ -33,13 +27,26 @@ final class RemoveAssertFileAction
                 continue;
             }
 
-            $file = (new ReflectionClass($expectation->class))->getFileName();
-            assert(is_string($file));
+            $file = self::filePath($expectation->class);
             unlink($file);
             $removed[$file] = $expectation->class;
         }
         unlink($assertFile);
 
         return $removed;
+    }
+
+    /**
+     * @param class-string|ReflectionClass $classOrReflection
+     */
+    private static function filePath(string|ReflectionClass $classOrReflection): string
+    {
+        $file = (is_string($classOrReflection)
+            ? new ReflectionClass($classOrReflection)
+            : $classOrReflection)
+            ->getFileName();
+        assert(is_string($file));
+
+        return $file;
     }
 }
