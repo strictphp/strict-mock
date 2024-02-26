@@ -7,6 +7,6 @@ namespace LaraStrict\StrictMock\Testing\Attributes;
 use Attribute;
 
 #[Attribute]
-final class TestAssert
+final class IgnoreGenerateAssert
 {
 }

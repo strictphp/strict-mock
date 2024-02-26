@@ -6,8 +6,10 @@ use LaraStrict\StrictMock\Testing\Actions\WritePhpFileAction;
 use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use LaraStrict\StrictMock\Testing\Assert\Factories\AssertFileStateEntityFactory;
 use LaraStrict\StrictMock\Testing\Attributes\Expectation;
+use LaraStrict\StrictMock\Testing\Attributes\IgnoreGenerateAssert;
 use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
 use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
+use LaraStrict\StrictMock\Testing\Exceptions\IgnoreAssertException;
 use LaraStrict\StrictMock\Testing\Exceptions\LogicException;
 use LaraStrict\StrictMock\Testing\Expectation\Actions\ExpectationFileContentAction;
 use LaraStrict\StrictMock\Testing\Factories\PhpDocEntityFactory;
@@ -32,11 +34,16 @@ final class GenerateAssertClassAction
      * @param ReflectionClass<object> $class
      *
      * @return array<ObjectEntity>
+     * @throws IgnoreAssertException
      */
     public function execute(
         ReflectionClass $class,
         ?FileSetupEntity $exportSetup = null,
     ): array {
+        if ($class->getAttributes(IgnoreGenerateAssert::class) !== []) {
+            throw new IgnoreAssertException($class->getName());
+        }
+
         $assertFileState = $this->assertFileStateEntityFactory->create($class, $exportSetup);
         if (class_exists($assertFileState->object->class)) {
             $this->removeAssertFileAction->execute(new ReflectionClass($assertFileState->object->class));

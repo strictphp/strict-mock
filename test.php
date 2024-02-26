@@ -13,6 +13,7 @@ use LaraStrict\StrictMock\Testing\Assert\Factories\AssertFileStateEntityFactory;
 use LaraStrict\StrictMock\Testing\Assert\Factories\AssertObjectEntityFactory;
 use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
 use LaraStrict\StrictMock\Testing\Entities\ProjectSetupEntity;
+use LaraStrict\StrictMock\Testing\Exceptions\IgnoreAssertException;
 use LaraStrict\StrictMock\Testing\Expectation\Actions\ExpectationFileContentAction;
 use LaraStrict\StrictMock\Testing\Expectation\Factories\ExpectationObjectEntityFactory;
 use LaraStrict\StrictMock\Testing\Factories\PhpDocEntityFactory;
@@ -79,23 +80,32 @@ require __DIR__ . '/vendor/autoload.php';
     );
 }
 
-if ($fromExists) {
-    foreach ($findAllClassesAction->execute() as $class) {
-        $results = $generateAssertClass->execute($class);
+
+function render(GenerateAssertClassAction $generateAssertClass, iterable $files, ?Closure $transformer = null): void
+{
+    if ($transformer === null) {
+        $transformer = static fn ($v) => $v;
+    }
+
+    foreach ($files as $file) {
+        $results = [];
+        try {
+            $results = $generateAssertClass->execute(
+                $transformer($file)
+            );
+        } catch (IgnoreAssertException $e) {
+            echo sprintf('Skipped, class is ignored "%s".%s', $e->getMessage(), PHP_EOL);
+        }
 
         foreach ($results as $source) {
             echo sprintf('Class %s as file %s%s', $source->class, $source->pathname, PHP_EOL);
         }
     }
+}
+
+if ($fromExists) {
+    render($generateAssertClass, $findAllClassesAction->execute());
 } else {
     $reflectionClassFactory = new ReflectionClassFactory($setup, $filePathToClassAction);
-    foreach ($files as $file) {
-        $results = $generateAssertClass->execute(
-            $reflectionClassFactory->create($file)
-        );
-
-        foreach ($results as $source) {
-            echo sprintf('Class %s as file %s%s', $source->class, $source->pathname, PHP_EOL);
-        }
-    }
+    render($generateAssertClass, $files, static fn ($file) => $reflectionClassFactory->create($file));
 }
