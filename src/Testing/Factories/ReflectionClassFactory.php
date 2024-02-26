@@ -6,6 +6,7 @@ use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
 use LaraStrict\StrictMock\Testing\Entities\ProjectSetupEntity;
 use LaraStrict\StrictMock\Testing\Exceptions\ClassIsNotInterfaceException;
 use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
+use LaraStrict\StrictMock\Testing\Helpers\Php;
 use ReflectionClass;
 
 final class ReflectionClassFactory
@@ -24,7 +25,7 @@ final class ReflectionClassFactory
      */
     public function create(string $classOrPath): ReflectionClass
     {
-        if (class_exists($classOrPath) === false && interface_exists($classOrPath) === false) {
+        if (Php::existClassInterface($classOrPath) === false) {
             $full = $this->projectSetup->projectRoot->folder . DIRECTORY_SEPARATOR . $classOrPath;
             if (is_file($full)) {
                 $classOrPath = $full;

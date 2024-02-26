@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Tests\LaraStrict\Feature\Testing\Assert;
+namespace Tests\LaraStrict\StrictMock\Feature\Testing\Assert;
 
-use LaraStrict\Testing\Assert\AssertExpectationManager;
 use PHPUnit\Framework\TestCase;
 
 class AssertExpectationManagerTest extends TestCase

@@ -11,5 +11,5 @@ interface FinderFactoryContract
     /**
      * @return iterable<SplFileInfo>
      */
-    public function create(): iterable;
+    public function create(string $path): iterable;
 }

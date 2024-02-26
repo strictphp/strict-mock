@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\LaraStrict\Feature\Testing\Commands;
+namespace Tests\LaraStrict\StrictMock\Feature\Testing\Commands;
 
 use Closure;
 use Exception;
@@ -10,17 +10,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Testing\PendingCommand;
 use LogicException;
 use Mockery\MockInterface;
-use Tests\LaraStrict\Feature\TestCase;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\MultiFunctionContract;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\NoMethods;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\TestAction;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\TestActionContract;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\TestReturnAction;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\TestReturnActionContract;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\TestReturnIntersectionAction;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\TestReturnRequiredAction;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\TestReturnUnionAction;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\TestReturnUnionActionContract;
+use PHPUnit\Framework\TestCase;
+
 
 class MakeExpectationCommandTest extends TestCase
 {

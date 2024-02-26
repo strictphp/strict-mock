@@ -1,7 +1,9 @@
 <?php declare(strict_types=1);
 
 use LaraStrict\StrictMock\PHPUnit\Services\TestFrameworkService;
+use LaraStrict\StrictMock\Symfony\Factories\FinderFactory;
 use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
+use LaraStrict\StrictMock\Testing\Actions\FindAllGeneratedAssertClassesAction;
 use LaraStrict\StrictMock\Testing\Actions\WritePhpFileAction;
 use LaraStrict\StrictMock\Testing\Assert\Actions\GenerateAssertClassAction;
 use LaraStrict\StrictMock\Testing\Assert\Actions\GenerateAssertMethodAction;
@@ -67,12 +69,27 @@ require __DIR__ . '/vendor/autoload.php';
     );
 
     $reflectionClassFactory = new ReflectionClassFactory($setup, $filePathToClassAction);
+
+    $finderFactory = new FinderFactory();
+    $findAllClassesAction = new FindAllGeneratedAssertClassesAction(
+        $finderFactory,
+        $filePathToClassAction,
+        $setup,
+    );
 }
 
-foreach ($files as $file) {
-    $results = $generateAssertClass->execute(
-        $reflectionClassFactory->create($file)
-    );
+//foreach ($files as $file) {
+//    $results = $generateAssertClass->execute(
+//        $reflectionClassFactory->create($file)
+//    );
+//
+//    foreach ($results as $source) {
+//        echo sprintf('Class %s as file %s%s', $source->class, $source->pathname, PHP_EOL);
+//    }
+//}
+
+foreach ($findAllClassesAction->execute() as $class) {
+    $results = $generateAssertClass->execute($class);
 
     foreach ($results as $source) {
         echo sprintf('Class %s as file %s%s', $source->class, $source->pathname, PHP_EOL);

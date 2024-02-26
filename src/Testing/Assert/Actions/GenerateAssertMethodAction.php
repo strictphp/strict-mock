@@ -7,7 +7,10 @@ use LaraStrict\StrictMock\Testing\Contracts\TestFrameworkServiceContract;
 use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
 use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
 use LaraStrict\StrictMock\Testing\Enums\PhpType;
+use LaraStrict\StrictMock\Testing\Exceptions\LogicException;
+use LaraStrict\StrictMock\Testing\Helpers\Php;
 use Nette\PhpGenerator\Factory;
+use ReflectionIntersectionType;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionUnionType;
@@ -48,6 +51,8 @@ final class GenerateAssertMethodAction
             $assertMethod->addBody('');
 
             foreach ($parameters as $parameter) {
+                self::addUseIfIsClass($assertFileState, $parameter->getType());
+
                 $hookParameters[] = sprintf('$%s', $parameter->name);
                 $assertMethod->addBody(
                     $this->testFrameworkService->assertEquals(
@@ -74,6 +79,7 @@ final class GenerateAssertMethodAction
 
         $returnType = $method->getReturnType();
 
+        self::addUseIfIsClass($assertFileState, $returnType);
         if ($returnType instanceof ReflectionNamedType) {
             $enumReturnType = PhpType::tryFrom($returnType->getName()) ?? PhpType::Mixed;
         } else if ($returnType instanceof ReflectionUnionType) {
@@ -92,6 +98,28 @@ final class GenerateAssertMethodAction
                 $assertMethod->addBody('');
                 $assertMethod->addBody('return $this;');
                 break;
+        }
+    }
+
+    private static function addUseIfIsClass(AssertFileStateEntity $assertFileState, $type): void
+    {
+        if ($type === null) {
+            return;
+        } elseif ($type instanceof ReflectionIntersectionType) {
+            $types = $type->getTypes();
+        } elseif ($type instanceof ReflectionUnionType) {
+            $types = $type->getTypes();
+        } elseif ($type instanceof ReflectionNamedType) {
+            $types = [$type];
+        } else {
+            throw new LogicException('Missing type %s', $type::class);
+        }
+
+        foreach ($types as $_type) {
+            $class = $_type->getName();
+            if (Php::existClassInterfaceEnum($class)) {
+                $assertFileState->namespace->addUse($class);
+            }
         }
     }
 }

@@ -3,14 +3,14 @@
 namespace LaraStrict\StrictMock\Testing\Actions;
 
 use Generator;
-use LaraStrict\StrictMock\Testing\Contracts\FindAllClassesActionContract;
+use LaraStrict\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionContract;
 use LaraStrict\StrictMock\Testing\Factories\ReflectionClassFactory;
 use ReflectionClass;
 
 final class InputArgumentClassToClassesAction
 {
     public function __construct(
-        private readonly FindAllClassesActionContract $findAllClassesAction,
+        private readonly FindAllGeneratedAssertClassesActionContract $findAllClassesAction,
         private readonly ReflectionClassFactory $reflectionClassFactory,
     ) {
     }

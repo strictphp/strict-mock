@@ -2,17 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tests\LaraStrict\Feature\Testing\Commands;
+namespace Tests\LaraStrict\StrictMock\Feature\Testing\Commands;
 
 use Exception;
 use Illuminate\Testing\PendingCommand;
 use PHPUnit\Framework\ExpectationFailedException;
-use Tests\LaraStrict\Feature\TestCase;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\SimpleActionContract;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\SimpleActionContractAssert;
-use Tests\LaraStrict\Feature\Testing\Commands\MakeExpectationCommand\SimpleActionContractExpectation;
 
-class MakeExpectationCommandRealTest extends TestCase
+
+class MakeExpectationCommandRealTest extends \PHPUnit\Framework\TestCase
 {
     final public const Namespace = 'Tests\\LaraStrict\\Feature\\';
 
