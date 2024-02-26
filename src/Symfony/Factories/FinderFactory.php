@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Factories;
+namespace LaraStrict\StrictMock\Symfony\Factories;
 
 use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
 use LaraStrict\StrictMock\Testing\Contracts\FinderFactoryContract;

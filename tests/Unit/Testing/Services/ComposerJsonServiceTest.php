@@ -7,10 +7,10 @@ namespace Tests\LaraStrict\StrictMock\Unit\Testing\Services;
 use Closure;
 use Exception;
 use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
+use LaraStrict\StrictMock\Testing\Helpers\Json;
 use LaraStrict\StrictMock\Testing\Services\ComposerJsonService;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use Tests\LaraStrict\StrictMock\Feature\Json;
 
 final class ComposerJsonServiceTest extends TestCase
 {

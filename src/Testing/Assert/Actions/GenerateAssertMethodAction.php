@@ -3,6 +3,7 @@
 namespace LaraStrict\StrictMock\Testing\Assert\Actions;
 
 use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
+use LaraStrict\StrictMock\Testing\Contracts\TestFrameworkServiceContract;
 use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
 use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
 use LaraStrict\StrictMock\Testing\Enums\PhpType;
@@ -13,7 +14,13 @@ use ReflectionUnionType;
 
 final class GenerateAssertMethodAction
 {
+    private const ExpectationProperty = '_expectation';
+    private const MessageProperty = '_message';
     private const HookProperty = '_hook';
+
+    public function __construct(private readonly TestFrameworkServiceContract $testFrameworkService)
+    {
+    }
 
     public function execute(
         AssertFileStateEntity $assertFileState,
@@ -26,34 +33,40 @@ final class GenerateAssertMethodAction
         $assertMethod = (new Factory())->fromMethodReflection($method);
         $assertFileState->class->addMember($assertMethod);
 
-        $assertMethod->addBody(sprintf(
-            '$_expectation = $this->getExpectation(%s::class);',
-            $expectationObject->shortClassName,
-        ));
+        $assertMethod->setPublic()
+            ->addBody(sprintf(
+                '$%s = $this->getExpectation(%s::class);',
+                self::ExpectationProperty,
+                $expectationObject->shortClassName,
+            ));
 
         $hookParameters = [];
 
         if ($parameters !== []) {
-            $assertMethod->addBody('$_message = $this->getDebugMessage();');
+            $assertFileState->namespace->addUse($this->testFrameworkService->assertClass());
+            $assertMethod->addBody(sprintf('$%s = $this->getDebugMessage();', self::MessageProperty));
             $assertMethod->addBody('');
 
             foreach ($parameters as $parameter) {
                 $hookParameters[] = sprintf('$%s', $parameter->name);
-                $assertMethod->addBody(sprintf(
-                    'Assert::assertEquals($_expectation->%s, $%s, $_message);',
-                    $parameter->name,
-                    $parameter->name,
-                ));
+                $assertMethod->addBody(
+                    $this->testFrameworkService->assertEquals(
+                        sprintf('$%s->%s', self::ExpectationProperty, $parameter->name),
+                        sprintf('$%s', $parameter->name),
+                        '$' . self::MessageProperty
+                    ) . ';',
+                );
             }
         }
 
-        $hookParameters[] = '$_expectation';
+        $hookParameters[] = '$' . self::ExpectationProperty;
 
         $assertMethod->addBody('');
 
         $assertMethod->addBody(sprintf('if (is_callable($_expectation->%s)) {', self::HookProperty));
         $assertMethod->addBody(sprintf(
-            '    ($_expectation->%s)(%s);',
+            '    ($%s->%s)(%s);',
+            self::ExpectationProperty,
             self::HookProperty,
             implode(', ', $hookParameters),
         ));
@@ -72,7 +85,7 @@ final class GenerateAssertMethodAction
         switch ($enumReturnType) {
             case PhpType::Mixed:
                 $assertMethod->addBody('');
-                $assertMethod->addBody('return $_expectation->return;');
+                $assertMethod->addBody(sprintf('return $%s->return;', self::ExpectationProperty));
                 break;
             case PhpType::Self:
             case PhpType::Static:

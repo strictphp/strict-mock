@@ -7,7 +7,6 @@ namespace Tests\LaraStrict\StrictMock\Feature\Testing\Contracts;
 use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
 use LaraStrict\StrictMock\Testing\Attributes\Expectation;
 use LaraStrict\StrictMock\Testing\Contracts\FindAllClassesActionContract;
-use PHPUnit\Framework\Assert;
 
 #[Expectation(class: FindAllClassesActionContractExecuteExpectation::class)]
 class FindAllClassesActionContractAssert extends AbstractExpectationAllInOne implements FindAllClassesActionContract
@@ -15,7 +14,7 @@ class FindAllClassesActionContractAssert extends AbstractExpectationAllInOne imp
     /**
      * @param array<FindAllClassesActionContractExecuteExpectation|null> $expectations
      */
-    function __construct(array $expectations = [])
+    public function __construct(array $expectations = [])
     {
         parent::__construct();
         $this->setExpectations($expectations);
@@ -24,7 +23,7 @@ class FindAllClassesActionContractAssert extends AbstractExpectationAllInOne imp
     /**
      * @return array<class-string>
      */
-    function execute(): array
+    public function execute(): array
     {
         $_expectation = $this->getExpectation(FindAllClassesActionContractExecuteExpectation::class);
 

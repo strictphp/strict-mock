@@ -10,6 +10,7 @@ use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
 use LaraStrict\StrictMock\Testing\Exceptions\DirectoryDoesNotExistsException;
 use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
 use LaraStrict\StrictMock\Testing\Helpers\Realpath;
+use LaraStrict\StrictMock\Testing\Helpers\Replace;
 
 final class FilePathToClassAction
 {
@@ -30,16 +31,21 @@ final class FilePathToClassAction
         $dirs = $this->prepareSourceDirs($composerDir);
 
         foreach ($dirs as $ns => $dir) {
-            $relative = str_replace($dir, '', $realPath, $count);
-            if ($count === 1) {
-                $preClass = preg_replace(
-                    '/\.php$/i',
-                    '',
-                    str_replace('/', StubConstants::NameSpaceSeparator, $relative),
-                );
-                assert($preClass !== null);
+            $relative = Replace::start($realPath, $dir);
 
-                return $ns . ltrim($preClass, StubConstants::NameSpaceSeparator);
+            if ($relative !== $realPath) {
+                if ($relative === '') {
+                    return $ns;
+                }
+
+                return $ns . ltrim(
+                        strtr(
+                            Replace::end($relative, '.php'),
+                            '/',
+                            StubConstants::NameSpaceSeparator
+                        ),
+                        StubConstants::NameSpaceSeparator
+                    );
             }
         }
 

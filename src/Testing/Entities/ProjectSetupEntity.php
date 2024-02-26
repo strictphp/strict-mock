@@ -7,7 +7,6 @@ final class ProjectSetupEntity
     public function __construct(
         public readonly FileSetupEntity $projectRoot,
         public readonly FileSetupEntity $exportRoot,
-        public readonly bool $oneParameterOneExpectation = true,
     ) {
     }
 }

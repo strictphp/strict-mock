@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use LaraStrict\StrictMock\PHPUnit\Services\TestFrameworkService;
 use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
 use LaraStrict\StrictMock\Testing\Actions\WritePhpFileAction;
 use LaraStrict\StrictMock\Testing\Assert\Actions\GenerateAssertClassAction;
@@ -40,7 +41,7 @@ require __DIR__ . '/vendor/autoload.php';
 
     $projectRoot = new FileSetupEntity($projectDir, $filePathToClassAction->execute($projectDir));
     $exportRoot = new FileSetupEntity($exportDir, $filePathToClassAction->execute($exportDir));
-    $setup = new ProjectSetupEntity($projectRoot, $exportRoot, false);
+    $setup = new ProjectSetupEntity($projectRoot, $exportRoot);
 
     $phpFileFactory = new PhpFileFactory();
     $writePhpFileAction = new WritePhpFileAction();
@@ -54,8 +55,8 @@ require __DIR__ . '/vendor/autoload.php';
 
     $removeAssertFileAction = new RemoveAssertFileAction();
 
-    $generateAssertMethodAction = new GenerateAssertMethodAction();
-    $assertFileStateEntityFactory = new AssertFileStateEntityFactory($assertObjectEntityFactory, $setup);
+    $generateAssertMethodAction = new GenerateAssertMethodAction(new TestFrameworkService());
+    $assertFileStateEntityFactory = new AssertFileStateEntityFactory($assertObjectEntityFactory);
     $generateAssertClass = new GenerateAssertClassAction(
         $removeAssertFileAction,
         $assertFileStateEntityFactory,

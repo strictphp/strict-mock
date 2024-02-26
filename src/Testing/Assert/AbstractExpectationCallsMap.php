@@ -6,6 +6,10 @@ namespace LaraStrict\StrictMock\Testing\Assert;
 
 use LogicException;
 
+/**
+ * @deprecated will be replaced by see
+ * @see AbstractExpectationAllInOne
+ */
 abstract class AbstractExpectationCallsMap
 {
     /**
