@@ -3,8 +3,11 @@
 use LaraStrict\StrictMock\PHPUnit\Services\TestFrameworkService;
 use LaraStrict\StrictMock\Symfony\Factories\FinderFactory;
 use LaraStrict\StrictMock\Testing\Actions\AddUseByTypeAction;
+use LaraStrict\StrictMock\Testing\Actions\ComposerPsr4Action;
 use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
 use LaraStrict\StrictMock\Testing\Actions\FindAllGeneratedAssertClassesAction;
+use LaraStrict\StrictMock\Testing\Actions\MkDirAction;
+use LaraStrict\StrictMock\Testing\Actions\VendorClassToRelativeAction;
 use LaraStrict\StrictMock\Testing\Actions\WritePhpFileAction;
 use LaraStrict\StrictMock\Testing\Assert\Actions\GenerateAssertClassAction;
 use LaraStrict\StrictMock\Testing\Assert\Actions\GenerateAssertMethodAction;
@@ -35,23 +38,27 @@ require __DIR__ . '/vendor/autoload.php';
         'src/Testing/Contracts/FindAllClassesActionContract.php',
         'src/Testing/Contracts/ComposerJsonServiceContract.php',
     ];
-    $projectDir = __DIR__ . '/src';
-    $exportDir = __DIR__ . '/tests/Feature';
+    $composerDir = __DIR__;
+    $projectDir = $composerDir . '/src';
+    $exportDir = $composerDir . '/tests/Feature';
 }
 
 { // DI
     $addUseByType = new AddUseByTypeAction();
     $composerJsonService = new ComposerJsonService();
-    $filePathToClassAction = new FilePathToClassAction($composerJsonService);
+    $composerPsr4Action = new ComposerPsr4Action($composerJsonService);
+    $filePathToClassAction = new FilePathToClassAction($composerPsr4Action);
+    $vendorClassToRelativeAction = new VendorClassToRelativeAction($composerPsr4Action);
 
     $projectRoot = new FileSetupEntity($projectDir, $filePathToClassAction->execute($projectDir));
     $exportRoot = new FileSetupEntity($exportDir, $filePathToClassAction->execute($exportDir));
-    $setup = new ProjectSetupEntity($projectRoot, $exportRoot);
+    $setup = new ProjectSetupEntity($composerDir, $projectRoot, $exportRoot);
 
+    $mkDirAction = new MkDirAction();
     $phpFileFactory = new PhpFileFactory();
-    $writePhpFileAction = new WritePhpFileAction();
+    $writePhpFileAction = new WritePhpFileAction($mkDirAction);
 
-    $reflectionClassToFileSetupEntity = new ReflectionClassToFileSetupEntity($setup);
+    $reflectionClassToFileSetupEntity = new ReflectionClassToFileSetupEntity($setup, $mkDirAction);
     $expectationObjectEntityFactory = new ExpectationObjectEntityFactory($phpFileFactory);
     $assertObjectEntityFactory = new AssertObjectEntityFactory($reflectionClassToFileSetupEntity, $phpFileFactory);
 
@@ -70,7 +77,6 @@ require __DIR__ . '/vendor/autoload.php';
         $writePhpFileAction,
         $generateAssertMethodAction
     );
-
 
     $finderFactory = new FinderFactory();
     $findAllClassesAction = new FindAllGeneratedAssertClassesAction(

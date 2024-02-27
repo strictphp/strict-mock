@@ -42,12 +42,6 @@ final class AssertFileStateEntityFactory
             $classType->setExtends(AbstractExpectationAllInOne::class);
         }
 
-        $assertConstructor = new Method('__construct');
-        $assertConstructor
-            ->setPublic()
-            ->addBody('parent::__construct();');
-        $classType->addMember($assertConstructor);
-
-        return new AssertFileStateEntity($classType, $assertNamespace, $assertConstructor, $assertObject, $oneByOne);
+        return new AssertFileStateEntity($classType, $assertNamespace, $assertObject, $oneByOne);
     }
 }

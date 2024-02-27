@@ -26,7 +26,7 @@ final class ReflectionClassFactory
     public function create(string $classOrPath): ReflectionClass
     {
         if (Php::existClassInterface($classOrPath) === false) {
-            $full = $this->projectSetup->projectRoot->folder . DIRECTORY_SEPARATOR . $classOrPath;
+            $full = $this->projectSetup->composerDir . DIRECTORY_SEPARATOR . $classOrPath;
             if (is_file($full)) {
                 $classOrPath = $full;
             } else if (is_file($classOrPath) === false) {

@@ -5,13 +5,10 @@ namespace LaraStrict\StrictMock\Testing\Assert;
 use LaraStrict\StrictMock\Testing\Exceptions\LogicException;
 use LaraStrict\StrictMock\Testing\Expectation\AbstractExpectation;
 
-/**
- * @template TExpectation of AbstractExpectation
- */
 abstract class AbstractExpectationAllInOne
 {
     /**
-     * @var array<class-string<TExpectation>, TExpectation>
+     * @var array<class-string<AbstractExpectation>, AbstractExpectation>
      */
     private array $_expectationMap = [];
 
@@ -26,11 +23,13 @@ abstract class AbstractExpectationAllInOne
     }
 
     /**
+     * @template TExpectation of AbstractExpectation
+     *
      * @param class-string<TExpectation> $class
      *
      * @return TExpectation
      */
-    final protected function getExpectation(string $class): object
+    final protected function getExpectation(string $class)
     {
         if ($this->_expectationMap === []) {
             throw new LogicException($this->getDebugMessage(null, 'no expectations', 2));
@@ -47,7 +46,7 @@ abstract class AbstractExpectationAllInOne
         return array_shift($this->_expectationMap);
     }
 
-    private function getDebugMessage(?int $callStep = null, string $reason = 'failed', int $debugLevel = 1): string
+    protected function getDebugMessage(?int $callStep = null, string $reason = 'failed', int $debugLevel = 1): string
     {
         $caller = debug_backtrace()[$debugLevel];
 
@@ -61,7 +60,7 @@ abstract class AbstractExpectationAllInOne
     }
 
     /**
-     * @param array<TExpectation|null> $expectations
+     * @param array<AbstractExpectation|null> $expectations
      */
     final protected function setExpectations(array $expectations): void
     {

@@ -17,10 +17,8 @@ class AssertFileStateEntity
     public function __construct(
         public readonly ClassType $class,
         public readonly PhpNamespace $namespace,
-        public readonly Method $constructor,
         public readonly ObjectEntity $object,
         public readonly bool $oneParameterOneExpectation,
-        public array $expectationClasses = [],
     ) {
     }
 }

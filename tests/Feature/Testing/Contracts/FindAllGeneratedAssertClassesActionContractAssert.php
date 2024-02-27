@@ -28,9 +28,7 @@ class FindAllGeneratedAssertClassesActionContractAssert extends AbstractExpectat
     {
         $_expectation = $this->getExpectation(FindAllGeneratedAssertClassesActionContractExecuteExpectation::class);
 
-        if (is_callable($_expectation->_hook)) {
-            ($_expectation->_hook)($_expectation);
-        }
+        $_expectation->_hook !== null && ($_expectation->_hook)($_expectation);
 
         return $_expectation->return;
     }

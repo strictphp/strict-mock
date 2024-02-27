@@ -22,6 +22,6 @@ final class ObjectEntity
         /** @var class-string $class */
         $class = $this->exportSetup->namespace . StubConstants::NameSpaceSeparator . $this->shortClassName;
         $this->class = $class;
-        $this->pathname = $this->exportSetup->folder . DIRECTORY_SEPARATOR . $this->shortClassName . '.php';
+        $this->pathname = $this->exportSetup->dir . DIRECTORY_SEPARATOR . $this->shortClassName . '.php';
     }
 }

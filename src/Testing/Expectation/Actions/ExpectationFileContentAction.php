@@ -12,7 +12,9 @@ use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
 use LaraStrict\StrictMock\Testing\Enums\PhpType;
 use LaraStrict\StrictMock\Testing\Expectation\AbstractExpectation;
 use LaraStrict\StrictMock\Testing\Expectation\Factories\ExpectationObjectEntityFactory;
+use LaraStrict\StrictMock\Testing\Helpers\Php;
 use Nette\PhpGenerator\Literal;
+use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\PromotedParameter;
 use ReflectionClass;
 use ReflectionIntersectionType;
@@ -42,17 +44,18 @@ final class ExpectationFileContentAction
         ReflectionMethod $method,
         PhpDocEntity $phpDoc,
     ): ObjectEntity {
-        $expectationObject = $this->expectationObjectEntityFactory->create($assertFileState->object, $class, $method);
+        $expectationObject = $this->expectationObjectEntityFactory->create($assertFileState, $class, $method);
         $parameters = $method->getParameters();
 
         $namespace = $expectationObject->content->addNamespace($expectationObject->exportSetup->namespace)
             ->addUse(Closure::class)
             ->addUse(AbstractExpectation::class);
-        $class = $namespace->addClass($expectationObject->shortClassName)
+
+        $expectationClass = $namespace->addClass($expectationObject->shortClassName)
+            ->setFinal()
             ->setExtends(AbstractExpectation::class);
 
-        $constructor = $class
-            ->setFinal()
+        $constructor = $expectationClass
             ->addMethod('__construct');
 
         $returnType = $method->getReturnType();
@@ -64,17 +67,17 @@ final class ExpectationFileContentAction
                 ->setReadOnly();
 
             $this->addUseByTypeAction->execute($namespace, $returnType);
-            $this->setParameterType($returnType, $constructorParameter);
+            $this->setParameterType($returnType, $constructorParameter, $namespace);
         }
 
         $parameterTypes = [];
         foreach ($parameters as $parameter) {
             $constructorParameter = $constructor
-                ->addPromotedParameter($parameter->name)
+                ->addPromotedParameter($parameter->getName())
                 ->setReadOnly();
             $this->addUseByTypeAction->execute($namespace, $parameter->getType());
-            $parameterTypes[] = $this->setParameterType($parameter->getType(), $constructorParameter);
-            $this->setParameterDefaultValue($parameter, $constructorParameter);
+            $parameterTypes[] = $this->setParameterType($parameter->getType(), $constructorParameter, $namespace);
+            $this->setParameterDefaultValue($class, $parameter, $constructorParameter, $namespace);
         }
         $parameterTypes[] = 'self';
 
@@ -104,11 +107,13 @@ final class ExpectationFileContentAction
     private function setParameterType(
         ReflectionType|ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $type,
         PromotedParameter $constructorParameter,
+        PhpNamespace $namespace,
     ): string {
+        $proposedTypeShort = null;
         $proposedType = '';
 
         $allowNull = false;
-        $mapToName = static function (ReflectionType $type) use (&$allowNull): ?string {
+        $mapToName = function (ReflectionType $type) use (&$allowNull, $namespace): ?string {
             if ($type instanceof ReflectionNamedType) {
                 $name = $type->getName();
                 if ($name === 'null') {
@@ -117,7 +122,9 @@ final class ExpectationFileContentAction
 
                 // Fix global namespace
                 if (class_exists($name)) {
-                    return '\\' . $name;
+                    $reflection = new ReflectionClass($name);
+                    $this->addUseByTypeAction->execute($namespace, $reflection);
+                    $name = $reflection->getShortName();
                 }
 
                 return $name;
@@ -131,16 +138,19 @@ final class ExpectationFileContentAction
             $allowNull = $type->allowsNull();
             $proposedType = $type->getName();
 
-            if (class_exists($proposedType)) {
+            if (Php::existClassInterfaceEnum($proposedType)) {
                 // Fix global namespace
-                $proposedType = '\\' . $proposedType;
+                $reflection = new ReflectionClass($proposedType);
+                $this->addUseByTypeAction->execute($namespace, $reflection);
+                $proposedType = $reflection->getName();
+                $proposedTypeShort = $reflection->getShortName();
             }
 
             $constructorParameter->setNullable($type->allowsNull());
-        } else if ($type instanceof ReflectionUnionType) {
+        } elseif ($type instanceof ReflectionUnionType) {
             $allowNull = $type->allowsNull();
             $proposedType = implode('|', array_filter(array_map($mapToName, $type->getTypes())));
-        } else if ($type instanceof ReflectionIntersectionType) {
+        } elseif ($type instanceof ReflectionIntersectionType) {
             $allowNull = $type->allowsNull();
             $proposedType = implode('&', array_filter(array_map($mapToName, $type->getTypes())));
         }
@@ -149,23 +159,28 @@ final class ExpectationFileContentAction
             $proposedType = 'mixed';
         }
 
-        if ($allowNull) {
-            $constructorParameter->setNullable($allowNull);
-        }
-
         // Callable not supported in property
         if ($proposedType === 'callable') {
-            $proposedType = '\Closure';
+            $proposedType = Closure::class;
         }
 
+        $suffix = '';
+        if ($allowNull) {
+            $constructorParameter->setNullable($allowNull);
+            if ($proposedType !== '') {
+                $suffix = '|null';
+            }
+        }
         $constructorParameter->setType($proposedType);
 
-        return $proposedType;
+        return ($proposedTypeShort ?? $proposedType) . $suffix;
     }
 
     private function setParameterDefaultValue(
+        ReflectionClass $class,
         ReflectionParameter $parameter,
         PromotedParameter $constructorParameter,
+        PhpNamespace $namespace,
     ): void {
         if ($parameter->isDefaultValueAvailable() === false) {
             return;
@@ -174,7 +189,8 @@ final class ExpectationFileContentAction
         if ($parameter->isDefaultValueConstant()) {
             $constant = $parameter->getDefaultValueConstantName();
             // Ensure that constants are from global scope
-            $constantLiteral = new Literal(StubConstants::NameSpaceSeparator . $constant);
+            $this->addUseByTypeAction->execute($namespace, $class);
+            $constantLiteral = new Literal(str_replace(['parent', 'self', 'static'], $class->getShortName(), $constant));
             $constructorParameter->setDefaultValue($constantLiteral);
 
             return;

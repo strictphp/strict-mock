@@ -31,9 +31,7 @@ class ComposerJsonServiceContractAssert extends AbstractExpectationCallsMap impl
 
         Assert::assertEquals($_expectation->path, $path, $_message);
 
-        if (is_callable($_expectation->_hook)) {
-            ($_expectation->_hook)($path, $_expectation);
-        }
+        $_expectation->_hook !== null && ($_expectation->_hook)($path, $_expectation);
 
         return $_expectation->return;
     }
@@ -45,9 +43,7 @@ class ComposerJsonServiceContractAssert extends AbstractExpectationCallsMap impl
 
         Assert::assertEquals($_expectation->basePath, $basePath, $_message);
 
-        if (is_callable($_expectation->_hook)) {
-            ($_expectation->_hook)($basePath, $_expectation);
-        }
+        $_expectation->_hook !== null && ($_expectation->_hook)($basePath, $_expectation);
 
         return $_expectation->return;
     }

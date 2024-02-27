@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace LaraStrict\StrictMock\Laravel\Commands;
 
 use Illuminate\Console\Command;
+use LaraStrict\StrictMock\Testing\Actions\FindAllGeneratedAssertClassesAction;
 use LaraStrict\StrictMock\Testing\Actions\InputArgumentClassToClassesAction;
 use LaraStrict\StrictMock\Testing\Assert\Actions\GenerateAssertClassAction;
+use LaraStrict\StrictMock\Testing\Exceptions\IgnoreAssertException;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'make:expectation', description: 'Make expectation class for given class')]
@@ -21,12 +23,24 @@ class MakeExpectationCommand extends Command
     public function handle(
         GenerateAssertClassAction $generateAssertClassAction,
         InputArgumentClassToClassesAction $inputArgumentClassToClassesAction,
-    ): int
-    {
-        foreach ($inputArgumentClassToClassesAction->execute($this->input->getArgument('class')) as $classReflecton) {
-            $done = $generateAssertClassAction->execute($classReflecton);
-            foreach ($done as $class => $file) {
-                $this->writeFile($class, $file);
+        FindAllGeneratedAssertClassesAction $findAllGeneratedAssertClassesAction,
+    ): int {
+        $class = $this->input->getArgument('class');
+
+        if ($class === 'all') {
+            $classes = $findAllGeneratedAssertClassesAction->execute();
+        } else {
+            $classes = $inputArgumentClassToClassesAction->execute($class);
+        }
+
+        foreach ($classes as $classReflection) {
+            try {
+                $done = $generateAssertClassAction->execute($classReflection);
+                foreach ($done as $file) {
+                    $this->writeFile($file->class, $file->pathname);
+                }
+            } catch (IgnoreAssertException $e) {
+                $this->info(sprintf('Class is ignored "%s".', $e->getMessage()));
             }
         }
 
@@ -37,8 +51,7 @@ class MakeExpectationCommand extends Command
     protected function writeFile(
         string $className,
         string $fileName,
-    ): void
-    {
+    ): void {
         $successMessage = 'File generated [' . $className . ']';
         if (property_exists($this, 'components')) {
             $this->components->info($successMessage);

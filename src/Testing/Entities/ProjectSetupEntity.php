@@ -5,8 +5,9 @@ namespace LaraStrict\StrictMock\Testing\Entities;
 final class ProjectSetupEntity
 {
     public function __construct(
-        public readonly FileSetupEntity $projectRoot,
-        public readonly FileSetupEntity $exportRoot,
+        public readonly string $composerDir,
+        public readonly FileSetupEntity $project,
+        public readonly FileSetupEntity $export,
     ) {
     }
 }

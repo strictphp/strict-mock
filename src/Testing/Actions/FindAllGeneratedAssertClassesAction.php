@@ -25,8 +25,14 @@ final class FindAllGeneratedAssertClassesAction implements FindAllGeneratedAsser
      */
     public function execute(): Generator
     {
-        foreach ($this->finderFactory->create($this->projectSetupEntity->exportRoot->folder) as $file) {
+        foreach ($this->finderFactory->create($this->projectSetupEntity->export->dir) as $file) {
+            if ($file->isFile() === false) {
+                continue;
+            }
             $class = $this->filePathToClassAction->execute($file->getRealPath());
+            if ($class === null) {
+                continue;
+            }
 
             $classReflection = new ReflectionClass($class);
             $parentClass = $classReflection->getParentClass();
@@ -35,8 +41,8 @@ final class FindAllGeneratedAssertClassesAction implements FindAllGeneratedAsser
             }
 
             $interfaces = $classReflection->getInterfaces();
-            if (count($interfaces) !== 1) {
-                throw new LogicException('Too many or too few implementations...');
+            if (count($interfaces) === 0) {
+                throw new LogicException('Too few implementations for class "%s"', $class);
             }
 
             yield reset($interfaces);

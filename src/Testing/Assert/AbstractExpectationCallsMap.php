@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Assert;
 
+use LaraStrict\StrictMock\Testing\Expectation\AbstractExpectation;
 use LogicException;
 
 /**
@@ -13,12 +14,12 @@ use LogicException;
 abstract class AbstractExpectationCallsMap
 {
     /**
-     * @var array<class-string<object>, array<object>>
+     * @var array<class-string<AbstractExpectation>, array<AbstractExpectation>>
      */
     private array $_expectationMap = [];
 
     /**
-     * @var array<class-string<object>, int>
+     * @var array<class-string<AbstractExpectation>, int>
      */
     private array $_callStep = [];
 
@@ -63,10 +64,8 @@ abstract class AbstractExpectationCallsMap
     }
 
     /**
-     * @template TExpectation
-     *
-     * @param class-string<TExpectation> $class
-     * @param array<TExpectation|null>   $expectations
+     * @param class-string<AbstractExpectation> $class
+     * @param array<AbstractExpectation|null>   $expectations
      */
     public function setExpectations(string $class, array $expectations): self
     {
@@ -77,13 +76,13 @@ abstract class AbstractExpectationCallsMap
     }
 
     /**
-     * @template TExpectation of object
+     * @template TExpectation of AbstractExpectation
      *
      * @param class-string<TExpectation> $class
      *
      * @return TExpectation
      */
-    protected function getExpectation(string $class): object
+    protected function getExpectation(string $class)
     {
         $map = $this->_expectationMap[$class] ?? [];
         $callStep = $this->_callStep[$class] ?? 0;
@@ -94,11 +93,9 @@ abstract class AbstractExpectationCallsMap
             throw new LogicException($this->getDebugMessage($this->_currentDebugStep, 'not set', 2));
         }
 
-        /** @var TExpectation $expectation */
-        $expectation = $map[$callStep];
         $this->_callStep[$class] = $this->_currentDebugStep;
 
-        return $expectation;
+        return $map[$callStep];
     }
 
     protected function getDebugMessage(int $callStep = null, string $reason = 'failed', int $debugLevel = 1): string

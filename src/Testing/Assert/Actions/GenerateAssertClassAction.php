@@ -30,6 +30,13 @@ final class GenerateAssertClassAction
     ) {
     }
 
+    private static function buildAssertConstructor(): Method
+    {
+        return (new Method('__construct'))
+            ->setPublic()
+            ->addBody('parent::__construct();');
+    }
+
     /**
      * @param ReflectionClass<object> $class
      *
@@ -50,6 +57,10 @@ final class GenerateAssertClassAction
             $this->removeAssertFileAction->execute($reflectionAssert);
         }
 
+        $assertConstructor = self::buildAssertConstructor();
+        $assertFileState->class->addMember($assertConstructor);
+
+        $expectationClasses = [];
         $generatedFiles = [$assertFileState->object];
         foreach (self::makeMethods($class) as $method) {
             $phpDoc = $this->parsePhpDocAction->create($method);
@@ -68,13 +79,23 @@ final class GenerateAssertClassAction
                 phpDoc: $phpDoc,
             );
 
-            $assertFileState->expectationClasses[$method->getName()] = $expectation->shortClassName;
+            $expectationClasses[$method->getName()] = $expectation->shortClassName;
         }
-        $this->addAttributes($assertFileState);
+        $this->buildConstructorParameter($assertFileState, $expectationClasses, $assertConstructor);
 
         $this->writePhpFileAction->execute($assertFileState->object);
 
         return $generatedFiles;
+    }
+
+    /**
+     * @throws IgnoreAssertException
+     */
+    private static function checkIgnoreAttribute(ReflectionClass $class): void
+    {
+        if ($class->getAttributes(IgnoreGenerateAssert::class) !== []) {
+            throw new IgnoreAssertException($class->getName());
+        }
     }
 
     /**
@@ -95,17 +116,20 @@ final class GenerateAssertClassAction
         return $methods;
     }
 
-    private function addAttributes(AssertFileStateEntity $assertFileState): void
+    /**
+     * @param array<string, string> $expectationClasses
+     */
+    private function buildConstructorParameter(AssertFileStateEntity $assertFileState, array $expectationClasses, Method $assertConstructor): void
     {
-        if ($assertFileState->expectationClasses === []) {
+        if ($expectationClasses === []) {
             return;
         }
 
         $assertFileState->namespace->addUse(Expectation::class);
 
-        foreach ($assertFileState->expectationClasses as $methodName => $expectationClass) {
+        foreach ($expectationClasses as $methodName => $expectationClass) {
             if ($assertFileState->oneParameterOneExpectation) {
-                $this->addConstructorParameter($assertFileState->constructor, $expectationClass, $methodName);
+                $this->addConstructorParameter($assertConstructor, $expectationClass, $methodName);
             }
 
             $assertFileState->class->addAttribute(Expectation::class, [
@@ -114,7 +138,7 @@ final class GenerateAssertClassAction
         }
 
         if ($assertFileState->oneParameterOneExpectation === false) {
-            $this->addConstructorParameter($assertFileState->constructor, implode('|', $assertFileState->expectationClasses));
+            $this->addConstructorParameter($assertConstructor, implode('|', $expectationClasses));
         }
     }
 
@@ -139,16 +163,6 @@ final class GenerateAssertClassAction
             ->addParameter($parameter)
             ->setType('array')
             ->setDefaultValue(new Literal('[]'));
-    }
-
-    /**
-     * @throws IgnoreAssertException
-     */
-    private static function checkIgnoreAttribute(ReflectionClass $class): void
-    {
-        if ($class->getAttributes(IgnoreGenerateAssert::class) !== []) {
-            throw new IgnoreAssertException($class->getName());
-        }
     }
 
 }

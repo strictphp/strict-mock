@@ -4,25 +4,49 @@ declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Laravel;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use LaraStrict\StrictMock\Laravel\Commands\MakeExpectationCommand;
-use LaraStrict\StrictMock\Testing\Actions\GetBasePathForStubsAction;
-use LaraStrict\StrictMock\Testing\Actions\GetNamespaceForStubsAction;
-use LaraStrict\StrictMock\Testing\Contracts\GetBasePathForStubsActionContract;
-use LaraStrict\StrictMock\Testing\Contracts\GetNamespaceForStubsActionContract;
+use LaraStrict\StrictMock\PHPUnit\Services\TestFrameworkService;
+use LaraStrict\StrictMock\Symfony\Factories\FinderFactory;
+use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
+use LaraStrict\StrictMock\Testing\Actions\FindAllGeneratedAssertClassesAction;
+use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
+use LaraStrict\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionContract;
+use LaraStrict\StrictMock\Testing\Contracts\FinderFactoryContract;
+use LaraStrict\StrictMock\Testing\Contracts\TestFrameworkServiceContract;
+use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
+use LaraStrict\StrictMock\Testing\Entities\ProjectSetupEntity;
+use LaraStrict\StrictMock\Testing\Helpers\Realpath;
+use LaraStrict\StrictMock\Testing\Services\ComposerJsonService;
 
 final class StrictMockServiceProvider extends ServiceProvider
 {
     public array $singletons = [
-        GetBasePathForStubsActionContract::class => GetBasePathForStubsAction::class,
-        GetNamespaceForStubsActionContract::class => GetNamespaceForStubsAction::class,
+        ComposerJsonServiceContract::class => ComposerJsonService::class,
+        FindAllGeneratedAssertClassesActionContract::class => FindAllGeneratedAssertClassesAction::class,
+        FinderFactoryContract::class => FinderFactory::class,
+        TestFrameworkServiceContract::class => TestFrameworkService::class,
     ];
 
 
-    // TODO register command
     public function register(): void
     {
         parent::register();
+
+        $this->app->singleton(ProjectSetupEntity::class, function (Application $app) {
+            $fileToClassAction = $app->make(FilePathToClassAction::class);
+            assert($fileToClassAction instanceof FilePathToClassAction);
+
+            $composerDir = Realpath::make(__DIR__ . '/../..');
+            $projectDir = $composerDir . '/app';
+            $project = new FileSetupEntity($projectDir, $fileToClassAction->execute($projectDir));
+
+            $exportDir = $composerDir . '/tests';
+            $export = new FileSetupEntity($exportDir, $fileToClassAction->execute($exportDir));
+
+            return new ProjectSetupEntity($composerDir, $project, $export);
+        });
 
         if ($this->app->environment(['testing', 'local'])) {
             $this->commands([MakeExpectationCommand::class]);

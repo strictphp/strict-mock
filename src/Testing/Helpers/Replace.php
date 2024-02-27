@@ -9,11 +9,6 @@ final class Replace
         return self::strictReplace($subject, $search, $replace, '^%s');
     }
 
-    public static function end(string $subject, string $search, string $replace = ''): string
-    {
-        return self::strictReplace($subject, $search, $replace, '%s$');
-    }
-
     private static function strictReplace(string $subject, string $search, string $replace, string $pattern): string
     {
         $result = preg_replace(
@@ -27,5 +22,10 @@ final class Replace
         }
 
         return $result;
+    }
+
+    public static function end(string $subject, string $search, string $replace = ''): string
+    {
+        return self::strictReplace($subject, $search, $replace, '%s$');
     }
 }

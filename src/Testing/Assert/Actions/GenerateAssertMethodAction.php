@@ -34,6 +34,12 @@ final class GenerateAssertMethodAction
         $parameters = $method->getParameters();
 
         $assertMethod = (new Factory())->fromMethodReflection($method);
+
+        // fix nullable
+        foreach ($parameters as $parameter) {
+            $assertMethod->getParameter($parameter->getName())->setNullable($parameter->allowsNull());
+        }
+
         $assertFileState->class->addMember($assertMethod);
 
         $assertMethod->setPublic()
@@ -53,12 +59,12 @@ final class GenerateAssertMethodAction
             foreach ($parameters as $parameter) {
                 $this->addUseByTypeAction->execute($assertFileState->namespace, $parameter->getType());
 
-                $hookParameters[] = sprintf('$%s', $parameter->name);
+                $hookParameters[] = sprintf('$%s', $parameter->getName());
                 $assertMethod->addBody(
                     $this->testFrameworkService->assertEquals(
                         sprintf('$%s->%s', self::ExpectationProperty, $parameter->name),
                         sprintf('$%s', $parameter->name),
-                        '$' . self::MessageProperty
+                        '$' . self::MessageProperty,
                     ) . ';',
                 );
             }
@@ -68,21 +74,19 @@ final class GenerateAssertMethodAction
 
         $assertMethod->addBody('');
 
-        $assertMethod->addBody(sprintf('if (is_callable($_expectation->%s)) {', self::HookProperty));
-        $assertMethod->addBody(sprintf(
-            '    ($%s->%s)(%s);',
+        $assertMethod->addBody(sprintf('$_expectation->%s !== null && ($%s->%s)(%s);',
+            self::HookProperty,
             self::ExpectationProperty,
             self::HookProperty,
             implode(', ', $hookParameters),
         ));
-        $assertMethod->addBody('}');
 
         $returnType = $method->getReturnType();
 
         $this->addUseByTypeAction->execute($assertFileState->namespace, $returnType);
         if ($returnType instanceof ReflectionNamedType) {
             $enumReturnType = PhpType::tryFrom($returnType->getName()) ?? PhpType::Mixed;
-        } else if ($returnType instanceof ReflectionUnionType) {
+        } elseif ($returnType instanceof ReflectionUnionType) {
             $enumReturnType = PhpType::Mixed;
         } else {
             $enumReturnType = $phpDoc->returnType;

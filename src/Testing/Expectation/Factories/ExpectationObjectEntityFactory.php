@@ -2,6 +2,7 @@
 
 namespace LaraStrict\StrictMock\Testing\Expectation\Factories;
 
+use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
 use LaraStrict\StrictMock\Testing\Factories\PhpFileFactory;
 use ReflectionClass;
@@ -17,12 +18,14 @@ final class ExpectationObjectEntityFactory
     /**
      * @param ReflectionClass<object> $class
      */
-    public function create(ObjectEntity $assertObject, ReflectionClass $class, ReflectionMethod $method): ObjectEntity
+    public function create(AssertFileStateEntity $assertFileState, ReflectionClass $class, ReflectionMethod $method): ObjectEntity
     {
-        $className = $class->getShortName() . ucfirst($method->getName()) . 'Expectation';
+        $methodName = ($assertFileState->oneParameterOneExpectation && count($class->getMethods(ReflectionMethod::IS_PUBLIC)) === 1) ? '' : ucfirst($method->getName());
+
+        $className = $class->getShortName() . $methodName . 'Expectation';
 
         return new ObjectEntity(
-            $assertObject->exportSetup,
+            $assertFileState->object->exportSetup,
             $className,
             $this->phpFileFactory->create(),
         );
