@@ -1,14 +1,19 @@
 {
-    "name": "larastrict/strict-mock",
+    "name": "strictphp/strict-mock",
     "type": "project",
     "description": "Strict mock is a strict type safe mock generated from your interfaces to use with any testing framework.",
     "keywords": ["laravel", "php", "strictphp", "strict", "mockery"],
     "license": "MIT",
-    "homepage": "https://github.com/larastrict/strict-mock",
+    "homepage": "https://github.com/strictphp/strict-mock",
     "authors": [
         {
             "name": "Martin Kluska",
             "email": "martin@kluska.cz"
+        },
+        {
+          "name": "Milan Matějček",
+          "email": "milan.matejcek@gmail.com",
+          "role": "Developer"
         }
     ],
     "require": {
