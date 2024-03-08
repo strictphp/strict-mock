@@ -4,6 +4,7 @@ namespace LaraStrict\StrictMock\Testing\Actions;
 
 use Generator;
 use LaraStrict\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionContract;
+use LaraStrict\StrictMock\Testing\Entities\ProjectSetupEntity;
 use LaraStrict\StrictMock\Testing\Factories\ReflectionClassFactory;
 use ReflectionClass;
 
@@ -12,6 +13,7 @@ final class InputArgumentClassToClassesAction
     public function __construct(
         private readonly FindAllGeneratedAssertClassesActionContract $findAllClassesAction,
         private readonly ReflectionClassFactory $reflectionClassFactory,
+        private readonly ProjectSetupEntity $projectSetupEntity,
     ) {
     }
 
@@ -24,14 +26,19 @@ final class InputArgumentClassToClassesAction
     {
         if ($inputs === 'all') {
             $classes = $this->findAllClassesAction->execute();
-        } else if (is_string($inputs)) {
-            $classes = [$inputs];
+        } elseif (is_string($inputs)) {
+            $dir = $this->projectSetupEntity->composerDir . DIRECTORY_SEPARATOR . ltrim($inputs, DIRECTORY_SEPARATOR);
+            if (is_dir($dir)) {
+                $classes = $this->findAllClassesAction->execute($dir);
+            } else {
+                $classes = [$inputs];
+            }
         } else {
             $classes = $inputs;
         }
 
         foreach ($classes as $class) {
-            yield $this->reflectionClassFactory->create($class);
+            yield $class instanceof ReflectionClass ? $class : $this->reflectionClassFactory->create($class);
         }
     }
 

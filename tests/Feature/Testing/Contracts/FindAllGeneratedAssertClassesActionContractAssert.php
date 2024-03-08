@@ -24,7 +24,7 @@ class FindAllGeneratedAssertClassesActionContractAssert extends AbstractExpectat
     /**
      * @return Generator<class-string>
      */
-    public function execute(): Generator
+    public function execute(?string $dir = null): Generator
     {
         $_expectation = $this->getExpectation(FindAllGeneratedAssertClassesActionContractExecuteExpectation::class);
 

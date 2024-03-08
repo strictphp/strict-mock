@@ -23,7 +23,7 @@ abstract class AbstractExpectationAllInOne
     }
 
     /**
-     * @template TExpectation of AbstractExpectation
+     * @template TExpectation
      *
      * @param class-string<TExpectation> $class
      *

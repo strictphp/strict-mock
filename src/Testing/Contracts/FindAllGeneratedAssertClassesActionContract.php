@@ -9,5 +9,5 @@ interface FindAllGeneratedAssertClassesActionContract
     /**
      * @return Generator<class-string>
      */
-    public function execute(): Generator;
+    public function execute(?string $dir = null): Generator;
 }

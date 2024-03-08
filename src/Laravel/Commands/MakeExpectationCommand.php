@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace LaraStrict\StrictMock\Laravel\Commands;
 
 use Illuminate\Console\Command;
-use LaraStrict\StrictMock\Testing\Actions\FindAllGeneratedAssertClassesAction;
 use LaraStrict\StrictMock\Testing\Actions\InputArgumentClassToClassesAction;
 use LaraStrict\StrictMock\Testing\Assert\Actions\GenerateAssertClassAction;
 use LaraStrict\StrictMock\Testing\Exceptions\IgnoreAssertException;
@@ -23,15 +22,10 @@ class MakeExpectationCommand extends Command
     public function handle(
         GenerateAssertClassAction $generateAssertClassAction,
         InputArgumentClassToClassesAction $inputArgumentClassToClassesAction,
-        FindAllGeneratedAssertClassesAction $findAllGeneratedAssertClassesAction,
     ): int {
         $class = $this->input->getArgument('class');
 
-        if ($class === 'all') {
-            $classes = $findAllGeneratedAssertClassesAction->execute();
-        } else {
-            $classes = $inputArgumentClassToClassesAction->execute($class);
-        }
+        $classes = $inputArgumentClassToClassesAction->execute($class);
 
         foreach ($classes as $classReflection) {
             try {

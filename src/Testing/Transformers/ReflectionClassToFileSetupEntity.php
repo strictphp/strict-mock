@@ -3,6 +3,7 @@
 namespace LaraStrict\StrictMock\Testing\Transformers;
 
 use LaraStrict\StrictMock\Testing\Actions\MkDirAction;
+use LaraStrict\StrictMock\Testing\Actions\VendorClassToRelativeAction;
 use LaraStrict\StrictMock\Testing\Constants\StubConstants;
 use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
 use LaraStrict\StrictMock\Testing\Entities\ProjectSetupEntity;

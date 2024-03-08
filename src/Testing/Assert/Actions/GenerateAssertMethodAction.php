@@ -34,6 +34,7 @@ final class GenerateAssertMethodAction
         $parameters = $method->getParameters();
 
         $assertMethod = (new Factory())->fromMethodReflection($method);
+        $assertMethod->setComment(null);
 
         // fix nullable
         foreach ($parameters as $parameter) {

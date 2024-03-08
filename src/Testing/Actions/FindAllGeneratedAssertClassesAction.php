@@ -23,9 +23,9 @@ final class FindAllGeneratedAssertClassesAction implements FindAllGeneratedAsser
     /**
      * @return Generator<ReflectionClass>
      */
-    public function execute(): Generator
+    public function execute(?string $dir = null): Generator
     {
-        foreach ($this->finderFactory->create($this->projectSetupEntity->export->dir) as $file) {
+        foreach ($this->finderFactory->create($dir ?? $this->projectSetupEntity->export->dir) as $file) {
             if ($file->isFile() === false) {
                 continue;
             }

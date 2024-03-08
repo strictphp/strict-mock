@@ -76,7 +76,7 @@ abstract class AbstractExpectationCallsMap
     }
 
     /**
-     * @template TExpectation of AbstractExpectation
+     * @template TExpectation
      *
      * @param class-string<TExpectation> $class
      *
