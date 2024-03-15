@@ -1,16 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Actions;
+namespace LaraStrict\StrictMock\Testing\Services;
 
+use Generator;
 use LaraStrict\StrictMock\Testing\Constants\ComposerConstants;
 use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
 use LaraStrict\StrictMock\Testing\Exceptions\DirectoryDoesNotExistsException;
 use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
 
-final class ComposerPsr4Action
+final class ComposerPsr4Service
 {
     /**
-     * @var array<string, array<string, string>>
+     * @var array<string, array<string, array<string, string>>>
      */
     private array $dirs = [];
 
@@ -25,7 +26,51 @@ final class ComposerPsr4Action
      * @return array<string, string>
      * @throws FileDoesNotExistsException
      */
-    public function execute(string $realPath): array
+    public function autoload(string $realPath): array
+    {
+        return $this->dependencies($realPath)[ComposerConstants::AutoLoad] ?? [];
+    }
+
+    /**
+     * @param string $realPath
+     *
+     * @return array<string, string>
+     * @throws FileDoesNotExistsException
+     */
+    public function autoloadDev(string $realPath): array
+    {
+        return $this->dependencies($realPath)[ComposerConstants::AutoLoadDev] ?? [];
+    }
+
+    /**
+     * @param string $realPath
+     *
+     * @return Generator<string, string>
+     * @throws FileDoesNotExistsException
+     */
+    public function tryAll(string $realPath): Generator
+    {
+        $map = $this->dependencies($realPath);
+        if (isset($map[ComposerConstants::AutoLoad])) {
+            foreach ($map[ComposerConstants::AutoLoad] as $ns => $path) {
+                yield $ns => $path;
+            }
+        }
+
+        if (isset($map[ComposerConstants::AutoLoadDev])) {
+            foreach ($map[ComposerConstants::AutoLoadDev] as $ns => $path) {
+                yield $ns => $path;
+            }
+        }
+    }
+
+    /**
+     * @param string $realPath
+     *
+     * @return array<string, array<string, string>>
+     * @throws FileDoesNotExistsException
+     */
+    private function dependencies(string $realPath): array
     {
         $composerDir = $this->findComposer($realPath);
 
@@ -50,7 +95,7 @@ final class ComposerPsr4Action
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, array<string, string>>
      */
     private function prepareSourceDirs(string $basePath): array
     {
@@ -67,16 +112,16 @@ final class ComposerPsr4Action
             }
 
             foreach ($data[$section][ComposerConstants::Psr4] as $ns => $path) {
-                $dirs[$ns] = $basePath . DIRECTORY_SEPARATOR . trim((string) $path, '\\/');
+                $dirs[$section][$ns] = $basePath . DIRECTORY_SEPARATOR . trim((string) $path, '\\/');
             }
+
+            uasort($dirs[$section], static fn (string $a, string $b) => strlen($b) <=> strlen($a));
+            reset($dirs[$section]);
         }
 
         if ($dirs === []) {
             throw new DirectoryDoesNotExistsException($basePath . ', not found in composer by psr-4.');
         }
-
-        uasort($dirs, static fn (string $a, string $b) => strlen($b) <=> strlen($a));
-        reset($dirs);
 
         return $this->dirs[$basePath] = $dirs;
     }

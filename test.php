@@ -3,7 +3,6 @@
 use LaraStrict\StrictMock\PHPUnit\Services\TestFrameworkService;
 use LaraStrict\StrictMock\Symfony\Factories\FinderFactory;
 use LaraStrict\StrictMock\Testing\Actions\AddUseByTypeAction;
-use LaraStrict\StrictMock\Testing\Actions\ComposerPsr4Action;
 use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
 use LaraStrict\StrictMock\Testing\Actions\FindAllGeneratedAssertClassesAction;
 use LaraStrict\StrictMock\Testing\Actions\MkDirAction;
@@ -14,17 +13,16 @@ use LaraStrict\StrictMock\Testing\Assert\Actions\GenerateAssertMethodAction;
 use LaraStrict\StrictMock\Testing\Assert\Actions\RemoveAssertFileAction;
 use LaraStrict\StrictMock\Testing\Assert\Factories\AssertFileStateEntityFactory;
 use LaraStrict\StrictMock\Testing\Assert\Factories\AssertObjectEntityFactory;
-use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
-use LaraStrict\StrictMock\Testing\Entities\ProjectSetupEntity;
 use LaraStrict\StrictMock\Testing\Exceptions\IgnoreAssertException;
 use LaraStrict\StrictMock\Testing\Expectation\Actions\ExpectationFileContentAction;
 use LaraStrict\StrictMock\Testing\Expectation\Factories\ExpectationObjectEntityFactory;
 use LaraStrict\StrictMock\Testing\Factories\PhpDocEntityFactory;
 use LaraStrict\StrictMock\Testing\Factories\PhpFileFactory;
+use LaraStrict\StrictMock\Testing\Factories\ProjectSetupEntityFactory;
 use LaraStrict\StrictMock\Testing\Factories\ReflectionClassFactory;
 use LaraStrict\StrictMock\Testing\Services\ComposerJsonService;
+use LaraStrict\StrictMock\Testing\Services\ComposerPsr4Service;
 use LaraStrict\StrictMock\Testing\Transformers\ReflectionClassToFileSetupEntity;
-use PHPStan\PhpDoc\PhpDocStringResolver;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
@@ -39,30 +37,27 @@ require __DIR__ . '/vendor/autoload.php';
         'src/Testing/Contracts/ComposerJsonServiceContract.php',
     ];
     $composerDir = __DIR__;
-    $projectDir = $composerDir . '/src';
-    $exportDir = $composerDir . '/tests/Feature';
+    $exportDefaultDir = $composerDir . '/tests/Feature';
 }
 
 { // DI
     $addUseByType = new AddUseByTypeAction();
     $composerJsonService = new ComposerJsonService();
-    $composerPsr4Action = new ComposerPsr4Action($composerJsonService);
-    $filePathToClassAction = new FilePathToClassAction($composerPsr4Action);
-    $vendorClassToRelativeAction = new VendorClassToRelativeAction($composerPsr4Action);
+    $composerPsr4Service = new ComposerPsr4Service($composerJsonService);
+    $filePathToClassAction = new FilePathToClassAction($composerPsr4Service);
+    $vendorClassToRelativeAction = new VendorClassToRelativeAction($composerPsr4Service);
 
-    $projectRoot = new FileSetupEntity($projectDir, $filePathToClassAction->execute($projectDir));
-    $exportRoot = new FileSetupEntity($exportDir, $filePathToClassAction->execute($exportDir));
-    $setup = new ProjectSetupEntity($composerDir, $projectRoot, $exportRoot);
+    $setup = (new ProjectSetupEntityFactory($composerDir, $composerPsr4Service, $exportDefaultDir))->create();
 
     $mkDirAction = new MkDirAction();
     $phpFileFactory = new PhpFileFactory();
     $writePhpFileAction = new WritePhpFileAction($mkDirAction);
 
-    $reflectionClassToFileSetupEntity = new ReflectionClassToFileSetupEntity($setup, $mkDirAction);
+    $reflectionClassToFileSetupEntity = new ReflectionClassToFileSetupEntity($setup, $mkDirAction, $composerPsr4Service);
     $expectationObjectEntityFactory = new ExpectationObjectEntityFactory($phpFileFactory);
     $assertObjectEntityFactory = new AssertObjectEntityFactory($reflectionClassToFileSetupEntity, $phpFileFactory);
 
-    $phpDocEntityFactory = new PhpDocEntityFactory(new PhpDocStringResolver(new Lexer(), new PhpDocParser(new TypeParser(), new ConstExprParser())));
+    $phpDocEntityFactory = new PhpDocEntityFactory(new Lexer(), new PhpDocParser(new TypeParser(), new ConstExprParser()));
     $expectationFileContentAction = new ExpectationFileContentAction($expectationObjectEntityFactory, $writePhpFileAction, $addUseByType);
 
     $removeAssertFileAction = new RemoveAssertFileAction();

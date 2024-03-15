@@ -8,17 +8,18 @@ use LaraStrict\StrictMock\Testing\Constants\StubConstants;
 use LaraStrict\StrictMock\Testing\Exceptions\DirectoryDoesNotExistsException;
 use LaraStrict\StrictMock\Testing\Helpers\Php;
 use LaraStrict\StrictMock\Testing\Helpers\Replace;
+use LaraStrict\StrictMock\Testing\Services\ComposerPsr4Service;
 
 final class FilePathToClassAction
 {
     public function __construct(
-        private readonly ComposerPsr4Action $composerPsr4Action,
+        private readonly ComposerPsr4Service $composerPsr4Action,
     ) {
     }
 
     public function execute(string $filepath): ?string
     {
-        $dirs = $this->composerPsr4Action->execute($filepath);
+        $dirs = $this->composerPsr4Action->tryAll($filepath);
 
         foreach ($dirs as $ns => $dir) {
             $relative = Replace::start($filepath, $dir);

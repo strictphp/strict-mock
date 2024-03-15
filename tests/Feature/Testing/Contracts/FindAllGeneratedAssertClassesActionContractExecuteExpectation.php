@@ -11,10 +11,11 @@ use LaraStrict\StrictMock\Testing\Expectation\AbstractExpectation;
 final class FindAllGeneratedAssertClassesActionContractExecuteExpectation extends AbstractExpectation
 {
     /**
-     * @param Closure(self):void|null $_hook
+     * @param Closure(string|null,self):void|null $_hook
      */
     public function __construct(
         public readonly Generator $return,
+        public readonly ?string $dir = null,
         public readonly ?Closure $_hook = null,
     ) {
     }

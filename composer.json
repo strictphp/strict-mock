@@ -20,14 +20,14 @@
     },
     "require-dev": {
         "larastan/larastan": "^v2.9",
-        "laravel/framework": "^10.0",
-        "orchestra/testbench": "^v8.21",
+        "laravel/framework": "^v11.0",
+        "orchestra/testbench": "^v9.0",
         "phpstan/phpdoc-parser": "^1.13",
         "phpstan/phpstan": "^1.9",
         "phpstan/phpstan-deprecation-rules": "^1.0",
         "phpstan/phpstan-mockery": "^1.1",
         "phpstan/phpstan-phpunit": "^1.1",
-        "phpunit/phpunit": "^10.0",
+        "phpunit/phpunit": "^11.0",
         "rector/rector": "^1.0",
         "symplify/easy-coding-standard": "^12.0"
     },

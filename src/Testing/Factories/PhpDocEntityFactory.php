@@ -6,13 +6,15 @@ namespace LaraStrict\StrictMock\Testing\Factories;
 
 use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
 use LaraStrict\StrictMock\Testing\Enums\PhpType;
-use PHPStan\PhpDoc\PhpDocStringResolver;
+use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Parser\PhpDocParser;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
 use ReflectionMethod;
 
 final class PhpDocEntityFactory
 {
 
-    public function __construct(private readonly PhpDocStringResolver $phpDocStringResolver)
+    public function __construct(private readonly Lexer $lexer, private readonly PhpDocParser $phpDocParser)
     {
     }
 
@@ -23,7 +25,9 @@ final class PhpDocEntityFactory
             return new PhpDocEntity();
         }
 
-        $doc = $this->phpDocStringResolver->resolve($comment);
+        $tokens = new TokenIterator($this->lexer->tokenize($comment));
+        $doc = $this->phpDocParser->parse($tokens);
+        $tokens->consumeTokenType(Lexer::TOKEN_END);
 
         $returnTags = $doc->getReturnTagValues();
         $returnType = PhpType::Unknown;

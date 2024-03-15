@@ -5,17 +5,18 @@ namespace LaraStrict\StrictMock\Testing\Actions;
 use LaraStrict\StrictMock\Testing\Constants\StubConstants;
 use LaraStrict\StrictMock\Testing\Exceptions\DirectoryDoesNotExistsException;
 use LaraStrict\StrictMock\Testing\Helpers\Replace;
+use LaraStrict\StrictMock\Testing\Services\ComposerPsr4Service;
 
 final class VendorClassToRelativeAction
 {
     public function __construct(
-        private readonly ComposerPsr4Action $composerPsr4Action,
+        private readonly ComposerPsr4Service $composerPsr4Action,
     ) {
     }
 
     public function execute(string $path): string
     {
-        $dirs = $this->composerPsr4Action->execute($path);
+        $dirs = $this->composerPsr4Action->tryAll($path);
 
         $realPath = dirname($path);
         foreach ($dirs as $ns => $dir) {
