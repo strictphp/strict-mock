@@ -2,11 +2,11 @@
 
 namespace LaraStrict\StrictMock\Testing\Assert\Factories;
 
+use Closure;
 use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
 use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
 use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
-use Nette\PhpGenerator\Method;
 use ReflectionClass;
 
 final class AssertFileStateEntityFactory
@@ -33,6 +33,7 @@ final class AssertFileStateEntityFactory
         $assertNamespace->addUse($class->getName());
 
         $classType = $assertNamespace->addClass($assertObject->shortClassName);
+        $classType->setFinal();
         $classType->addImplement($class->getName());
         if ($oneByOne) {
             $assertNamespace->addUse(AbstractExpectationCallsMap::class);
@@ -41,6 +42,7 @@ final class AssertFileStateEntityFactory
             $assertNamespace->addUse(AbstractExpectationAllInOne::class);
             $classType->setExtends(AbstractExpectationAllInOne::class);
         }
+        $assertNamespace->addUse(Closure::class);
 
         return new AssertFileStateEntity($classType, $assertNamespace, $assertObject, $oneByOne);
     }

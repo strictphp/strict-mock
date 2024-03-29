@@ -11,6 +11,7 @@ use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
 use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
 use LaraStrict\StrictMock\Testing\Enums\PhpType;
 use LaraStrict\StrictMock\Testing\Expectation\AbstractExpectation;
+use LaraStrict\StrictMock\Testing\Expectation\Entities\ExpectationFileEntity;
 use LaraStrict\StrictMock\Testing\Expectation\Factories\ExpectationObjectEntityFactory;
 use LaraStrict\StrictMock\Testing\Helpers\Php;
 use Nette\PhpGenerator\Literal;
@@ -43,9 +44,8 @@ final class ExpectationFileContentAction
         AssertFileStateEntity $assertFileState,
         ReflectionMethod $method,
         PhpDocEntity $phpDoc,
-    ): ObjectEntity {
+    ): ExpectationFileEntity {
         $expectationObject = $this->expectationObjectEntityFactory->create($assertFileState, $class, $method);
-        $parameters = $method->getParameters();
 
         $namespace = $expectationObject->content->addNamespace($expectationObject->exportSetup->namespace)
             ->addUse(Closure::class)
@@ -71,6 +71,7 @@ final class ExpectationFileContentAction
         }
 
         $parameterTypes = [];
+        $parameters = $method->getParameters();
         foreach ($parameters as $parameter) {
             $constructorParameter = $constructor
                 ->addPromotedParameter($parameter->getName())
@@ -94,7 +95,7 @@ final class ExpectationFileContentAction
 
         $this->writePhpFileAction->execute($expectationObject);
 
-        return $expectationObject;
+        return new ExpectationFileEntity($expectationObject, $constructor);
     }
 
     private static function canReturnExpectation(ReflectionNamedType $returnType): bool

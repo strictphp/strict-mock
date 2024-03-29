@@ -17,5 +17,4 @@ final class TestFrameworkService implements TestFrameworkServiceContract
         return sprintf('Assert::assertEquals(%s, %s, %s)', $expected, $actual, $message);
     }
 
-
 }

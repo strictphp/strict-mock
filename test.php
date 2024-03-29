@@ -23,21 +23,34 @@ use LaraStrict\StrictMock\Testing\Factories\ReflectionClassFactory;
 use LaraStrict\StrictMock\Testing\Services\ComposerJsonService;
 use LaraStrict\StrictMock\Testing\Services\ComposerPsr4Service;
 use LaraStrict\StrictMock\Testing\Transformers\ReflectionClassToFileSetupEntity;
+use Nette\Utils\Finder;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TypeParser;
+use Tests\LaraStrict\StrictMock\Feature\Testing\Contracts\ComposerJsonServiceContractAssert;
 
 require __DIR__ . '/vendor/autoload.php';
 
+/**
+ * @return Generator<string>
+ */
+function loadFiles(string $dir, string $root): Generator {
+    $finder = Finder::findFiles('*Contract.php')
+        ->from($dir);
+
+    foreach ($finder as $file) {
+        yield ltrim(str_replace($root, '', $file->getPathname()), DIRECTORY_SEPARATOR);
+    }
+}
+
+
 { // setup
-    $fromExists = true;
-    $files = [
-        'src/Testing/Contracts/FindAllClassesActionContract.php',
-        'src/Testing/Contracts/ComposerJsonServiceContract.php',
-    ];
+    $fromExists = false;
     $composerDir = __DIR__;
     $exportDefaultDir = $composerDir . '/tests/Feature';
+
+    $files = loadFiles($composerDir . '/src', $composerDir);
 }
 
 { // DI

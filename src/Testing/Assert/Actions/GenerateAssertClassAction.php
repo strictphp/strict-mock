@@ -10,11 +10,12 @@ use LaraStrict\StrictMock\Testing\Attributes\IgnoreGenerateAssert;
 use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
 use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
 use LaraStrict\StrictMock\Testing\Exceptions\IgnoreAssertException;
-use LaraStrict\StrictMock\Testing\Exceptions\LogicException;
 use LaraStrict\StrictMock\Testing\Expectation\Actions\ExpectationFileContentAction;
+use LaraStrict\StrictMock\Testing\Expectation\Entities\ExpectationFileEntity;
 use LaraStrict\StrictMock\Testing\Factories\PhpDocEntityFactory;
 use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\Method;
+use Nette\PhpGenerator\PromotedParameter;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -48,12 +49,10 @@ final class GenerateAssertClassAction
         ?FileSetupEntity $exportSetup = null,
     ): array {
         self::checkIgnoreAttribute($class);
-
         $assertFileState = $this->assertFileStateEntityFactory->create($class, $exportSetup);
         if (class_exists($assertFileState->object->class)) {
             $reflectionAssert = new ReflectionClass($assertFileState->object->class);
             self::checkIgnoreAttribute($reflectionAssert);
-
             $this->removeAssertFileAction->execute($reflectionAssert);
         }
 
@@ -62,10 +61,10 @@ final class GenerateAssertClassAction
 
         $expectationClasses = [];
         $generatedFiles = [$assertFileState->object];
-        foreach (self::makeMethods($class) as $method) {
+        foreach ($class->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $phpDoc = $this->parsePhpDocAction->create($method);
 
-            $generatedFiles[] = $expectation = $this->expectationFileAction->execute(
+             $expectation = $this->expectationFileAction->execute(
                 class: $class,
                 assertFileState: $assertFileState,
                 method: $method,
@@ -75,11 +74,18 @@ final class GenerateAssertClassAction
             $this->generateAssertMethodAction->execute(
                 assertFileState: $assertFileState,
                 method: $method,
-                expectationObject: $expectation,
+                expectationObject: $expectation->object,
                 phpDoc: $phpDoc,
             );
 
-            $expectationClasses[$method->getName()] = $expectation->shortClassName;
+            $assertFileState->namespace->addUse($expectation->object->class);
+            $staticMethodName = 'expectation' . ucfirst($method->getName());
+            $staticMethod = $assertFileState->class->addMethod($staticMethodName);
+            $this->staticExpectationMethodBuilder($expectation, $staticMethod);
+
+            $expectationClasses[$method->getName()] = $expectation->object->shortClassName;
+
+            $generatedFiles[] = $expectation->object;
         }
         $this->buildConstructorParameter($assertFileState, $expectationClasses, $assertConstructor);
 
@@ -96,24 +102,6 @@ final class GenerateAssertClassAction
         if ($class->getAttributes(IgnoreGenerateAssert::class) !== []) {
             throw new IgnoreAssertException($class->getName());
         }
-    }
-
-    /**
-     * @param ReflectionClass<object> $class
-     *
-     * @return array<ReflectionMethod>
-     */
-    private static function makeMethods(ReflectionClass $class): array
-    {
-        $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
-
-        if ($methods === []) {
-            throw new LogicException('Class %s does not contain any public', $class->getName());
-            //        } elseif ($class->isInterface() === false) {
-            //            throw new LogicException('Class %s is not interface', $class->getName());
-        }
-
-        return $methods;
     }
 
     /**
@@ -163,6 +151,33 @@ final class GenerateAssertClassAction
             ->addParameter($parameter)
             ->setType('array')
             ->setDefaultValue(new Literal('[]'));
+    }
+
+    private function staticExpectationMethodBuilder(ExpectationFileEntity $expectation, Method $assertMethodStatic): Method
+    {
+        $names = [];
+        foreach ($expectation->constructor->getParameters() as $parameter) {
+            assert($parameter instanceof PromotedParameter);
+            $names[] = '$' . $parameter->getName();
+
+            $param = $assertMethodStatic->addParameter($parameter->getName())
+                ->setNullable($parameter->isNullable())
+                ->setType($parameter->getType())
+                ->setComment($parameter->getComment())
+                ->setAttributes($parameter->getAttributes());
+
+            if ($parameter->hasDefaultValue()) {
+                $param->setDefaultValue($parameter->getDefaultValue());
+            }
+        }
+
+        $assertMethodStatic->setReturnType($expectation->object->class);
+        $assertMethodStatic->setStatic();
+        $assertMethodStatic->setBody(
+            sprintf('return new %s(%s);', $expectation->object->shortClassName, implode(', ', $names))
+        );
+
+        return $assertMethodStatic;
     }
 
 }

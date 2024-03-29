@@ -2,8 +2,10 @@
 
 namespace LaraStrict\StrictMock\Testing\Expectation\Factories;
 
+use Closure;
 use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
+use LaraStrict\StrictMock\Testing\Expectation\AbstractExpectation;
 use LaraStrict\StrictMock\Testing\Factories\PhpFileFactory;
 use ReflectionClass;
 use ReflectionMethod;

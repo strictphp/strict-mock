@@ -4,24 +4,23 @@ declare(strict_types=1);
 
 namespace Tests\LaraStrict\StrictMock\Feature\Testing\Contracts;
 
-use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
+use Closure;
+use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
 use LaraStrict\StrictMock\Testing\Attributes\Expectation;
 use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
 use PHPUnit\Framework\Assert;
 
 #[Expectation(class: ComposerJsonServiceContractContentExpectation::class)]
 #[Expectation(class: ComposerJsonServiceContractIsExistExpectation::class)]
-class ComposerJsonServiceContractAssert extends AbstractExpectationCallsMap implements ComposerJsonServiceContract
+final class ComposerJsonServiceContractAssert extends AbstractExpectationAllInOne implements ComposerJsonServiceContract
 {
     /**
-     * @param array<ComposerJsonServiceContractContentExpectation|null> $content
-     * @param array<ComposerJsonServiceContractIsExistExpectation|null> $isExist
+     * @param array<ComposerJsonServiceContractContentExpectation|ComposerJsonServiceContractIsExistExpectation|null> $expectations
      */
-    public function __construct(array $content = [], array $isExist = [])
+    public function __construct(array $expectations = [])
     {
         parent::__construct();
-        $this->setExpectations(ComposerJsonServiceContractContentExpectation::class, $content);
-        $this->setExpectations(ComposerJsonServiceContractIsExistExpectation::class, $isExist);
+        $this->setExpectations($expectations);
     }
 
     public function content(string $path): mixed
@@ -36,6 +35,14 @@ class ComposerJsonServiceContractAssert extends AbstractExpectationCallsMap impl
         return $_expectation->return;
     }
 
+    public static function expectationContent(
+        mixed $return,
+        string $path,
+        ?Closure $_hook = null,
+    ): ComposerJsonServiceContractContentExpectation {
+        return new ComposerJsonServiceContractContentExpectation($return, $path, $_hook);
+    }
+
     public function isExist(string $basePath): bool
     {
         $_expectation = $this->getExpectation(ComposerJsonServiceContractIsExistExpectation::class);
@@ -46,5 +53,13 @@ class ComposerJsonServiceContractAssert extends AbstractExpectationCallsMap impl
         $_expectation->_hook !== null && ($_expectation->_hook)($basePath, $_expectation);
 
         return $_expectation->return;
+    }
+
+    public static function expectationIsExist(
+        bool $return,
+        string $basePath,
+        ?Closure $_hook = null,
+    ): ComposerJsonServiceContractIsExistExpectation {
+        return new ComposerJsonServiceContractIsExistExpectation($return, $basePath, $_hook);
     }
 }
