@@ -5,22 +5,24 @@ declare(strict_types=1);
 namespace Tests\LaraStrict\StrictMock\Feature\Testing\Contracts;
 
 use Closure;
-use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
+use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
 use LaraStrict\StrictMock\Testing\Attributes\Expectation;
 use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
 use PHPUnit\Framework\Assert;
 
 #[Expectation(class: ComposerJsonServiceContractContentExpectation::class)]
 #[Expectation(class: ComposerJsonServiceContractIsExistExpectation::class)]
-final class ComposerJsonServiceContractAssert extends AbstractExpectationAllInOne implements ComposerJsonServiceContract
+final class ComposerJsonServiceContractAssert extends AbstractExpectationCallsMap implements ComposerJsonServiceContract
 {
     /**
-     * @param array<ComposerJsonServiceContractContentExpectation|ComposerJsonServiceContractIsExistExpectation|null> $expectations
+     * @param array<ComposerJsonServiceContractContentExpectation|null> $content
+     * @param array<ComposerJsonServiceContractIsExistExpectation|null> $isExist
      */
-    public function __construct(array $expectations = [])
+    public function __construct(array $content = [], array $isExist = [])
     {
         parent::__construct();
-        $this->setExpectations($expectations);
+        $this->setExpectations(ComposerJsonServiceContractContentExpectation::class, $content);
+        $this->setExpectations(ComposerJsonServiceContractIsExistExpectation::class, $isExist);
     }
 
     public function content(string $path): mixed

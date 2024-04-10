@@ -42,10 +42,7 @@ final class StrictMockServiceProvider extends ServiceProvider
             $projectDir = $composerDir . '/app';
             $project = new FileSetupEntity($projectDir, $fileToClassAction->execute($projectDir));
 
-            $exportDir = $composerDir . '/tests';
-            $export = new FileSetupEntity($exportDir, $fileToClassAction->execute($exportDir));
-
-            return new ProjectSetupEntity($composerDir, $project, $export);
+            return new ProjectSetupEntity($composerDir, $project);
         });
 
         if ($this->app->environment(['testing', 'local'])) {

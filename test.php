@@ -28,14 +28,14 @@ use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TypeParser;
-use Tests\LaraStrict\StrictMock\Feature\Testing\Contracts\ComposerJsonServiceContractAssert;
 
 require __DIR__ . '/vendor/autoload.php';
 
 /**
  * @return Generator<string>
  */
-function loadFiles(string $dir, string $root): Generator {
+function loadFiles(string $dir, string $root): Generator
+{
     $finder = Finder::findFiles('*Contract.php')
         ->from($dir);
 
@@ -46,7 +46,7 @@ function loadFiles(string $dir, string $root): Generator {
 
 
 { // setup
-    $fromExists = false;
+    $fromExists = true;
     $composerDir = __DIR__;
     $exportDefaultDir = $composerDir . '/tests/Feature';
 
