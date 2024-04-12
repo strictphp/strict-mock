@@ -8,6 +8,13 @@ use LaraStrict\StrictMock\Testing\Assert\AssertExpectationManager;
 
 trait AssertExpectationManagerTrait
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        AssertExpectationManager::getInstance()->reset();
+    }
+
     protected function assertPostConditions(): void
     {
         $manager = AssertExpectationManager::getInstance();
@@ -18,13 +25,6 @@ trait AssertExpectationManagerTrait
         }
 
         parent::assertPostConditions();
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        AssertExpectationManager::getInstance()->reset();
     }
 
     protected function tearDown(): void

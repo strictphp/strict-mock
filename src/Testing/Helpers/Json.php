@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Helpers;
 
@@ -21,15 +23,9 @@ final class Json
      */
     private static function decode(string $content): array
     {
-        $json = json_decode(
-            json: $content,
-            associative: true,
-            flags: JSON_THROW_ON_ERROR,
-        );
+        $json = json_decode(json: $content, associative: true, flags: JSON_THROW_ON_ERROR);
         assert(is_array($json));
 
         return $json;
     }
-
-
 }

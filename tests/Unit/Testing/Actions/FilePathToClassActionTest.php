@@ -8,6 +8,7 @@ use Closure;
 use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
 use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
 use LaraStrict\StrictMock\Testing\Helpers\Json;
+use LaraStrict\StrictMock\Testing\Services\ComposerPsr4Service;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Tests\LaraStrict\StrictMock\Feature\Testing\Contracts\ComposerJsonServiceContractAssert;
@@ -22,10 +23,9 @@ final class FilePathToClassActionTest extends TestCase
     public static function data(): array
     {
         return [
-            [function (self $self) {
+            [static function (self $self) {
                 $path = realpath(__DIR__ . '/../../../../src/Testing/Contracts/ComposerJsonServiceContract.php');
                 $composer = __DIR__ . '/../../../../composer.json';
-
                 $self->assert(
                     $path,
                     ComposerJsonServiceContract::class,
@@ -38,9 +38,8 @@ final class FilePathToClassActionTest extends TestCase
                     ]
                 );
             }],
-            [function (self $self) {
+            [static function (self $self) {
                 $path = realpath(__DIR__ . '/../../../../src/Testing/Contracts/ComposerJsonServiceContract.php');
-
                 $self->assert(
                     $path,
                     expected: ComposerJsonServiceContract::class,
@@ -54,7 +53,6 @@ final class FilePathToClassActionTest extends TestCase
             }],
         ];
     }
-
 
     /**
      * @param Closure(static):void $assert
@@ -73,10 +71,7 @@ final class FilePathToClassActionTest extends TestCase
         ?array $isExists = [],
     ): void {
         $actual = (new FilePathToClassAction(
-            composerJsonService: new ComposerJsonServiceContractAssert(
-                isExist: $isExists,
-                content: [$content],
-            ),
+            composerPsr4Action: new ComposerPsr4Service(new ComposerJsonServiceContractAssert([$content], $isExists)),
         ))->execute($path);
 
         Assert::assertSame($expected, $actual);

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Factories;
 
@@ -19,9 +21,6 @@ final class ReflectionClassFactory
 
     /**
      * @return ReflectionClass<object>
-     *
-     * @throws FileDoesNotExistsException
-     * @throws ClassIsNotInterfaceException
      */
     public function create(string $classOrPath): ReflectionClass
     {
@@ -29,7 +28,7 @@ final class ReflectionClassFactory
             $full = $this->projectSetup->composerDir . DIRECTORY_SEPARATOR . $classOrPath;
             if (is_file($full)) {
                 $classOrPath = $full;
-            } else if (is_file($classOrPath) === false) {
+            } elseif (is_file($classOrPath) === false) {
                 throw new FileDoesNotExistsException($classOrPath);
             }
             $classOrPath = $this->filePathToClassAction->execute($classOrPath);

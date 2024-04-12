@@ -7,9 +7,9 @@ namespace Tests\LaraStrict\StrictMock\Feature\Testing\Commands;
 use Exception;
 use Illuminate\Testing\PendingCommand;
 use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\TestCase;
 
-
-class MakeExpectationCommandRealTest extends \PHPUnit\Framework\TestCase
+class MakeExpectationCommandRealTest extends TestCase
 {
     final public const Namespace = 'Tests\\LaraStrict\\Feature\\';
 

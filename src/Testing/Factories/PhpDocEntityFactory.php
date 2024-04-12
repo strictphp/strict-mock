@@ -13,8 +13,10 @@ use ReflectionMethod;
 
 final class PhpDocEntityFactory
 {
-
-    public function __construct(private readonly Lexer $lexer, private readonly PhpDocParser $phpDocParser)
+    public function __construct(
+        private readonly Lexer $lexer,
+        private readonly PhpDocParser $phpDocParser
+    )
     {
     }
 

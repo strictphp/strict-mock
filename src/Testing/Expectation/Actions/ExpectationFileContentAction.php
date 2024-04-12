@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Expectation\Actions;
 
@@ -7,7 +9,6 @@ use LaraStrict\StrictMock\Testing\Actions\AddUseByTypeAction;
 use LaraStrict\StrictMock\Testing\Actions\WritePhpFileAction;
 use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use LaraStrict\StrictMock\Testing\Constants\StubConstants;
-use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
 use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
 use LaraStrict\StrictMock\Testing\Enums\PhpType;
 use LaraStrict\StrictMock\Testing\Expectation\AbstractExpectation;
@@ -100,9 +101,12 @@ final class ExpectationFileContentAction
 
     private static function canReturnExpectation(ReflectionNamedType $returnType): bool
     {
-        return $returnType->getName() !== PhpType::Void->value
-            && $returnType->getName() !== PhpType::Self->value
-            && $returnType->getName() !== PhpType::Static->value;
+        return $returnType->getName() !== PhpType::Void
+            ->value
+                        && $returnType->getName() !== PhpType::Self
+                            ->value
+                                        && $returnType->getName() !== PhpType::Static
+->value;
     }
 
     private function setParameterType(
@@ -191,7 +195,11 @@ final class ExpectationFileContentAction
             $constant = $parameter->getDefaultValueConstantName();
             // Ensure that constants are from global scope
             $this->addUseByTypeAction->execute($namespace, $class);
-            $constantLiteral = new Literal(str_replace(['parent', 'self', 'static'], $class->getShortName(), $constant));
+            $constantLiteral = new Literal(str_replace(
+                ['parent', 'self', 'static'],
+                $class->getShortName(),
+                (string) $constant
+            ));
             $constructorParameter->setDefaultValue($constantLiteral);
 
             return;
@@ -208,5 +216,4 @@ final class ExpectationFileContentAction
             $constructorParameter->setDefaultValue($defaultValue);
         }
     }
-
 }

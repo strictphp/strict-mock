@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Services;
 
@@ -21,10 +23,7 @@ final class ComposerPsr4Service
     }
 
     /**
-     * @param string $realPath
-     *
      * @return array<string, string>
-     * @throws FileDoesNotExistsException
      */
     public function autoload(string $realPath): array
     {
@@ -32,10 +31,7 @@ final class ComposerPsr4Service
     }
 
     /**
-     * @param string $realPath
-     *
      * @return array<string, string>
-     * @throws FileDoesNotExistsException
      */
     public function autoloadDev(string $realPath): array
     {
@@ -43,10 +39,7 @@ final class ComposerPsr4Service
     }
 
     /**
-     * @param string $realPath
-     *
      * @return Generator<string, string>
-     * @throws FileDoesNotExistsException
      */
     public function tryAll(string $realPath): Generator
     {
@@ -65,10 +58,7 @@ final class ComposerPsr4Service
     }
 
     /**
-     * @param string $realPath
-     *
      * @return array<string, array<string, string>>
-     * @throws FileDoesNotExistsException
      */
     private function dependencies(string $realPath): array
     {
@@ -107,7 +97,9 @@ final class ComposerPsr4Service
         $dirs = [];
 
         foreach ([ComposerConstants::AutoLoad, ComposerConstants::AutoLoadDev] as $section) {
-            if (isset($data[$section][ComposerConstants::Psr4]) === false || is_array($data[$section][ComposerConstants::Psr4]) === false) {
+            if (isset($data[$section][ComposerConstants::Psr4]) === false || is_array(
+                $data[$section][ComposerConstants::Psr4]
+            ) === false) {
                 continue;
             }
 

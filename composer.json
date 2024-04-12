@@ -29,18 +29,26 @@
         "phpstan/phpstan-phpunit": "^1.1",
         "phpunit/phpunit": "^11.0",
         "rector/rector": "^1.0",
+        "strictphp/conventions": "^1.0",
         "symplify/easy-coding-standard": "^12.0"
     },
     "scripts": {
-        "check": "composer lint && composer test && composer lint:stan",
+        "analyse": "./vendor/bin/phpstan",
+        "check": [
+            "@lint",
+            "@test",
+            "@analyse"
+        ],
+        "lint": [
+            "@lint:fix",
+            "@lint:upgrade"
+        ],
         "lint:check": "./vendor/bin/ecs",
         "lint:fix": "./vendor/bin/ecs --fix",
         "lint:stan": "./vendor/bin/phpstan",
-        "lint:upgrade:check": "vendor/bin/rector process --dry-run",
         "lint:upgrade": "vendor/bin/rector process",
-        "lint": "composer lint:upgrade && composer lint:fix && composer lint:stan",
+        "lint:upgrade:check": "vendor/bin/rector process --dry-run",
         "test": "./vendor/bin/phpunit",
-        "test:stubs": "STUBS_GENERATE=true ./vendor/bin/phpunit",
         "test:coverage": "./vendor/bin/phpunit --coverage-text"
     },
     "autoload": {
@@ -64,7 +72,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\PHPUnit\Services;
 
@@ -16,5 +18,4 @@ final class TestFrameworkService implements TestFrameworkServiceContract
     {
         return sprintf('Assert::assertEquals(%s, %s, %s)', $expected, $actual, $message);
     }
-
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Assert\Factories;
 
@@ -23,11 +25,6 @@ final class AssertObjectEntityFactory
     {
         $fileSetup = $this->reflectionClassToFileSetupEntity->transform($class, $fileSetupEntity);
 
-        return new ObjectEntity(
-            $fileSetup,
-            $class->getShortName() . 'Assert',
-            $this->phpFileFactory->create(),
-        );
+        return new ObjectEntity($fileSetup, $class->getShortName() . 'Assert', $this->phpFileFactory->create());
     }
-
 }

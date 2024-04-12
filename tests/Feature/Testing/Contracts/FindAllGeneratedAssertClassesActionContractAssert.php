@@ -30,7 +30,9 @@ final class FindAllGeneratedAssertClassesActionContractAssert extends AbstractEx
 
         Assert::assertEquals($_expectation->dir, $dir, $_message);
 
-        $_expectation->_hook !== null && ($_expectation->_hook)($dir, $_expectation);
+        if ($_expectation->_hook !== null) {
+            ($_expectation->_hook)($dir, $_expectation);
+        }
 
         return $_expectation->return;
     }

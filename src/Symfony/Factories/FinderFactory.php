@@ -9,7 +9,6 @@ use Symfony\Component\Finder\Finder;
 
 final class FinderFactory implements FinderFactoryContract
 {
-
     public function create(string $path): Finder
     {
         return Finder::create()->files()

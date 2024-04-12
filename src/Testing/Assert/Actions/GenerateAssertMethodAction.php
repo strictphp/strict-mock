@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Assert\Actions;
 
@@ -38,7 +40,8 @@ final class GenerateAssertMethodAction
 
         // fix nullable
         foreach ($parameters as $parameter) {
-            $assertMethod->getParameter($parameter->getName())->setNullable($parameter->allowsNull());
+            $assertMethod->getParameter($parameter->getName())
+                ->setNullable($parameter->allowsNull());
         }
 
         $assertFileState->class->addMember($assertMethod);
@@ -75,7 +78,8 @@ final class GenerateAssertMethodAction
 
         $assertMethod->addBody('');
 
-        $assertMethod->addBody(sprintf('$_expectation->%s !== null && ($%s->%s)(%s);',
+        $assertMethod->addBody(sprintf(
+            '$_expectation->%s !== null && ($%s->%s)(%s);',
             self::HookProperty,
             self::ExpectationProperty,
             self::HookProperty,
@@ -105,5 +109,4 @@ final class GenerateAssertMethodAction
                 break;
         }
     }
-
 }

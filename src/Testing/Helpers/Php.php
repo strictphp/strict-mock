@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Helpers;
 
@@ -14,5 +16,4 @@ final class Php
     {
         return class_exists($class) || interface_exists($class);
     }
-
 }

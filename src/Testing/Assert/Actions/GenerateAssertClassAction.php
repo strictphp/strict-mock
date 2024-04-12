@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Assert\Actions;
 
@@ -31,23 +33,12 @@ final class GenerateAssertClassAction
     ) {
     }
 
-    private static function buildAssertConstructor(): Method
-    {
-        return (new Method('__construct'))
-            ->setPublic()
-            ->addBody('parent::__construct();');
-    }
-
     /**
      * @param ReflectionClass<object> $class
      *
      * @return array<ObjectEntity>
-     * @throws IgnoreAssertException
      */
-    public function execute(
-        ReflectionClass $class,
-        ?FileSetupEntity $exportSetup = null,
-    ): array {
+    public function execute(ReflectionClass $class, ?FileSetupEntity $exportSetup = null): array {
         self::checkIgnoreAttribute($class);
         $assertFileState = $this->assertFileStateEntityFactory->create($class, $exportSetup);
         if (class_exists($assertFileState->object->class)) {
@@ -65,11 +56,11 @@ final class GenerateAssertClassAction
             $phpDoc = $this->parsePhpDocAction->create($method);
 
              $expectation = $this->expectationFileAction->execute(
-                class: $class,
-                assertFileState: $assertFileState,
-                method: $method,
-                phpDoc: $phpDoc,
-            );
+                 class: $class,
+                 assertFileState: $assertFileState,
+                 method: $method,
+                 phpDoc: $phpDoc,
+             );
 
             $this->generateAssertMethodAction->execute(
                 assertFileState: $assertFileState,
@@ -94,9 +85,13 @@ final class GenerateAssertClassAction
         return $generatedFiles;
     }
 
-    /**
-     * @throws IgnoreAssertException
-     */
+    private static function buildAssertConstructor(): Method
+    {
+        return (new Method('__construct'))
+            ->setPublic()
+            ->addBody('parent::__construct();');
+    }
+
     private static function checkIgnoreAttribute(ReflectionClass $class): void
     {
         if ($class->getAttributes(IgnoreGenerateAssert::class) !== []) {
@@ -107,7 +102,11 @@ final class GenerateAssertClassAction
     /**
      * @param array<string, string> $expectationClasses
      */
-    private function buildConstructorParameter(AssertFileStateEntity $assertFileState, array $expectationClasses, Method $assertConstructor): void
+    private function buildConstructorParameter(
+        AssertFileStateEntity $assertFileState,
+        array $expectationClasses,
+        Method $assertConstructor
+    ): void
     {
         if ($expectationClasses === []) {
             return;
@@ -139,11 +138,7 @@ final class GenerateAssertClassAction
             $body = sprintf('$this->setExpectations(%s::class, $%s);', $type, $parameter);
         }
 
-        $constructor->addComment(sprintf(
-            '@param array<%s|null> $%s',
-            $type,
-            $parameter,
-        ));
+        $constructor->addComment(sprintf('@param array<%s|null> $%s', $type, $parameter));
 
         $constructor->addBody($body);
 
@@ -153,7 +148,10 @@ final class GenerateAssertClassAction
             ->setDefaultValue(new Literal('[]'));
     }
 
-    private function staticExpectationMethodBuilder(ExpectationFileEntity $expectation, Method $assertMethodStatic): Method
+    private function staticExpectationMethodBuilder(
+        ExpectationFileEntity $expectation,
+        Method $assertMethodStatic
+    ): Method
     {
         $names = [];
         foreach ($expectation->constructor->getParameters() as $parameter) {
@@ -179,5 +177,4 @@ final class GenerateAssertClassAction
 
         return $assertMethodStatic;
     }
-
 }

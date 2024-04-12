@@ -12,7 +12,6 @@ use LogicException;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
-
 class MakeExpectationCommandTest extends TestCase
 {
     final public const TestFileName = 'app/TestAction.php';

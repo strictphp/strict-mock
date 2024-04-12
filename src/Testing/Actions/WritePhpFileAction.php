@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Actions;
 
@@ -7,7 +9,9 @@ use Nette\PhpGenerator\PsrPrinter;
 
 final class WritePhpFileAction
 {
-    public function __construct(private readonly MkDirAction $mkDirAction)
+    public function __construct(
+        private readonly MkDirAction $mkDirAction
+    )
     {
     }
 

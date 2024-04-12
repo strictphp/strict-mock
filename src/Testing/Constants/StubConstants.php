@@ -7,5 +7,4 @@ namespace LaraStrict\StrictMock\Testing\Constants;
 final class StubConstants
 {
     public const NameSpaceSeparator = '\\';
-
 }

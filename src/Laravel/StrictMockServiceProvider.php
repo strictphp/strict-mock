@@ -29,19 +29,16 @@ final class StrictMockServiceProvider extends ServiceProvider
         TestFrameworkServiceContract::class => TestFrameworkService::class,
     ];
 
-
     public function register(): void
     {
         parent::register();
 
-        $this->app->singleton(ProjectSetupEntity::class, function (Application $app) {
+        $this->app->singleton(ProjectSetupEntity::class, static function (Application $app) {
             $fileToClassAction = $app->make(FilePathToClassAction::class);
             assert($fileToClassAction instanceof FilePathToClassAction);
-
             $composerDir = Realpath::make(__DIR__ . '/../..');
             $projectDir = $composerDir . '/app';
             $project = new FileSetupEntity($projectDir, $fileToClassAction->execute($projectDir));
-
             return new ProjectSetupEntity($composerDir, $project);
         });
 

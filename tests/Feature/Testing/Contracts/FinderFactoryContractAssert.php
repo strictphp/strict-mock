@@ -29,7 +29,9 @@ final class FinderFactoryContractAssert extends AbstractExpectationAllInOne impl
 
         Assert::assertEquals($_expectation->path, $path, $_message);
 
-        $_expectation->_hook !== null && ($_expectation->_hook)($path, $_expectation);
+        if ($_expectation->_hook !== null) {
+            ($_expectation->_hook)($path, $_expectation);
+        }
 
         return $_expectation->return;
     }

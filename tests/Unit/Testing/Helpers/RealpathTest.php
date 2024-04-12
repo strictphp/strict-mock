@@ -12,32 +12,22 @@ use PHPUnit\Framework\TestCase;
 
 final class RealpathTest extends TestCase
 {
-
     /**
      * @return array<string|int, array{0: Closure(static):void}>
      */
     public static function data(): array
     {
         return [
+            [static function (self $self) {
+                $self->assert(__DIR__ . '/../Assert', realpath(__DIR__ . '/../Assert'));
+            }, ],
             [
-                function (self $self) {
-                    $self->assert(
-                        __DIR__ . '/../Assert',
-                        realpath(__DIR__ . '/../Assert'),
-                    );
-                },
-            ],
-            [
-                function (self $self) {
-                    $self->assert(
-                        __DIR__ . '/../Foo',
-                        new FileDoesNotExistsException(__DIR__ . '/../Foo'),
-                    );
+                static function (self $self) {
+                    $self->assert(__DIR__ . '/../Foo', new FileDoesNotExistsException(__DIR__ . '/../Foo'));
                 },
             ],
         ];
     }
-
 
     /**
      * @param Closure(static):void $assert
@@ -48,11 +38,7 @@ final class RealpathTest extends TestCase
         $assert($this);
     }
 
-
-    public function assert(
-        string $path,
-        string|FileDoesNotExistsException $expected
-    ): void
+    public function assert(string $path, string|FileDoesNotExistsException $expected): void
     {
         if ($expected instanceof FileDoesNotExistsException) {
             $this->expectExceptionObject($expected);
@@ -60,5 +46,4 @@ final class RealpathTest extends TestCase
 
         Assert::assertSame($expected, Realpath::make($path));
     }
-
 }

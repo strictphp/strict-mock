@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Entities;
 
@@ -22,6 +24,7 @@ final class ObjectEntity
         /** @var class-string $class */
         $class = $this->exportSetup->namespace . StubConstants::NameSpaceSeparator . $this->shortClassName;
         $this->class = $class;
+
         $this->pathname = $this->exportSetup->dir . DIRECTORY_SEPARATOR . $this->shortClassName . '.php';
     }
 }

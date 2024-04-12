@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Transformers;
 
@@ -41,9 +43,11 @@ final class ReflectionClassToFileSetupEntity
             return new FileSetupEntity($exportDir, $exportNamespace);
         }
 
-
         $exportNamespace = $exportSetup->namespace . self::Vendor . StubConstants::NameSpaceSeparator . $namespace;
-        $exportDir = implode(DIRECTORY_SEPARATOR, [$exportSetup->dir, self::Vendor, Realpath::fromNamespace($namespace)]);
+        $exportDir = implode(
+            DIRECTORY_SEPARATOR,
+            [$exportSetup->dir, self::Vendor, Realpath::fromNamespace($namespace)]
+        );
         $this->mkDirAction->execute($exportDir);
 
         return new FileSetupEntity($exportDir, $exportNamespace);

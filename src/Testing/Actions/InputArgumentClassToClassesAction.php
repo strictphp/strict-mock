@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LaraStrict\StrictMock\Testing\Actions;
 
@@ -28,11 +30,7 @@ final class InputArgumentClassToClassesAction
             $classes = $this->findAllClassesAction->execute();
         } elseif (is_string($inputs)) {
             $dir = $this->projectSetupEntity->composerDir . DIRECTORY_SEPARATOR . ltrim($inputs, DIRECTORY_SEPARATOR);
-            if (is_dir($dir)) {
-                $classes = $this->findAllClassesAction->execute($dir);
-            } else {
-                $classes = [$inputs];
-            }
+            $classes = is_dir($dir) ? $this->findAllClassesAction->execute($dir) : [$inputs];
         } else {
             $classes = $inputs;
         }
@@ -41,5 +39,4 @@ final class InputArgumentClassToClassesAction
             yield $class instanceof ReflectionClass ? $class : $this->reflectionClassFactory->create($class);
         }
     }
-
 }

@@ -6,29 +6,11 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    reportUnmatchedIgnoredErrors: true
-
-    parallel:
-        processTimeout: 600.0
-
     paths:
         - src
         - tests
-
-    # The level 8 is the highest level
-    level: 8
-
-    # it is impossible to map toArray()
-    checkMissingIterableValueType: false
-
-    excludePaths:
-            - 'tests/Feature/Testing/Commands/MakeExpectationCommand/*.php'
-
-    ignoreErrors:
-        # CastsAttributes template was added in Laravel 9.49 (remove when we drop L9 support)
-        -
-            message: "#^PHPDoc tag @implements contains generic type Illuminate\\\\Contracts\\\\Database\\\\Eloquent\\\\CastsAttributes\\<float, float\\|int\\|string\\|null\\> but interface Illuminate\\\\Contracts\\\\Database\\\\Eloquent\\\\CastsAttributes is not generic\\.$#"
-            count: 1
-            path: src/Database/Models/Casts/FloatCast.php
-            reportUnmatched: false
-
+        - ecs.php
+        - rector.php
+        - extension-ecs.php
+        - extension-rector.php
+    level: max

@@ -30,18 +30,13 @@ final class FilePathToClassAction
                 }
 
                 $class = $ns . ltrim(
-                        strtr(
-                            Replace::end($relative, '.php'),
-                            '/',
-                            StubConstants::NameSpaceSeparator,
-                        ),
-                        StubConstants::NameSpaceSeparator,
-                    );
+                    strtr(Replace::end($relative, '.php'), '/', StubConstants::NameSpaceSeparator),
+                    StubConstants::NameSpaceSeparator,
+                );
                 return Php::existClassInterfaceEnum($class) ? $class : null;
             }
         }
 
         throw new DirectoryDoesNotExistsException($filepath . ', not found in composer by psr-4.');
     }
-
 }

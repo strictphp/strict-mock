@@ -13,11 +13,9 @@ use Symfony\Component\Console\Attribute\AsCommand;
 #[AsCommand(name: 'make:expectation', description: 'Make expectation class for given class')]
 class MakeExpectationCommand extends Command
 {
-
     protected $signature = 'make:expectation
         {class : Class name of path to class using PSR-4 specs}
     ';
-
 
     public function handle(
         GenerateAssertClassAction $generateAssertClassAction,
@@ -41,11 +39,7 @@ class MakeExpectationCommand extends Command
         return 0;
     }
 
-
-    protected function writeFile(
-        string $className,
-        string $fileName,
-    ): void {
+    protected function writeFile(string $className, string $fileName): void {
         $successMessage = 'File generated [' . $className . ']';
         if (property_exists($this, 'components')) {
             $this->components->info($successMessage);
@@ -56,5 +50,4 @@ class MakeExpectationCommand extends Command
         $this->line(sprintf('  <fg=gray>File written to [%s]</>', $fileName));
         $this->newLine();
     }
-
 }

@@ -17,20 +17,17 @@ final class ComposerJsonService implements ComposerJsonServiceContract
     public function content(string $path): mixed
     {
         $composer = self::composerJson($path);
-        if (isset($this->cache[$composer])) {
-            return $this->cache[$composer];
-        }
 
-        return $this->cache[$composer] = Json::loadFromFile($composer);
-    }
-
-    private static function composerJson(string $path): string
-    {
-        return $path . '/composer.json';
+        return $this->cache[$composer] ?? ($this->cache[$composer] = Json::loadFromFile($composer));
     }
 
     public function isExist(string $basePath): bool
     {
         return is_file(self::composerJson($basePath));
+    }
+
+    private static function composerJson(string $path): string
+    {
+        return $path . '/composer.json';
     }
 }

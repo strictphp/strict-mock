@@ -27,7 +27,9 @@ final class TestFrameworkServiceContractAssert extends AbstractExpectationAllInO
     {
         $_expectation = $this->getExpectation(TestFrameworkServiceContractAssertClassExpectation::class);
 
-        $_expectation->_hook !== null && ($_expectation->_hook)($_expectation);
+        if ($_expectation->_hook !== null) {
+            ($_expectation->_hook)($_expectation);
+        }
 
         return $_expectation->return;
     }
@@ -48,7 +50,9 @@ final class TestFrameworkServiceContractAssert extends AbstractExpectationAllInO
         Assert::assertEquals($_expectation->actual, $actual, $_message);
         Assert::assertEquals($_expectation->message, $message, $_message);
 
-        $_expectation->_hook !== null && ($_expectation->_hook)($expected, $actual, $message, $_expectation);
+        if ($_expectation->_hook !== null) {
+            ($_expectation->_hook)($expected, $actual, $message, $_expectation);
+        }
 
         return $_expectation->return;
     }
