@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Constants;
+namespace StrictPhp\StrictMock\Testing\Constants;
 
 final class StubConstants
 {

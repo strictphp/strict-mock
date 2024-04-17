@@ -16,7 +16,7 @@ on:
       - "artisan"
 
 concurrency:
-  group: larastrict-check-${{ github.ref }}
+  group: strictphp-check-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

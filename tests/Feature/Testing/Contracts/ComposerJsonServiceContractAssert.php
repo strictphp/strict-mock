@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\LaraStrict\StrictMock\Feature\Testing\Contracts;
+namespace Tests\StrictPhp\StrictMock\Feature\Testing\Contracts;
 
 use Closure;
-use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
-use LaraStrict\StrictMock\Testing\Attributes\Expectation;
-use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
+use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
+use StrictPhp\StrictMock\Testing\Attributes\Expectation;
+use StrictPhp\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
 use PHPUnit\Framework\Assert;
 
 #[Expectation(class: ComposerJsonServiceContractContentExpectation::class)]

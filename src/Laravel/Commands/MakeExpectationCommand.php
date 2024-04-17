@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Laravel\Commands;
+namespace StrictPhp\StrictMock\Laravel\Commands;
 
 use Illuminate\Console\Command;
-use LaraStrict\StrictMock\Testing\Actions\InputArgumentClassToClassesAction;
-use LaraStrict\StrictMock\Testing\Assert\Actions\GenerateAssertClassAction;
-use LaraStrict\StrictMock\Testing\Exceptions\IgnoreAssertException;
+use StrictPhp\StrictMock\Testing\Actions\InputArgumentClassToClassesAction;
+use StrictPhp\StrictMock\Testing\Assert\Actions\GenerateAssertClassAction;
+use StrictPhp\StrictMock\Testing\Exceptions\IgnoreAssertException;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'make:expectation', description: 'Make expectation class for given class')]

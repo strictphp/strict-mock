@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Attributes;
+namespace StrictPhp\StrictMock\Testing\Attributes;
 
 use Attribute;
 

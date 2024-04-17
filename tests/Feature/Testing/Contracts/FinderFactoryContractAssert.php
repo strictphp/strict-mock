@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\LaraStrict\StrictMock\Feature\Testing\Contracts;
+namespace Tests\StrictPhp\StrictMock\Feature\Testing\Contracts;
 
 use Closure;
-use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
-use LaraStrict\StrictMock\Testing\Attributes\Expectation;
-use LaraStrict\StrictMock\Testing\Contracts\FinderFactoryContract;
+use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
+use StrictPhp\StrictMock\Testing\Attributes\Expectation;
+use StrictPhp\StrictMock\Testing\Contracts\FinderFactoryContract;
 use PHPUnit\Framework\Assert;
 
 #[Expectation(class: FinderFactoryContractCreateExpectation::class)]

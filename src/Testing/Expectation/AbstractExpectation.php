@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Expectation;
+namespace StrictPhp\StrictMock\Testing\Expectation;
 
 abstract class AbstractExpectation
 {

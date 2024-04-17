@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\LaraStrict\StrictMock\Feature\Testing\Contracts;
+namespace Tests\StrictPhp\StrictMock\Feature\Testing\Contracts;
 
 use Closure;
-use LaraStrict\StrictMock\Testing\Expectation\AbstractExpectation;
+use StrictPhp\StrictMock\Testing\Expectation\AbstractExpectation;
 
 final class ComposerJsonServiceContractIsExistExpectation extends AbstractExpectation
 {

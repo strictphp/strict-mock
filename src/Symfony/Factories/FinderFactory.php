@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Symfony\Factories;
+namespace StrictPhp\StrictMock\Symfony\Factories;
 
-use LaraStrict\StrictMock\Testing\Contracts\FinderFactoryContract;
+use StrictPhp\StrictMock\Testing\Contracts\FinderFactoryContract;
 use Symfony\Component\Finder\Finder;
 
 final class FinderFactory implements FinderFactoryContract

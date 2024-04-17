@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Factories;
+namespace StrictPhp\StrictMock\Testing\Factories;
 
 use Nette\PhpGenerator\PhpFile;
 

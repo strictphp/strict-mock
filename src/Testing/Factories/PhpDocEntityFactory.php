@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Factories;
+namespace StrictPhp\StrictMock\Testing\Factories;
 
-use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
-use LaraStrict\StrictMock\Testing\Enums\PhpType;
+use StrictPhp\StrictMock\Testing\Entities\PhpDocEntity;
+use StrictPhp\StrictMock\Testing\Enums\PhpType;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;

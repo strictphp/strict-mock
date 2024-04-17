@@ -2,18 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Tests\LaraStrict\StrictMock\Unit\Testing\Actions;
+namespace Tests\StrictPhp\StrictMock\Unit\Testing\Actions;
 
 use Closure;
-use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
-use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
-use LaraStrict\StrictMock\Testing\Helpers\Json;
-use LaraStrict\StrictMock\Testing\Services\ComposerPsr4Service;
+use Exception;
+use StrictPhp\StrictMock\Testing\Actions\FilePathToClassAction;
+use StrictPhp\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
+use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
+use StrictPhp\StrictMock\Testing\Helpers\Json;
+use StrictPhp\StrictMock\Testing\Services\ComposerPsr4Service;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Tests\LaraStrict\StrictMock\Feature\Testing\Contracts\ComposerJsonServiceContractAssert;
-use Tests\LaraStrict\StrictMock\Feature\Testing\Contracts\ComposerJsonServiceContractContentExpectation;
-use Tests\LaraStrict\StrictMock\Feature\Testing\Contracts\ComposerJsonServiceContractIsExistExpectation;
+use Tests\StrictPhp\StrictMock\Feature\Testing\Contracts\ComposerJsonServiceContractAssert;
+use Tests\StrictPhp\StrictMock\Feature\Testing\Contracts\ComposerJsonServiceContractContentExpectation;
+use Tests\StrictPhp\StrictMock\Feature\Testing\Contracts\ComposerJsonServiceContractIsExistExpectation;
 
 final class FilePathToClassActionTest extends TestCase
 {
@@ -40,15 +43,19 @@ final class FilePathToClassActionTest extends TestCase
             }],
             [static function (self $self) {
                 $path = realpath(__DIR__ . '/../../../../src/Testing/Contracts/ComposerJsonServiceContract.php');
+
+                $up = $path;
+                $isExists = [];
+                do {
+                    $last = $up;
+                    $up = dirname($last);
+                    $isExists[] = new ComposerJsonServiceContractIsExistExpectation(false, $up);
+                } while ($up !== $last);
+
                 $self->assert(
                     $path,
-                    expected: ComposerJsonServiceContract::class,
-                    isExists: [
-                        new ComposerJsonServiceContractIsExistExpectation(false, dirname($path)),
-                        new ComposerJsonServiceContractIsExistExpectation(false, dirname($path, 2)),
-                        new ComposerJsonServiceContractIsExistExpectation(false, dirname($path, 3)),
-                        new ComposerJsonServiceContractIsExistExpectation(false, dirname($path, 4)),
-                    ]
+                    expected: new FileDoesNotExistsException('composer.json'),
+                    isExists: $isExists
                 );
             }],
         ];
@@ -56,9 +63,8 @@ final class FilePathToClassActionTest extends TestCase
 
     /**
      * @param Closure(static):void $assert
-     *
-     * @dataProvider data
      */
+    #[DataProvider('data')]
     public function test(Closure $assert): void
     {
         $assert($this);
@@ -66,13 +72,18 @@ final class FilePathToClassActionTest extends TestCase
 
     public function assert(
         string $path,
-        string $expected,
+        string|Exception $expected,
         ?ComposerJsonServiceContractContentExpectation $content = null,
         ?array $isExists = [],
     ): void {
-        $actual = (new FilePathToClassAction(
+        $action = (new FilePathToClassAction(
             composerPsr4Action: new ComposerPsr4Service(new ComposerJsonServiceContractAssert([$content], $isExists)),
-        ))->execute($path);
+        ));
+        if ($expected instanceof Exception) {
+            $this->expectExceptionObject($expected);
+        }
+
+        $actual = $action->execute($path);
 
         Assert::assertSame($expected, $actual);
     }

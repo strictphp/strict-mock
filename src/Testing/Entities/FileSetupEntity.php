@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Entities;
+namespace StrictPhp\StrictMock\Testing\Entities;
 
 class FileSetupEntity
 {

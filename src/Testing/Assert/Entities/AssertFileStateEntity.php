@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Assert\Entities;
+namespace StrictPhp\StrictMock\Testing\Assert\Entities;
 
-use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
+use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 

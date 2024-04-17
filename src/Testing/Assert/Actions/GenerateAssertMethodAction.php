@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Assert\Actions;
+namespace StrictPhp\StrictMock\Testing\Assert\Actions;
 
-use LaraStrict\StrictMock\Testing\Actions\AddUseByTypeAction;
-use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
-use LaraStrict\StrictMock\Testing\Contracts\TestFrameworkServiceContract;
-use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
-use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
-use LaraStrict\StrictMock\Testing\Enums\PhpType;
+use StrictPhp\StrictMock\Testing\Actions\AddUseByTypeAction;
+use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
+use StrictPhp\StrictMock\Testing\Contracts\TestFrameworkServiceContract;
+use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
+use StrictPhp\StrictMock\Testing\Entities\PhpDocEntity;
+use StrictPhp\StrictMock\Testing\Enums\PhpType;
 use Nette\PhpGenerator\Factory;
+use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionUnionType;
@@ -56,7 +57,6 @@ final class GenerateAssertMethodAction
         $hookParameters = [];
 
         if ($parameters !== []) {
-            $assertFileState->namespace->addUse($this->testFrameworkService->assertClass());
             $assertMethod->addBody(sprintf('$%s = $this->getDebugMessage();', self::MessageProperty));
             $assertMethod->addBody('');
 
@@ -66,6 +66,7 @@ final class GenerateAssertMethodAction
                 $hookParameters[] = sprintf('$%s', $parameter->getName());
                 $assertMethod->addBody(
                     $this->testFrameworkService->assertEquals(
+                        $assertFileState->namespace,
                         sprintf('$%s->%s', self::ExpectationProperty, $parameter->name),
                         sprintf('$%s', $parameter->name),
                         '$' . self::MessageProperty,

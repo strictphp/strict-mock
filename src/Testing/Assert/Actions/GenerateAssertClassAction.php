@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Assert\Actions;
+namespace StrictPhp\StrictMock\Testing\Assert\Actions;
 
-use LaraStrict\StrictMock\Testing\Actions\WritePhpFileAction;
-use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
-use LaraStrict\StrictMock\Testing\Assert\Factories\AssertFileStateEntityFactory;
-use LaraStrict\StrictMock\Testing\Attributes\Expectation;
-use LaraStrict\StrictMock\Testing\Attributes\IgnoreGenerateAssert;
-use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
-use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
-use LaraStrict\StrictMock\Testing\Exceptions\IgnoreAssertException;
-use LaraStrict\StrictMock\Testing\Expectation\Actions\ExpectationFileContentAction;
-use LaraStrict\StrictMock\Testing\Expectation\Entities\ExpectationFileEntity;
-use LaraStrict\StrictMock\Testing\Factories\PhpDocEntityFactory;
+use StrictPhp\StrictMock\Testing\Actions\WritePhpFileAction;
+use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
+use StrictPhp\StrictMock\Testing\Assert\Factories\AssertFileStateEntityFactory;
+use StrictPhp\StrictMock\Testing\Attributes\Expectation;
+use StrictPhp\StrictMock\Testing\Attributes\IgnoreGenerateAssert;
+use StrictPhp\StrictMock\Testing\Entities\FileSetupEntity;
+use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
+use StrictPhp\StrictMock\Testing\Exceptions\IgnoreAssertException;
+use StrictPhp\StrictMock\Testing\Expectation\Actions\ExpectationFileContentAction;
+use StrictPhp\StrictMock\Testing\Expectation\Entities\ExpectationFileEntity;
+use StrictPhp\StrictMock\Testing\Factories\PhpDocEntityFactory;
 use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PromotedParameter;

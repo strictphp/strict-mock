@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Actions;
+namespace StrictPhp\StrictMock\Testing\Actions;
 
 final class MkDirAction
 {

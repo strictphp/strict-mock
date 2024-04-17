@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Services;
+namespace StrictPhp\StrictMock\Testing\Services;
 
-use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
-use LaraStrict\StrictMock\Testing\Helpers\Json;
+use StrictPhp\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
+use StrictPhp\StrictMock\Testing\Helpers\Json;
 
 final class ComposerJsonService implements ComposerJsonServiceContract
 {

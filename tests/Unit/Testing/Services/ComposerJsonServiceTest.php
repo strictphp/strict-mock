@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\LaraStrict\StrictMock\Unit\Testing\Services;
+namespace Tests\StrictPhp\StrictMock\Unit\Testing\Services;
 
 use Closure;
 use Exception;
-use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
-use LaraStrict\StrictMock\Testing\Helpers\Json;
-use LaraStrict\StrictMock\Testing\Services\ComposerJsonService;
+use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
+use StrictPhp\StrictMock\Testing\Helpers\Json;
+use StrictPhp\StrictMock\Testing\Services\ComposerJsonService;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class ComposerJsonServiceTest extends TestCase
@@ -31,15 +32,15 @@ final class ComposerJsonServiceTest extends TestCase
 
     /**
      * @param Closure(static):void $assert
-     *
-     * @dataProvider dataIsExist
      */
+    #[DataProvider('dataIsExist')]
     public function testIsExist(Closure $assert): void
     {
         $assert($this);
     }
 
-    public function assertIsExist(string $path, bool $expected): void {
+    public function assertIsExist(string $path, bool $expected): void
+    {
         Assert::assertSame($expected, (new ComposerJsonService())->isExist($path));
     }
 
@@ -50,7 +51,6 @@ final class ComposerJsonServiceTest extends TestCase
     {
         return [
             [
-
                 static function (self $self) {
                     $self->assertContent(
                         __DIR__ . '/../../../..',
@@ -68,15 +68,15 @@ final class ComposerJsonServiceTest extends TestCase
 
     /**
      * @param Closure(static):void $assert
-     *
-     * @dataProvider dataContent
      */
+    #[DataProvider('dataContent')]
     public function testContent(Closure $assert): void
     {
         $assert($this);
     }
 
-    public function assertContent(string $path, array|Exception $expected): void {
+    public function assertContent(string $path, array|Exception $expected): void
+    {
         if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }

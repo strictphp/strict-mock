@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Contracts;
+namespace StrictPhp\StrictMock\Testing\Contracts;
+
+use Nette\PhpGenerator\PhpNamespace;
 
 interface TestFrameworkServiceContract
 {
-    /**
-     * @return class-string
-     */
-    public function assertClass(): string;
 
-    public function assertEquals(string $expected, string $actual, string $message): string;
+    public function assertEquals(PhpNamespace $namespace, string $expected, string $actual, string $message): string;
 }

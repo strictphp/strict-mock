@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Factories;
+namespace StrictPhp\StrictMock\Testing\Factories;
 
-use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
-use LaraStrict\StrictMock\Testing\Entities\ProjectSetupEntity;
-use LaraStrict\StrictMock\Testing\Exceptions\LogicException;
-use LaraStrict\StrictMock\Testing\Services\ComposerPsr4Service;
+use StrictPhp\StrictMock\Testing\Entities\FileSetupEntity;
+use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
+use StrictPhp\StrictMock\Testing\Exceptions\LogicException;
+use StrictPhp\StrictMock\Testing\Services\ComposerPsr4Service;
 
 final class ProjectSetupEntityFactory
 {

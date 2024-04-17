@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\LaraStrict\StrictMock\Feature\Testing\Contracts;
+namespace Tests\StrictPhp\StrictMock\Feature\Testing\Contracts;
 
 use Closure;
 use Generator;
-use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
-use LaraStrict\StrictMock\Testing\Attributes\Expectation;
-use LaraStrict\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionContract;
+use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
+use StrictPhp\StrictMock\Testing\Attributes\Expectation;
+use StrictPhp\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionContract;
 use PHPUnit\Framework\Assert;
 
 #[Expectation(class: FindAllGeneratedAssertClassesActionContractExecuteExpectation::class)]

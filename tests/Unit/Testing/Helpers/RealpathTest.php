@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\LaraStrict\StrictMock\Unit\Testing\Helpers;
+namespace Tests\StrictPhp\StrictMock\Unit\Testing\Helpers;
 
 use Closure;
-use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
-use LaraStrict\StrictMock\Testing\Helpers\Realpath;
+use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
+use StrictPhp\StrictMock\Testing\Helpers\Realpath;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class RealpathTest extends TestCase
@@ -19,20 +20,19 @@ final class RealpathTest extends TestCase
     {
         return [
             [static function (self $self) {
-                $self->assert(__DIR__ . '/../Assert', realpath(__DIR__ . '/../Assert'));
-            }, ],
-            [
-                static function (self $self) {
-                    $self->assert(__DIR__ . '/../Foo', new FileDoesNotExistsException(__DIR__ . '/../Foo'));
-                },
-            ],
+                $path = __DIR__ . '/../../Testing';
+                $self->assert($path, realpath($path));
+            }],
+            [static function (self $self) {
+                $self->assert(__DIR__ . '/../Foo', new FileDoesNotExistsException(__DIR__ . '/../Foo'));
+            }],
         ];
     }
 
     /**
      * @param Closure(static):void $assert
-     * @dataProvider data
      */
+    #[DataProvider('data')]
     public function test(Closure $assert): void
     {
         $assert($this);

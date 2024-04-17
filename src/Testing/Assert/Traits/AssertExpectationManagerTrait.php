@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Assert\Traits;
+namespace StrictPhp\StrictMock\Testing\Assert\Traits;
 
-use LaraStrict\StrictMock\Testing\Assert\AssertExpectationManager;
+use StrictPhp\StrictMock\Testing\Assert\AssertExpectationManager;
 
 trait AssertExpectationManagerTrait
 {

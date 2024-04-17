@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Actions;
+namespace StrictPhp\StrictMock\Testing\Actions;
 
 use Generator;
-use LaraStrict\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionContract;
-use LaraStrict\StrictMock\Testing\Entities\ProjectSetupEntity;
-use LaraStrict\StrictMock\Testing\Factories\ReflectionClassFactory;
+use StrictPhp\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionContract;
+use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
+use StrictPhp\StrictMock\Testing\Factories\ReflectionClassFactory;
 use ReflectionClass;
 
 final class InputArgumentClassToClassesAction

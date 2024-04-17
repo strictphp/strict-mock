@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Assert\Factories;
+namespace StrictPhp\StrictMock\Testing\Assert\Factories;
 
 use Closure;
-use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
-use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
-use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
-use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
+use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
+use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
+use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
+use StrictPhp\StrictMock\Testing\Entities\FileSetupEntity;
 use ReflectionClass;
 
 final class AssertFileStateEntityFactory

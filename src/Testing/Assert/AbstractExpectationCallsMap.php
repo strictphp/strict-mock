@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Assert;
+namespace StrictPhp\StrictMock\Testing\Assert;
 
-use LaraStrict\StrictMock\Testing\Expectation\AbstractExpectation;
+use StrictPhp\StrictMock\Testing\Expectation\AbstractExpectation;
 use LogicException;
 
 /**

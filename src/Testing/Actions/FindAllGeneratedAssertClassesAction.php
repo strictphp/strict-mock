@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Actions;
+namespace StrictPhp\StrictMock\Testing\Actions;
 
 use Generator;
-use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
-use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
-use LaraStrict\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionContract;
-use LaraStrict\StrictMock\Testing\Contracts\FinderFactoryContract;
-use LaraStrict\StrictMock\Testing\Entities\ProjectSetupEntity;
-use LaraStrict\StrictMock\Testing\Exceptions\LogicException;
+use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
+use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
+use StrictPhp\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionContract;
+use StrictPhp\StrictMock\Testing\Contracts\FinderFactoryContract;
+use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
+use StrictPhp\StrictMock\Testing\Exceptions\LogicException;
 use ReflectionClass;
 
 final class FindAllGeneratedAssertClassesAction implements FindAllGeneratedAssertClassesActionContract
@@ -43,7 +43,7 @@ final class FindAllGeneratedAssertClassesAction implements FindAllGeneratedAsser
             }
 
             $interfaces = $classReflection->getInterfaces();
-            if (count($interfaces) === 0) {
+            if ($interfaces === []) {
                 throw new LogicException('Too few implementations for class "%s"', $class);
             }
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Entities;
+namespace StrictPhp\StrictMock\Testing\Entities;
 
-use LaraStrict\StrictMock\Testing\Constants\StubConstants;
+use StrictPhp\StrictMock\Testing\Constants\StubConstants;
 use Nette\PhpGenerator\PhpFile;
 
 final class ObjectEntity

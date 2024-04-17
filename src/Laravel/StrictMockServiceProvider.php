@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Laravel;
+namespace StrictPhp\StrictMock\Laravel;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
-use LaraStrict\StrictMock\Laravel\Commands\MakeExpectationCommand;
-use LaraStrict\StrictMock\PHPUnit\Services\TestFrameworkService;
-use LaraStrict\StrictMock\Symfony\Factories\FinderFactory;
-use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
-use LaraStrict\StrictMock\Testing\Actions\FindAllGeneratedAssertClassesAction;
-use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
-use LaraStrict\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionContract;
-use LaraStrict\StrictMock\Testing\Contracts\FinderFactoryContract;
-use LaraStrict\StrictMock\Testing\Contracts\TestFrameworkServiceContract;
-use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
-use LaraStrict\StrictMock\Testing\Entities\ProjectSetupEntity;
-use LaraStrict\StrictMock\Testing\Helpers\Realpath;
-use LaraStrict\StrictMock\Testing\Services\ComposerJsonService;
+use StrictPhp\StrictMock\Laravel\Commands\MakeExpectationCommand;
+use StrictPhp\StrictMock\PHPUnit\Services\TestFrameworkService;
+use StrictPhp\StrictMock\Symfony\Factories\FinderFactory;
+use StrictPhp\StrictMock\Testing\Actions\FilePathToClassAction;
+use StrictPhp\StrictMock\Testing\Actions\FindAllGeneratedAssertClassesAction;
+use StrictPhp\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
+use StrictPhp\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionContract;
+use StrictPhp\StrictMock\Testing\Contracts\FinderFactoryContract;
+use StrictPhp\StrictMock\Testing\Contracts\TestFrameworkServiceContract;
+use StrictPhp\StrictMock\Testing\Entities\FileSetupEntity;
+use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
+use StrictPhp\StrictMock\Testing\Helpers\Realpath;
+use StrictPhp\StrictMock\Testing\Services\ComposerJsonService;
 
 final class StrictMockServiceProvider extends ServiceProvider
 {

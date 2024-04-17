@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Assert\Actions;
+namespace StrictPhp\StrictMock\Testing\Assert\Actions;
 
-use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
-use LaraStrict\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
-use LaraStrict\StrictMock\Testing\Attributes\Expectation;
+use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
+use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
+use StrictPhp\StrictMock\Testing\Attributes\Expectation;
 use ReflectionClass;
 
 final class RemoveAssertFileAction

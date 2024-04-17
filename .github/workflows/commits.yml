@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review, review_requested, auto_merge_enabled]
 
 concurrency:
-  group: larastrict-commits-${{ github.ref }}
+  group: strictphp-commits-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

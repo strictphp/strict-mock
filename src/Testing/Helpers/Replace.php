@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Helpers;
+namespace StrictPhp\StrictMock\Testing\Helpers;
 
 final class Replace
 {

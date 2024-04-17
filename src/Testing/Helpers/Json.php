@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Helpers;
+namespace StrictPhp\StrictMock\Testing\Helpers;
 
-use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
+use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
 
 final class Json
 {
     public static function loadFromFile(string $path): array
     {
-        $content = file_get_contents($path);
-        if ($content === false) {
+        if (is_file($path) === false || ($content = file_get_contents($path)) === false) {
             throw new FileDoesNotExistsException($path);
         }
 

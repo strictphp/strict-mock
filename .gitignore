@@ -5,3 +5,4 @@
 /docs/dist
 /docs/node_modules
 /docs/static/sw.js
+/.phpunit.cache/

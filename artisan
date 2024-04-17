@@ -2,10 +2,10 @@
 <?php
 
 use Illuminate\Foundation\PackageManifest;
-use LaraStrict\StrictMock\Testing\Actions\GetDevBasePathForStubs;
-use LaraStrict\StrictMock\Testing\Actions\GetDevNamespaceForStubsAction;
-use LaraStrict\StrictMock\Testing\Contracts\GetBasePathForStubsActionContract;
-use LaraStrict\StrictMock\Testing\Contracts\GetNamespaceForStubsActionContract;
+use StrictPhp\StrictMock\Testing\Actions\GetDevBasePathForStubs;
+use StrictPhp\StrictMock\Testing\Actions\GetDevNamespaceForStubsAction;
+use StrictPhp\StrictMock\Testing\Contracts\GetBasePathForStubsActionContract;
+use StrictPhp\StrictMock\Testing\Contracts\GetNamespaceForStubsActionContract;
 
 define('LARAVEL_START', microtime(true));
 
@@ -49,7 +49,7 @@ foreach ($packageManifest->providers() as $provider) {
     $app->register($provider);
 }
 
-$app->register(\LaraStrict\Laravel\StrictMockServiceProvider::class);
+$app->register(\Laravel\StrictMockServiceProvider::class);
 
 $app->bind(GetBasePathForStubsActionContract::class, GetDevBasePathForStubs::class);
 $app->bind(GetNamespaceForStubsActionContract::class, GetDevNamespaceForStubsAction::class);

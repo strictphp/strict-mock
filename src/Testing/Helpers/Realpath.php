@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Helpers;
+namespace StrictPhp\StrictMock\Testing\Helpers;
 
-use LaraStrict\StrictMock\Testing\Constants\StubConstants;
-use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
+use StrictPhp\StrictMock\Testing\Constants\StubConstants;
+use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
 
 final class Realpath
 {

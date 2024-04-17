@@ -1,10 +1,16 @@
 {
-    "name": "larastrict/strict-mock",
+    "name": "strictphp/strict-mock",
     "type": "project",
     "description": "Strict mock is a strict type safe mock generated from your interfaces to use with any testing framework.",
-    "keywords": ["laravel", "php", "strictphp", "strict", "mockery"],
+    "keywords": [
+        "laravel",
+        "php",
+        "strictphp",
+        "strict",
+        "mockery"
+    ],
     "license": "MIT",
-    "homepage": "https://github.com/larastrict/strict-mock",
+    "homepage": "https://github.com/strictphp/strict-mock",
     "authors": [
         {
             "name": "Martin Kluska",
@@ -53,30 +59,25 @@
     },
     "autoload": {
         "psr-4": {
-            "LaraStrict\\StrictMock\\": "src/"
+            "StrictPhp\\StrictMock\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\LaraStrict\\StrictMock\\Feature\\": "tests/Feature/",
-            "Tests\\LaraStrict\\StrictMock\\Unit\\": "tests/Unit/"
+            "Tests\\StrictPhp\\StrictMock\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "LaraStrict\\Laravel\\StrictMockServiceProvider"
+                "StrictPhp\\StrictMock\\Laravel\\StrictMockServiceProvider"
             ]
         }
     },
     "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
             "phpstan/extension-installer": true
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }

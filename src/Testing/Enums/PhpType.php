@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Enums;
+namespace StrictPhp\StrictMock\Testing\Enums;
 
 enum PhpType: string
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Expectation\Entities;
+namespace StrictPhp\StrictMock\Testing\Expectation\Entities;
 
-use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
+use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
 use Nette\PhpGenerator\Method;
 
 final class ExpectationFileEntity

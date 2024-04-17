@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Factories;
+namespace StrictPhp\StrictMock\Testing\Factories;
 
-use LaraStrict\StrictMock\Testing\Actions\FilePathToClassAction;
-use LaraStrict\StrictMock\Testing\Entities\ProjectSetupEntity;
-use LaraStrict\StrictMock\Testing\Exceptions\ClassIsNotInterfaceException;
-use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
-use LaraStrict\StrictMock\Testing\Helpers\Php;
+use StrictPhp\StrictMock\Testing\Actions\FilePathToClassAction;
+use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
+use StrictPhp\StrictMock\Testing\Exceptions\ClassIsNotInterfaceException;
+use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
+use StrictPhp\StrictMock\Testing\Helpers\Php;
 use ReflectionClass;
 
 final class ReflectionClassFactory

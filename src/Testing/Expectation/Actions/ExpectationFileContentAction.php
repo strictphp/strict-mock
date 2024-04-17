@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Expectation\Actions;
+namespace StrictPhp\StrictMock\Testing\Expectation\Actions;
 
 use Closure;
-use LaraStrict\StrictMock\Testing\Actions\AddUseByTypeAction;
-use LaraStrict\StrictMock\Testing\Actions\WritePhpFileAction;
-use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
-use LaraStrict\StrictMock\Testing\Constants\StubConstants;
-use LaraStrict\StrictMock\Testing\Entities\PhpDocEntity;
-use LaraStrict\StrictMock\Testing\Enums\PhpType;
-use LaraStrict\StrictMock\Testing\Expectation\AbstractExpectation;
-use LaraStrict\StrictMock\Testing\Expectation\Entities\ExpectationFileEntity;
-use LaraStrict\StrictMock\Testing\Expectation\Factories\ExpectationObjectEntityFactory;
-use LaraStrict\StrictMock\Testing\Helpers\Php;
+use StrictPhp\StrictMock\Testing\Actions\AddUseByTypeAction;
+use StrictPhp\StrictMock\Testing\Actions\WritePhpFileAction;
+use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
+use StrictPhp\StrictMock\Testing\Constants\StubConstants;
+use StrictPhp\StrictMock\Testing\Entities\PhpDocEntity;
+use StrictPhp\StrictMock\Testing\Enums\PhpType;
+use StrictPhp\StrictMock\Testing\Expectation\AbstractExpectation;
+use StrictPhp\StrictMock\Testing\Expectation\Entities\ExpectationFileEntity;
+use StrictPhp\StrictMock\Testing\Expectation\Factories\ExpectationObjectEntityFactory;
+use StrictPhp\StrictMock\Testing\Helpers\Php;
 use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\PromotedParameter;

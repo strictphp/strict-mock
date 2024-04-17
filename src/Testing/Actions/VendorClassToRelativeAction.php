@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Actions;
+namespace StrictPhp\StrictMock\Testing\Actions;
 
-use LaraStrict\StrictMock\Testing\Constants\StubConstants;
-use LaraStrict\StrictMock\Testing\Exceptions\DirectoryDoesNotExistsException;
-use LaraStrict\StrictMock\Testing\Helpers\Replace;
-use LaraStrict\StrictMock\Testing\Services\ComposerPsr4Service;
+use StrictPhp\StrictMock\Testing\Constants\StubConstants;
+use StrictPhp\StrictMock\Testing\Exceptions\DirectoryDoesNotExistsException;
+use StrictPhp\StrictMock\Testing\Helpers\Replace;
+use StrictPhp\StrictMock\Testing\Services\ComposerPsr4Service;
 
 final class VendorClassToRelativeAction
 {

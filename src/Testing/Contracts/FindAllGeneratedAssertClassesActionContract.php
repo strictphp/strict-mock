@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Contracts;
+namespace StrictPhp\StrictMock\Testing\Contracts;
 
 use Generator;
 

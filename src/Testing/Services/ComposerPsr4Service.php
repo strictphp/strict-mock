@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Services;
+namespace StrictPhp\StrictMock\Testing\Services;
 
 use Generator;
-use LaraStrict\StrictMock\Testing\Constants\ComposerConstants;
-use LaraStrict\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
-use LaraStrict\StrictMock\Testing\Exceptions\DirectoryDoesNotExistsException;
-use LaraStrict\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
+use StrictPhp\StrictMock\Testing\Constants\ComposerConstants;
+use StrictPhp\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
+use StrictPhp\StrictMock\Testing\Exceptions\DirectoryDoesNotExistsException;
+use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
 
 final class ComposerPsr4Service
 {

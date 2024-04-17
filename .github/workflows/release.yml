@@ -5,7 +5,7 @@ on:
       - "main"
 
 concurrency:
-  group: larastrict-release-${{ github.ref }}
+  group: strictphp-release-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

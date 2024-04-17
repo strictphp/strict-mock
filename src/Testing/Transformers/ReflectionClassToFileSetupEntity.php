@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Transformers;
+namespace StrictPhp\StrictMock\Testing\Transformers;
 
-use LaraStrict\StrictMock\Testing\Actions\MkDirAction;
-use LaraStrict\StrictMock\Testing\Constants\StubConstants;
-use LaraStrict\StrictMock\Testing\Entities\FileSetupEntity;
-use LaraStrict\StrictMock\Testing\Entities\ProjectSetupEntity;
-use LaraStrict\StrictMock\Testing\Helpers\Realpath;
-use LaraStrict\StrictMock\Testing\Services\ComposerPsr4Service;
+use StrictPhp\StrictMock\Testing\Actions\MkDirAction;
+use StrictPhp\StrictMock\Testing\Constants\StubConstants;
+use StrictPhp\StrictMock\Testing\Entities\FileSetupEntity;
+use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
+use StrictPhp\StrictMock\Testing\Helpers\Realpath;
+use StrictPhp\StrictMock\Testing\Services\ComposerPsr4Service;
 use ReflectionClass;
 
 final class ReflectionClassToFileSetupEntity

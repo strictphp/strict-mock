@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Actions;
+namespace StrictPhp\StrictMock\Testing\Actions;
 
-use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
+use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
 use Nette\PhpGenerator\PsrPrinter;
 
 final class WritePhpFileAction

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LaraStrict\StrictMock\Testing\Expectation\Factories;
+namespace StrictPhp\StrictMock\Testing\Expectation\Factories;
 
-use LaraStrict\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
-use LaraStrict\StrictMock\Testing\Entities\ObjectEntity;
-use LaraStrict\StrictMock\Testing\Factories\PhpFileFactory;
+use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
+use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
+use StrictPhp\StrictMock\Testing\Factories\PhpFileFactory;
 use ReflectionClass;
 use ReflectionMethod;
 
