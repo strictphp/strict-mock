@@ -1,5 +1,10 @@
 <?php declare(strict_types=1);
 
+use Nette\Utils\Finder;
+use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Parser\ConstExprParser;
+use PHPStan\PhpDocParser\Parser\PhpDocParser;
+use PHPStan\PhpDocParser\Parser\TypeParser;
 use StrictPhp\StrictMock\PHPUnit\Services\TestFrameworkService;
 use StrictPhp\StrictMock\Symfony\Factories\FinderFactory;
 use StrictPhp\StrictMock\Testing\Actions\AddUseByTypeAction;
@@ -23,11 +28,6 @@ use StrictPhp\StrictMock\Testing\Factories\ReflectionClassFactory;
 use StrictPhp\StrictMock\Testing\Services\ComposerJsonService;
 use StrictPhp\StrictMock\Testing\Services\ComposerPsr4Service;
 use StrictPhp\StrictMock\Testing\Transformers\ReflectionClassToFileSetupEntity;
-use Nette\Utils\Finder;
-use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\ConstExprParser;
-use PHPStan\PhpDocParser\Parser\PhpDocParser;
-use PHPStan\PhpDocParser\Parser\TypeParser;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -44,6 +44,7 @@ function loadFiles(string $dir, string $root): Generator
     }
 }
 
+$fileArg = $argv[1] ?? null;
 
 { // setup
     $fromExists = true;
@@ -117,7 +118,11 @@ function render(GenerateAssertClassAction $generateAssertClass, iterable $files,
     }
 }
 
-if ($fromExists) {
+if ($fileArg !== null) {
+    $reflectionClassFactory = new ReflectionClassFactory($setup, $filePathToClassAction);
+    $files = [$fileArg];
+    render($generateAssertClass, $files, static fn ($file) => $reflectionClassFactory->create($file));
+} elseif ($fromExists) {
     render($generateAssertClass, $findAllClassesAction->execute());
 } else {
     $reflectionClassFactory = new ReflectionClassFactory($setup, $filePathToClassAction);

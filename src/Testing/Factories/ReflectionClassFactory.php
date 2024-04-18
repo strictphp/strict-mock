@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StrictPhp\StrictMock\Testing\Factories;
 
 use StrictPhp\StrictMock\Testing\Actions\FilePathToClassAction;
+use StrictPhp\StrictMock\Testing\Contracts\FilePathToClassActionContract;
 use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
 use StrictPhp\StrictMock\Testing\Exceptions\ClassIsNotInterfaceException;
 use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
@@ -15,7 +16,7 @@ final class ReflectionClassFactory
 {
     public function __construct(
         private readonly ProjectSetupEntity $projectSetup,
-        private readonly FilePathToClassAction $filePathToClassAction,
+        private readonly FilePathToClassActionContract $filePathToClassAction,
     ) {
     }
 

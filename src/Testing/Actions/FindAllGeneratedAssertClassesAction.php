@@ -7,6 +7,7 @@ namespace StrictPhp\StrictMock\Testing\Actions;
 use Generator;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
+use StrictPhp\StrictMock\Testing\Contracts\FilePathToClassActionContract;
 use StrictPhp\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionContract;
 use StrictPhp\StrictMock\Testing\Contracts\FinderFactoryContract;
 use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
@@ -17,7 +18,7 @@ final class FindAllGeneratedAssertClassesAction implements FindAllGeneratedAsser
 {
     public function __construct(
         private readonly FinderFactoryContract $finderFactory,
-        private readonly FilePathToClassAction $filePathToClassAction,
+        private readonly FilePathToClassActionContract $filePathToClassAction,
         private readonly ProjectSetupEntity $projectSetupEntity,
     ) {
     }

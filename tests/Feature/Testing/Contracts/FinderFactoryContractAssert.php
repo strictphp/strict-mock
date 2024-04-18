@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\StrictPhp\StrictMock\Feature\Testing\Contracts;
 
 use Closure;
+use PHPUnit\Framework\Assert;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
 use StrictPhp\StrictMock\Testing\Attributes\Expectation;
 use StrictPhp\StrictMock\Testing\Contracts\FinderFactoryContract;
-use PHPUnit\Framework\Assert;
 
 #[Expectation(class: FinderFactoryContractCreateExpectation::class)]
 final class FinderFactoryContractAssert extends AbstractExpectationAllInOne implements FinderFactoryContract
@@ -29,9 +29,7 @@ final class FinderFactoryContractAssert extends AbstractExpectationAllInOne impl
 
         Assert::assertEquals($_expectation->path, $path, $_message);
 
-        if ($_expectation->_hook !== null) {
-            ($_expectation->_hook)($path, $_expectation);
-        }
+        $_expectation->_hook !== null && ($_expectation->_hook)($path, $_expectation);
 
         return $_expectation->return;
     }

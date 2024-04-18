@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\StrictPhp\StrictMock\Feature\Testing\Contracts;
 
 use Closure;
+use PHPUnit\Framework\Assert;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
 use StrictPhp\StrictMock\Testing\Attributes\Expectation;
 use StrictPhp\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
-use PHPUnit\Framework\Assert;
 
 #[Expectation(class: ComposerJsonServiceContractContentExpectation::class)]
 #[Expectation(class: ComposerJsonServiceContractIsExistExpectation::class)]
@@ -32,9 +32,7 @@ final class ComposerJsonServiceContractAssert extends AbstractExpectationCallsMa
 
         Assert::assertEquals($_expectation->path, $path, $_message);
 
-        if ($_expectation->_hook !== null) {
-            ($_expectation->_hook)($path, $_expectation);
-        }
+        $_expectation->_hook !== null && ($_expectation->_hook)($path, $_expectation);
 
         return $_expectation->return;
     }
@@ -54,9 +52,7 @@ final class ComposerJsonServiceContractAssert extends AbstractExpectationCallsMa
 
         Assert::assertEquals($_expectation->basePath, $basePath, $_message);
 
-        if ($_expectation->_hook !== null) {
-            ($_expectation->_hook)($basePath, $_expectation);
-        }
+        $_expectation->_hook !== null && ($_expectation->_hook)($basePath, $_expectation);
 
         return $_expectation->return;
     }

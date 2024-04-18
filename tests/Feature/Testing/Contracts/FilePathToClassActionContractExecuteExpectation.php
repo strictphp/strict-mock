@@ -7,14 +7,14 @@ namespace Tests\StrictPhp\StrictMock\Feature\Testing\Contracts;
 use Closure;
 use StrictPhp\StrictMock\Testing\Expectation\AbstractExpectation;
 
-final class FindAllGeneratedAssertClassesActionContractExecuteExpectation extends AbstractExpectation
+final class FilePathToClassActionContractExecuteExpectation extends AbstractExpectation
 {
     /**
-     * @param Closure(string|null,self):void|null $_hook
+     * @param Closure(string,self):void|null $_hook
      */
     public function __construct(
-        public readonly \Generator $return,
-        public readonly ?string $dir = null,
+        public readonly ?string $return,
+        public readonly string $filepath,
         public readonly ?Closure $_hook = null,
     ) {
     }
