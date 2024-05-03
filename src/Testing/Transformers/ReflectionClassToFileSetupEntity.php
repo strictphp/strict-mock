@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace StrictPhp\StrictMock\Testing\Transformers;
 
-use StrictPhp\StrictMock\Testing\Actions\MkDirAction;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use StrictPhp\StrictMock\Testing\Constants\StubConstants;
+use StrictPhp\StrictMock\Testing\Contracts\ComposerPsr4ServiceContract;
 use StrictPhp\StrictMock\Testing\Entities\FileSetupEntity;
 use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
 use StrictPhp\StrictMock\Testing\Helpers\Realpath;
@@ -18,8 +19,8 @@ final class ReflectionClassToFileSetupEntity
 
     public function __construct(
         private readonly ProjectSetupEntity $projectSetup,
-        private readonly MkDirAction $mkDirAction,
-        private readonly ComposerPsr4Service $composerPsr4Service,
+        private readonly Filesystem $filesystem,
+        private readonly ComposerPsr4ServiceContract $composerPsr4Service,
     ) {
     }
 
@@ -48,7 +49,7 @@ final class ReflectionClassToFileSetupEntity
             DIRECTORY_SEPARATOR,
             [$exportSetup->dir, self::Vendor, Realpath::fromNamespace($namespace)]
         );
-        $this->mkDirAction->execute($exportDir);
+        $this->filesystem->makeDirectory($exportDir);
 
         return new FileSetupEntity($exportDir, $exportNamespace);
     }

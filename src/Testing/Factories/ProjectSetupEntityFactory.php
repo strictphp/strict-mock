@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StrictPhp\StrictMock\Testing\Factories;
 
 use StrictPhp\StrictMock\Testing\Constants\StubConstants;
+use StrictPhp\StrictMock\Testing\Contracts\ComposerPsr4ServiceContract;
 use StrictPhp\StrictMock\Testing\Entities\FileSetupEntity;
 use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
 use StrictPhp\StrictMock\Testing\Exceptions\LogicException;
@@ -16,7 +17,7 @@ final class ProjectSetupEntityFactory
 {
     public function __construct(
         private readonly string $composerDir,
-        private readonly ComposerPsr4Service $composerJsonService,
+        private readonly ComposerPsr4ServiceContract $composerJsonService,
         private readonly string $export = '',
     ) {
     }

@@ -1,5 +1,8 @@
 <?php declare(strict_types=1);
 
+use Illuminate\Filesystem\FilesystemAdapter;
+use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use Nette\Utils\Finder;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
@@ -10,7 +13,6 @@ use StrictPhp\StrictMock\Symfony\Factories\FinderFactory;
 use StrictPhp\StrictMock\Testing\Actions\AddUseByTypeAction;
 use StrictPhp\StrictMock\Testing\Actions\FilePathToClassAction;
 use StrictPhp\StrictMock\Testing\Actions\FindAllGeneratedAssertClassesAction;
-use StrictPhp\StrictMock\Testing\Actions\MkDirAction;
 use StrictPhp\StrictMock\Testing\Actions\VendorClassToRelativeAction;
 use StrictPhp\StrictMock\Testing\Actions\WritePhpFileAction;
 use StrictPhp\StrictMock\Testing\Assert\Actions\GenerateAssertClassAction;
@@ -59,15 +61,16 @@ $fileArg = $argv[1] ?? null;
     $composerJsonService = new ComposerJsonService();
     $composerPsr4Service = new ComposerPsr4Service($composerJsonService);
     $filePathToClassAction = new FilePathToClassAction($composerPsr4Service);
-    $vendorClassToRelativeAction = new VendorClassToRelativeAction($composerPsr4Service);
 
     $setup = (new ProjectSetupEntityFactory($composerDir, $composerPsr4Service, $exportDefaultDir))->create();
 
-    $mkDirAction = new MkDirAction();
-    $phpFileFactory = new PhpFileFactory();
-    $writePhpFileAction = new WritePhpFileAction($mkDirAction);
+    $localFilesystem = new LocalFilesystemAdapter('/');
+    $league = new Filesystem($localFilesystem);
+    $filesystem = new FilesystemAdapter($league, $localFilesystem);
+    $writePhpFileAction = new WritePhpFileAction($filesystem);
 
-    $reflectionClassToFileSetupEntity = new ReflectionClassToFileSetupEntity($setup, $mkDirAction, $composerPsr4Service);
+    $reflectionClassToFileSetupEntity = new ReflectionClassToFileSetupEntity($setup, $filesystem, $composerPsr4Service);
+    $phpFileFactory = new PhpFileFactory();
     $expectationObjectEntityFactory = new ExpectationObjectEntityFactory($phpFileFactory);
     $assertObjectEntityFactory = new AssertObjectEntityFactory($reflectionClassToFileSetupEntity, $phpFileFactory);
 
