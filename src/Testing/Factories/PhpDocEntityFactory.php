@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace StrictPhp\StrictMock\Testing\Factories;
 
-use StrictPhp\StrictMock\Testing\Entities\PhpDocEntity;
-use StrictPhp\StrictMock\Testing\Enums\PhpType;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use ReflectionMethod;
+use StrictPhp\StrictMock\Testing\Entities\PhpDocEntity;
+use StrictPhp\StrictMock\Testing\Enums\PhpType;
 
 final class PhpDocEntityFactory
 {

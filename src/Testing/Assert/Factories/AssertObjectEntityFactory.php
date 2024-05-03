@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace StrictPhp\StrictMock\Testing\Assert\Factories;
 
+use ReflectionClass;
 use StrictPhp\StrictMock\Testing\Entities\FileSetupEntity;
 use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
 use StrictPhp\StrictMock\Testing\Factories\PhpFileFactory;
 use StrictPhp\StrictMock\Testing\Transformers\ReflectionClassToFileSetupEntity;
-use ReflectionClass;
 
 final class AssertObjectEntityFactory
 {

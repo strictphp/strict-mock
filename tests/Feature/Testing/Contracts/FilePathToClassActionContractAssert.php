@@ -29,7 +29,9 @@ final class FilePathToClassActionContractAssert extends AbstractExpectationAllIn
 
         Assert::assertEquals($_expectation->filepath, $filepath, $_message);
 
-        $_expectation->_hook !== null && ($_expectation->_hook)($filepath, $_expectation);
+        if ($_expectation->_hook !== null) {
+            ($_expectation->_hook)($filepath, $_expectation);
+        }
 
         return $_expectation->return;
     }

@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace StrictPhp\StrictMock\Testing\Assert\Actions;
 
+use Nette\PhpGenerator\Factory;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionUnionType;
 use StrictPhp\StrictMock\Testing\Actions\AddUseByTypeAction;
 use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use StrictPhp\StrictMock\Testing\Contracts\TestFrameworkServiceContract;
 use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
 use StrictPhp\StrictMock\Testing\Entities\PhpDocEntity;
 use StrictPhp\StrictMock\Testing\Enums\PhpType;
-use Nette\PhpGenerator\Factory;
-use ReflectionClass;
-use ReflectionMethod;
-use ReflectionNamedType;
-use ReflectionUnionType;
 
 final class GenerateAssertMethodAction
 {

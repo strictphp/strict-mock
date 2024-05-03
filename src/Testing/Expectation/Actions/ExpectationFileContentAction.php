@@ -5,16 +5,6 @@ declare(strict_types=1);
 namespace StrictPhp\StrictMock\Testing\Expectation\Actions;
 
 use Closure;
-use StrictPhp\StrictMock\Testing\Actions\AddUseByTypeAction;
-use StrictPhp\StrictMock\Testing\Actions\WritePhpFileAction;
-use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
-use StrictPhp\StrictMock\Testing\Constants\StubConstants;
-use StrictPhp\StrictMock\Testing\Entities\PhpDocEntity;
-use StrictPhp\StrictMock\Testing\Enums\PhpType;
-use StrictPhp\StrictMock\Testing\Expectation\AbstractExpectation;
-use StrictPhp\StrictMock\Testing\Expectation\Entities\ExpectationFileEntity;
-use StrictPhp\StrictMock\Testing\Expectation\Factories\ExpectationObjectEntityFactory;
-use StrictPhp\StrictMock\Testing\Helpers\Php;
 use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\PromotedParameter;
@@ -25,6 +15,16 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionType;
 use ReflectionUnionType;
+use StrictPhp\StrictMock\Testing\Actions\AddUseByTypeAction;
+use StrictPhp\StrictMock\Testing\Actions\WritePhpFileAction;
+use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
+use StrictPhp\StrictMock\Testing\Constants\StubConstants;
+use StrictPhp\StrictMock\Testing\Entities\PhpDocEntity;
+use StrictPhp\StrictMock\Testing\Enums\PhpType;
+use StrictPhp\StrictMock\Testing\Expectation\AbstractExpectation;
+use StrictPhp\StrictMock\Testing\Expectation\Entities\ExpectationFileEntity;
+use StrictPhp\StrictMock\Testing\Expectation\Factories\ExpectationObjectEntityFactory;
+use StrictPhp\StrictMock\Testing\Helpers\Php;
 
 final class ExpectationFileContentAction
 {

@@ -10,7 +10,6 @@ use StrictPhp\StrictMock\Testing\Contracts\FilePathToClassActionContract;
 use StrictPhp\StrictMock\Testing\Exceptions\DirectoryDoesNotExistsException;
 use StrictPhp\StrictMock\Testing\Helpers\Php;
 use StrictPhp\StrictMock\Testing\Helpers\Replace;
-use StrictPhp\StrictMock\Testing\Services\ComposerPsr4Service;
 
 final class FilePathToClassAction implements FilePathToClassActionContract
 {

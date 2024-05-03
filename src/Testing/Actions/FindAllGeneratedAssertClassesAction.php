@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StrictPhp\StrictMock\Testing\Actions;
 
 use Generator;
+use ReflectionClass;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
 use StrictPhp\StrictMock\Testing\Contracts\FilePathToClassActionContract;
@@ -12,7 +13,6 @@ use StrictPhp\StrictMock\Testing\Contracts\FindAllGeneratedAssertClassesActionCo
 use StrictPhp\StrictMock\Testing\Contracts\FinderFactoryContract;
 use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
 use StrictPhp\StrictMock\Testing\Exceptions\LogicException;
-use ReflectionClass;
 
 final class FindAllGeneratedAssertClassesAction implements FindAllGeneratedAssertClassesActionContract
 {

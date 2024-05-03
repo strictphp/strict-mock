@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace StrictPhp\StrictMock\Testing\Entities;
 
-use StrictPhp\StrictMock\Testing\Constants\StubConstants;
 use Nette\PhpGenerator\PhpFile;
+use StrictPhp\StrictMock\Testing\Constants\StubConstants;
 
 final class ObjectEntity
 {

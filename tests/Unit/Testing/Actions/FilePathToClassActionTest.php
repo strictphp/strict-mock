@@ -6,14 +6,14 @@ namespace Tests\StrictPhp\StrictMock\Unit\Testing\Actions;
 
 use Closure;
 use Exception;
+use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 use StrictPhp\StrictMock\Testing\Actions\FilePathToClassAction;
 use StrictPhp\StrictMock\Testing\Contracts\ComposerJsonServiceContract;
 use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
 use StrictPhp\StrictMock\Testing\Helpers\Json;
 use StrictPhp\StrictMock\Testing\Services\ComposerPsr4Service;
-use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 use Tests\StrictPhp\StrictMock\Feature\Testing\Contracts\ComposerJsonServiceContractAssert;
 use Tests\StrictPhp\StrictMock\Feature\Testing\Contracts\ComposerJsonServiceContractContentExpectation;
 use Tests\StrictPhp\StrictMock\Feature\Testing\Contracts\ComposerJsonServiceContractIsExistExpectation;

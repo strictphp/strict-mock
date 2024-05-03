@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace StrictPhp\StrictMock\Testing\Transformers;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
+use ReflectionClass;
 use StrictPhp\StrictMock\Testing\Constants\StubConstants;
 use StrictPhp\StrictMock\Testing\Contracts\ComposerPsr4ServiceContract;
 use StrictPhp\StrictMock\Testing\Entities\FileSetupEntity;
 use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
 use StrictPhp\StrictMock\Testing\Helpers\Realpath;
-use StrictPhp\StrictMock\Testing\Services\ComposerPsr4Service;
-use ReflectionClass;
 
 final class ReflectionClassToFileSetupEntity
 {

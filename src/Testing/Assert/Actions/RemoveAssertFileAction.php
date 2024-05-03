@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace StrictPhp\StrictMock\Testing\Assert\Actions;
 
+use ReflectionClass;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
 use StrictPhp\StrictMock\Testing\Attributes\Expectation;
-use ReflectionClass;
 
 final class RemoveAssertFileAction
 {

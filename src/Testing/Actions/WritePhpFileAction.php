@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace StrictPhp\StrictMock\Testing\Actions;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
-use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
 use Nette\PhpGenerator\PsrPrinter;
+use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
 
 final class WritePhpFileAction
 {

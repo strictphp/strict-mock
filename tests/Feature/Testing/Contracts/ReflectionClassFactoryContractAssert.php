@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\StrictPhp\StrictMock\Feature\Testing\Contracts;
 
+use ReflectionClass;
 use Closure;
 use PHPUnit\Framework\Assert;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
@@ -22,20 +23,22 @@ final class ReflectionClassFactoryContractAssert extends AbstractExpectationAllI
         $this->setExpectations($expectations);
     }
 
-    public function create(string $classOrPath): \ReflectionClass
+    public function create(string $classOrPath): ReflectionClass
     {
         $_expectation = $this->getExpectation(ReflectionClassFactoryContractCreateExpectation::class);
         $_message = $this->getDebugMessage();
 
         Assert::assertEquals($_expectation->classOrPath, $classOrPath, $_message);
 
-        $_expectation->_hook !== null && ($_expectation->_hook)($classOrPath, $_expectation);
+        if ($_expectation->_hook !== null) {
+            ($_expectation->_hook)($classOrPath, $_expectation);
+        }
 
         return $_expectation->return;
     }
 
     public static function expectationCreate(
-        \ReflectionClass $return,
+        ReflectionClass $return,
         string $classOrPath,
         ?Closure $_hook = null,
     ): ReflectionClassFactoryContractCreateExpectation {

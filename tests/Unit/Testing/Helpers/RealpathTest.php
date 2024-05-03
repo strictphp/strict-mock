@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\StrictPhp\StrictMock\Unit\Testing\Helpers;
 
 use Closure;
-use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
-use StrictPhp\StrictMock\Testing\Helpers\Realpath;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
+use StrictPhp\StrictMock\Testing\Helpers\Realpath;
 
 final class RealpathTest extends TestCase
 {

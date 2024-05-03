@@ -30,18 +30,13 @@ final class FindAllGeneratedAssertClassesActionTest extends TestCase
     {
         return [
             [static function (self $self) {
-                $self->assert(
-                    __DIR__ . '/BBB',
-                );
+                $self->assert(__DIR__ . '/BBB');
             }],
             [static function (self $self) {
-                $self->assert(
-                    null,
-                );
+                $self->assert(null);
             }],
         ];
     }
-
 
     /**
      * @param Closure(static):void $assert
@@ -52,9 +47,7 @@ final class FindAllGeneratedAssertClassesActionTest extends TestCase
         $assert($this);
     }
 
-    public function assert(
-        ?string $inputDir,
-    ): void {
+    public function assert(?string $inputDir): void {
         $sourceDir = __DIR__ . '/AAA';
         $finder = [
             new SplFileInfo(__DIR__ . '/../../../Feature/Dummy/Tests/Contracts/FooAssert.php'),
@@ -64,11 +57,22 @@ final class FindAllGeneratedAssertClassesActionTest extends TestCase
         ];
 
         $action = new FindAllGeneratedAssertClassesAction(
-            new FinderFactoryContractAssert([FinderFactoryContractAssert::expectationCreate($finder, $inputDir ?? $sourceDir)]),
+            new FinderFactoryContractAssert([
+                FinderFactoryContractAssert::expectationCreate($finder, $inputDir ?? $sourceDir),
+            ]),
             new FilePathToClassActionContractAssert([
-                FilePathToClassActionContractAssert::expectationExecute(FooAssert::class, realpath(__DIR__ . '/../../../Feature/Dummy/Tests/Contracts/FooAssert.php')),
-                FilePathToClassActionContractAssert::expectationExecute(BarAssert::class, realpath(__DIR__ . '/../../../Feature/Dummy/Tests/Interfaces/BarAssert.php')),
-                FilePathToClassActionContractAssert::expectationExecute(null, realpath(__DIR__ . '/../../../Feature/Dummy/Tests/Interfaces/BarFooExpectation.php')),
+                FilePathToClassActionContractAssert::expectationExecute(
+                    FooAssert::class,
+                    realpath(__DIR__ . '/../../../Feature/Dummy/Tests/Contracts/FooAssert.php')
+                ),
+                FilePathToClassActionContractAssert::expectationExecute(
+                    BarAssert::class,
+                    realpath(__DIR__ . '/../../../Feature/Dummy/Tests/Interfaces/BarAssert.php')
+                ),
+                FilePathToClassActionContractAssert::expectationExecute(
+                    null,
+                    realpath(__DIR__ . '/../../../Feature/Dummy/Tests/Interfaces/BarFooExpectation.php')
+                ),
             ]),
             new ProjectSetupEntity('', new FileSetupEntity($sourceDir, '')),
         );
@@ -78,10 +82,7 @@ final class FindAllGeneratedAssertClassesActionTest extends TestCase
             $class[] = $item->getName();
         }
 
-        $expected = [
-            Foo::class,
-            Bar::class,
-        ];
+        $expected = [Foo::class, Bar::class];
 
         Assert::assertSame($expected, $class);
     }
@@ -89,14 +90,15 @@ final class FindAllGeneratedAssertClassesActionTest extends TestCase
     public function testBrokenClass(): void
     {
         $sourceDir = __DIR__ . '/AAA';
-        $finder = [
-            new SplFileInfo(__DIR__ . '/../../../Feature/Dummy/Tests/BrokenClass.php'),
-        ];
+        $finder = [new SplFileInfo(__DIR__ . '/../../../Feature/Dummy/Tests/BrokenClass.php')];
 
         $action = new FindAllGeneratedAssertClassesAction(
             new FinderFactoryContractAssert([FinderFactoryContractAssert::expectationCreate($finder, $sourceDir)]),
             new FilePathToClassActionContractAssert([
-                FilePathToClassActionContractAssert::expectationExecute(BrokenClass::class, realpath(__DIR__ . '/../../../Feature/Dummy/Tests/BrokenClass.php')),
+                FilePathToClassActionContractAssert::expectationExecute(
+                    BrokenClass::class,
+                    realpath(__DIR__ . '/../../../Feature/Dummy/Tests/BrokenClass.php')
+                ),
             ]),
             new ProjectSetupEntity('', new FileSetupEntity($sourceDir, '')),
         );

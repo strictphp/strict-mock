@@ -13,9 +13,7 @@ final class ComposerPsr4ServiceTest extends TestCase
 {
     public function testBasic(): void
     {
-        $composerPsr4Service = new ComposerPsr4Service(
-            new ComposerJsonService()
-        );
+        $composerPsr4Service = new ComposerPsr4Service(new ComposerJsonService());
 
         $auto = $composerPsr4Service->autoload(__DIR__);
         Assert::assertSame([

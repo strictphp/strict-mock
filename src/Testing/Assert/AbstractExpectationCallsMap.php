@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace StrictPhp\StrictMock\Testing\Assert;
 
-use StrictPhp\StrictMock\Testing\Expectation\AbstractExpectation;
 use LogicException;
+use StrictPhp\StrictMock\Testing\Expectation\AbstractExpectation;
 
 /**
  * @deprecated will be replaced by see

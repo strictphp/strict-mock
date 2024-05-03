@@ -6,12 +6,12 @@ namespace Tests\StrictPhp\StrictMock\Unit\Testing\Services;
 
 use Closure;
 use Exception;
-use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
-use StrictPhp\StrictMock\Testing\Helpers\Json;
-use StrictPhp\StrictMock\Testing\Services\ComposerJsonService;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
+use StrictPhp\StrictMock\Testing\Helpers\Json;
+use StrictPhp\StrictMock\Testing\Services\ComposerJsonService;
 
 final class ComposerJsonServiceTest extends TestCase
 {

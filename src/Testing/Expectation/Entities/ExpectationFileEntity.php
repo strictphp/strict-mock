@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace StrictPhp\StrictMock\Testing\Expectation\Entities;
 
-use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
 use Nette\PhpGenerator\Method;
+use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
 
 final class ExpectationFileEntity
 {

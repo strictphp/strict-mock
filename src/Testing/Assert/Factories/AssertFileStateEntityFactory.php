@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace StrictPhp\StrictMock\Testing\Assert\Factories;
 
 use Closure;
+use ReflectionClass;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
 use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use StrictPhp\StrictMock\Testing\Entities\FileSetupEntity;
-use ReflectionClass;
 
 final class AssertFileStateEntityFactory
 {

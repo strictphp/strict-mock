@@ -29,7 +29,9 @@ final class BarAssert extends AbstractExpectationAllInOne implements Bar
 
         Assert::assertEquals($_expectation->a, $a, $_message);
 
-        $_expectation->_hook !== null && ($_expectation->_hook)($a, $_expectation);
+        if ($_expectation->_hook !== null) {
+            ($_expectation->_hook)($a, $_expectation);
+        }
 
         return $_expectation->return;
     }

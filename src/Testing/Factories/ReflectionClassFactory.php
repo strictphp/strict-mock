@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace StrictPhp\StrictMock\Testing\Factories;
 
-use StrictPhp\StrictMock\Testing\Actions\FilePathToClassAction;
+use ReflectionClass;
 use StrictPhp\StrictMock\Testing\Contracts\FilePathToClassActionContract;
 use StrictPhp\StrictMock\Testing\Contracts\ReflectionClassFactoryContract;
 use StrictPhp\StrictMock\Testing\Entities\ProjectSetupEntity;
 use StrictPhp\StrictMock\Testing\Exceptions\ClassIsNotInterfaceException;
 use StrictPhp\StrictMock\Testing\Exceptions\FileDoesNotExistsException;
 use StrictPhp\StrictMock\Testing\Helpers\Php;
-use ReflectionClass;
 
 final class ReflectionClassFactory implements ReflectionClassFactoryContract
 {

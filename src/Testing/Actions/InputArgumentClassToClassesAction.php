@@ -34,7 +34,10 @@ final class InputArgumentClassToClassesAction
                 $classes = [$inputs];
             } else {
                 if (file_exists($inputs) === false) {
-                    $inputs = $this->projectSetupEntity->composerDir . DIRECTORY_SEPARATOR . ltrim($inputs, DIRECTORY_SEPARATOR);
+                    $inputs = $this->projectSetupEntity->composerDir . DIRECTORY_SEPARATOR . ltrim(
+                        $inputs,
+                        DIRECTORY_SEPARATOR
+                    );
                 }
 
                 $classes = is_dir($inputs) ? $this->findAllClassesAction->execute($inputs) : [$inputs];

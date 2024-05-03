@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace StrictPhp\StrictMock\Testing\Assert\Actions;
 
+use Nette\PhpGenerator\Literal;
+use Nette\PhpGenerator\Method;
+use Nette\PhpGenerator\PromotedParameter;
+use ReflectionClass;
+use ReflectionMethod;
 use StrictPhp\StrictMock\Testing\Actions\WritePhpFileAction;
 use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use StrictPhp\StrictMock\Testing\Assert\Factories\AssertFileStateEntityFactory;
@@ -15,11 +20,6 @@ use StrictPhp\StrictMock\Testing\Exceptions\IgnoreAssertException;
 use StrictPhp\StrictMock\Testing\Expectation\Actions\ExpectationFileContentAction;
 use StrictPhp\StrictMock\Testing\Expectation\Entities\ExpectationFileEntity;
 use StrictPhp\StrictMock\Testing\Factories\PhpDocEntityFactory;
-use Nette\PhpGenerator\Literal;
-use Nette\PhpGenerator\Method;
-use Nette\PhpGenerator\PromotedParameter;
-use ReflectionClass;
-use ReflectionMethod;
 
 final class GenerateAssertClassAction
 {

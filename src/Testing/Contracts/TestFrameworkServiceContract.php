@@ -8,6 +8,5 @@ use Nette\PhpGenerator\PhpNamespace;
 
 interface TestFrameworkServiceContract
 {
-
     public function assertEquals(PhpNamespace $namespace, string $expected, string $actual, string $message): string;
 }

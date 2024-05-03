@@ -32,7 +32,9 @@ final class ComposerJsonServiceContractAssert extends AbstractExpectationCallsMa
 
         Assert::assertEquals($_expectation->path, $path, $_message);
 
-        $_expectation->_hook !== null && ($_expectation->_hook)($path, $_expectation);
+        if ($_expectation->_hook !== null) {
+            ($_expectation->_hook)($path, $_expectation);
+        }
 
         return $_expectation->return;
     }
@@ -52,7 +54,9 @@ final class ComposerJsonServiceContractAssert extends AbstractExpectationCallsMa
 
         Assert::assertEquals($_expectation->basePath, $basePath, $_message);
 
-        $_expectation->_hook !== null && ($_expectation->_hook)($basePath, $_expectation);
+        if ($_expectation->_hook !== null) {
+            ($_expectation->_hook)($basePath, $_expectation);
+        }
 
         return $_expectation->return;
     }

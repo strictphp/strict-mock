@@ -29,24 +29,22 @@ final class InputArgumentClassToClassesActionTest extends TestCase
             'value of argument all' => [static function (self $self) {
                 $baz = __DIR__ . '/../../Feature/Dummy/App/Bazz.php';
                 $generator = (static function () use ($baz): Generator {
-                    yield from [
-                        new ReflectionClass(Foo::class),
-                        Foo::class,
-                        $baz,
-                    ];
+                    yield from [new ReflectionClass(Foo::class), Foo::class, $baz];
                 })();
 
-                $self->assert('all',
+                $self->assert(
+                    'all',
                     [
                         new ReflectionClass(Foo::class),
                         new ReflectionClass(Foo::class),
                         new ReflectionClass(Bazz::class),
                     ],
+                    [FindAllGeneratedAssertClassesActionContractAssert::expectationExecute($generator)],
                     [
-                        FindAllGeneratedAssertClassesActionContractAssert::expectationExecute($generator)
-                    ],
-                    [
-                        ReflectionClassFactoryContractAssert::expectationCreate(new ReflectionClass(Foo::class), Foo::class),
+                        ReflectionClassFactoryContractAssert::expectationCreate(
+                            new ReflectionClass(Foo::class),
+                            Foo::class
+                        ),
                         ReflectionClassFactoryContractAssert::expectationCreate(new ReflectionClass(Bazz::class), $baz),
                     ]
                 );
@@ -57,23 +55,21 @@ final class InputArgumentClassToClassesActionTest extends TestCase
                 $fooFull = __DIR__ . '/../..' . $fooRel;
                 $reflectionFoo = new ReflectionClass(Foo::class);
 
-                $self->assert($fooFull,
+                $self->assert(
+                    $fooFull,
                     [$reflectionFoo],
                     [],
-                    [
-                        ReflectionClassFactoryContractAssert::expectationCreate($reflectionFoo, $fooFull),
-                    ],
+                    [ReflectionClassFactoryContractAssert::expectationCreate($reflectionFoo, $fooFull)],
                 );
             }],
             'class' => [static function (self $self) {
                 $reflectionFoo = new ReflectionClass(Foo::class);
 
-                $self->assert(Foo::class,
+                $self->assert(
+                    Foo::class,
                     [$reflectionFoo],
                     [],
-                    [
-                        ReflectionClassFactoryContractAssert::expectationCreate($reflectionFoo, Foo::class),
-                    ],
+                    [ReflectionClassFactoryContractAssert::expectationCreate($reflectionFoo, Foo::class)],
                 );
             }],
             'file relative' => [static function (self $self) {
@@ -81,20 +77,17 @@ final class InputArgumentClassToClassesActionTest extends TestCase
                 $fooFull = __DIR__ . '/../..' . $fooRel;
                 $reflectionFoo = new ReflectionClass(Foo::class);
 
-                $self->assert($fooRel,
+                $self->assert(
+                    $fooRel,
                     [$reflectionFoo],
                     [],
-                    [
-                        ReflectionClassFactoryContractAssert::expectationCreate($reflectionFoo, $fooFull),
-                    ],
+                    [ReflectionClassFactoryContractAssert::expectationCreate($reflectionFoo, $fooFull)],
                 );
             }],
             'dir' => [static function (self $self) {
                 $reflectionFoo = new ReflectionClass(Foo::class);
                 $generator = (static function () use ($reflectionFoo): Generator {
-                    yield from [
-                        $reflectionFoo,
-                    ];
+                    yield from [$reflectionFoo];
                 })();
 
                 $fooRel = '/Feature/Dummy/App/Contracts/Foo.php';
@@ -102,14 +95,11 @@ final class InputArgumentClassToClassesActionTest extends TestCase
 
                 $dirname = dirname($fooFull);
 
-                $self->assert($dirname,
+                $self->assert(
+                    $dirname,
                     [$reflectionFoo],
-                    [
-                        FindAllGeneratedAssertClassesActionContractAssert::expectationExecute($generator, $dirname)
-                    ],
-                    [
-                        ReflectionClassFactoryContractAssert::expectationCreate($reflectionFoo, $dirname),
-                    ],
+                    [FindAllGeneratedAssertClassesActionContractAssert::expectationExecute($generator, $dirname)],
+                    [ReflectionClassFactoryContractAssert::expectationCreate($reflectionFoo, $dirname)],
                 );
             }],
             'mixed' => [static function (self $self) {
@@ -122,13 +112,18 @@ final class InputArgumentClassToClassesActionTest extends TestCase
                     new ReflectionClass(Bazz::class),
                     new ReflectionClass(Bazz::class),
                 ], [], [
-                    ReflectionClassFactoryContractAssert::expectationCreate(new ReflectionClass(Bazz::class), __DIR__ . '/../../Feature/Dummy/App/Bazz.php'),
-                    ReflectionClassFactoryContractAssert::expectationCreate(new ReflectionClass(Bazz::class), Bazz::class),
+                    ReflectionClassFactoryContractAssert::expectationCreate(
+                        new ReflectionClass(Bazz::class),
+                        __DIR__ . '/../../Feature/Dummy/App/Bazz.php'
+                    ),
+                    ReflectionClassFactoryContractAssert::expectationCreate(
+                        new ReflectionClass(Bazz::class),
+                        Bazz::class
+                    ),
                 ]);
             }],
         ];
     }
-
 
     /**
      * @param Closure(static):void $assert
