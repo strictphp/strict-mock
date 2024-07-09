@@ -16,24 +16,12 @@ final class RemoveAssertFileAction
      *
      * @return array<string, class-string>
      */
-    public function execute(ReflectionClass $class): array
+    public function execute(ReflectionClass $class)
     {
-        $attributes = $class->getAttributes(Expectation::class);
         $assertFile = self::filePath($class);
         $removed[$assertFile] = $class->getName();
 
-        foreach ($attributes as $attribute) {
-            $expectation = $attribute->newInstance();
-            assert($expectation instanceof Expectation);
-            if (class_exists($expectation->class) === false) {
-                continue;
-            }
 
-            $file = self::filePath($expectation->class);
-            unlink($file);
-            $removed[$file] = $expectation->class;
-        }
-        unlink($assertFile);
 
         return $removed;
     }

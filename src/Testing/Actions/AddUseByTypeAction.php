@@ -8,6 +8,9 @@ use Nette\PhpGenerator\PhpNamespace;
 use ReflectionClass;
 use ReflectionType;
 
+/**
+ * @deprecated
+ */
 final class AddUseByTypeAction
 {
     public function execute(PhpNamespace $namespace, ReflectionClass|ReflectionType|null $type): void

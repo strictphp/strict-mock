@@ -8,13 +8,12 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
 
-class AssertFileStateEntity
+final class AssertFileStateEntity
 {
     public function __construct(
-        public readonly ClassType $class,
-        public readonly PhpNamespace $namespace,
+        public readonly ClassType $classType,
+        public readonly PhpNamespace $phpNamespace,
         public readonly ObjectEntity $object,
-        public readonly bool $oneParameterOneExpectation,
     ) {
     }
 }

@@ -8,9 +8,9 @@ use Closure;
 use PHPUnit\Framework\Assert;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
 use StrictPhp\StrictMock\Testing\Attributes\Expectation;
+use StrictPhp\StrictMock\Testing\Expectation\AbstractExpectation;
 use Tests\StrictPhp\StrictMock\Feature\Dummy\App\Interfaces\Bar;
 
-#[Expectation(class: BarFooExpectation::class)]
 final class BarAssert extends AbstractExpectationAllInOne implements Bar
 {
     /**
@@ -39,5 +39,18 @@ final class BarAssert extends AbstractExpectationAllInOne implements Bar
     public static function expectationFoo(int $return, string $a, ?Closure $_hook = null): BarFooExpectation
     {
         return new BarFooExpectation($return, $a, $_hook);
+    }
+}
+
+final class BarFooExpectation extends AbstractExpectation
+{
+    /**
+     * @param Closure(string,self):void|null $_hook
+     */
+    public function __construct(
+        public readonly int $return,
+        public readonly string $a,
+        public readonly ?Closure $_hook = null,
+    ) {
     }
 }

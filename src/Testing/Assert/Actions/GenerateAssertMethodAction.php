@@ -23,14 +23,13 @@ final class GenerateAssertMethodAction
 
     public function __construct(
         private readonly TestFrameworkServiceContract $testFrameworkService,
-        private readonly AddUseByTypeAction $addUseByTypeAction,
     ) {
     }
 
     public function execute(
         AssertFileStateEntity $assertFileState,
         ReflectionMethod $method,
-        ObjectEntity $expectationObject,
+        string $expectationClassShortName,
         PhpDocEntity $phpDoc,
     ): void {
         $parameters = $method->getParameters();
@@ -44,13 +43,13 @@ final class GenerateAssertMethodAction
                 ->setNullable($parameter->allowsNull());
         }
 
-        $assertFileState->class->addMember($assertMethod);
+        $assertFileState->classType->addMember($assertMethod);
 
         $assertMethod->setPublic()
             ->addBody(sprintf(
                 '$%s = $this->getExpectation(%s::class);',
                 self::ExpectationProperty,
-                $expectationObject->shortClassName,
+                $expectationClassShortName,
             ));
 
         $hookParameters = [];
@@ -60,12 +59,10 @@ final class GenerateAssertMethodAction
             $assertMethod->addBody('');
 
             foreach ($parameters as $parameter) {
-                $this->addUseByTypeAction->execute($assertFileState->namespace, $parameter->getType());
-
                 $hookParameters[] = sprintf('$%s', $parameter->getName());
                 $assertMethod->addBody(
                     $this->testFrameworkService->assertEquals(
-                        $assertFileState->namespace,
+                        $assertFileState->phpNamespace,
                         sprintf('$%s->%s', self::ExpectationProperty, $parameter->name),
                         sprintf('$%s', $parameter->name),
                         '$' . self::MessageProperty,
@@ -88,7 +85,6 @@ final class GenerateAssertMethodAction
 
         $returnType = $method->getReturnType();
 
-        $this->addUseByTypeAction->execute($assertFileState->namespace, $returnType);
         if ($returnType instanceof ReflectionNamedType) {
             $enumReturnType = PhpType::tryFrom($returnType->getName()) ?? PhpType::Mixed;
         } elseif ($returnType instanceof ReflectionUnionType) {

@@ -15,46 +15,30 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionType;
 use ReflectionUnionType;
-use StrictPhp\StrictMock\Testing\Actions\AddUseByTypeAction;
-use StrictPhp\StrictMock\Testing\Actions\WritePhpFileAction;
-use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use StrictPhp\StrictMock\Testing\Constants\StubConstants;
 use StrictPhp\StrictMock\Testing\Entities\PhpDocEntity;
 use StrictPhp\StrictMock\Testing\Enums\PhpType;
 use StrictPhp\StrictMock\Testing\Expectation\AbstractExpectation;
-use StrictPhp\StrictMock\Testing\Expectation\Entities\ExpectationFileEntity;
-use StrictPhp\StrictMock\Testing\Expectation\Factories\ExpectationObjectEntityFactory;
+use StrictPhp\StrictMock\Testing\Expectation\Entities\ExpectationObjectEntity;
 use StrictPhp\StrictMock\Testing\Helpers\Php;
 
 final class ExpectationFileContentAction
 {
     public const HookProperty = '_hook';
 
-    public function __construct(
-        private readonly ExpectationObjectEntityFactory $expectationObjectEntityFactory,
-        private readonly WritePhpFileAction $writePhpFileAction,
-        private readonly AddUseByTypeAction $addUseByTypeAction,
-    ) {
-    }
 
     /**
-     * @param ReflectionClass<object> $class
+     * @param string $classShortName
      */
     public function execute(
-        ReflectionClass $class,
-        AssertFileStateEntity $assertFileState,
+        string $classShortName,
+        PhpNamespace $phpNamespace,
         ReflectionMethod $method,
         PhpDocEntity $phpDoc,
-    ): ExpectationFileEntity {
-        $expectationObject = $this->expectationObjectEntityFactory->create($assertFileState, $class, $method);
+    ): ExpectationObjectEntity {
+        $shortClassName = self::shortClassName($classShortName, $method);
 
-        $namespace = $expectationObject->content->addNamespace($expectationObject->exportSetup->namespace)
-            ->addUse(Closure::class)
-            ->addUse(AbstractExpectation::class);
-
-        $expectationClass = $namespace->addClass($expectationObject->shortClassName)
-            ->setFinal()
-            ->setExtends(AbstractExpectation::class);
+        $expectationClass = self::appendExpectationClass($phpNamespace, $shortClassName);
 
         $constructor = $expectationClass
             ->addMethod('__construct');
@@ -64,11 +48,9 @@ final class ExpectationFileContentAction
             ($returnType instanceof ReflectionNamedType === false || self::canReturnExpectation($returnType)) ||
             $phpDoc->returnType === PhpType::Mixed) {
             $constructorParameter = $constructor
-                ->addPromotedParameter('return')
-                ->setReadOnly();
+                ->addPromotedParameter('return'); // do not set readonly
 
-            $this->addUseByTypeAction->execute($namespace, $returnType);
-            $this->setParameterType($returnType, $constructorParameter, $namespace);
+            $this->setParameterType($returnType, $constructorParameter, $phpNamespace);
         }
 
         $parameterTypes = [];
@@ -77,9 +59,8 @@ final class ExpectationFileContentAction
             $constructorParameter = $constructor
                 ->addPromotedParameter($parameter->getName())
                 ->setReadOnly();
-            $this->addUseByTypeAction->execute($namespace, $parameter->getType());
-            $parameterTypes[] = $this->setParameterType($parameter->getType(), $constructorParameter, $namespace);
-            $this->setParameterDefaultValue($class, $parameter, $constructorParameter, $namespace);
+            $parameterTypes[] = $this->setParameterType($parameter->getType(), $constructorParameter, $phpNamespace);
+            $this->setParameterDefaultValue($classShortName, $parameter, $constructorParameter);
         }
         $parameterTypes[] = 'self';
 
@@ -94,19 +75,23 @@ final class ExpectationFileContentAction
             sprintf('@param %s(%s):void|null $%s', Closure::class, implode(',', $parameterTypes), self::HookProperty),
         );
 
-        $this->writePhpFileAction->execute($expectationObject);
+        return new ExpectationObjectEntity($expectationClass, $constructor);
+    }
 
-        return new ExpectationFileEntity($expectationObject, $constructor);
+    private static function shortClassName(
+        string $classShortName,
+        ReflectionMethod $method
+    ): string {
+        return $classShortName
+            . ucfirst($method->getName())
+            . 'Expectation';
     }
 
     private static function canReturnExpectation(ReflectionNamedType $returnType): bool
     {
-        return $returnType->getName() !== PhpType::Void
-            ->value
-                        && $returnType->getName() !== PhpType::Self
-                            ->value
-                                        && $returnType->getName() !== PhpType::Static
-->value;
+        return $returnType->getName() !== PhpType::Void->value
+            && $returnType->getName() !== PhpType::Self->value
+            && $returnType->getName() !== PhpType::Static->value;
     }
 
     private function setParameterType(
@@ -128,7 +113,6 @@ final class ExpectationFileContentAction
                 // Fix global namespace
                 if (class_exists($name)) {
                     $reflection = new ReflectionClass($name);
-                    $this->addUseByTypeAction->execute($namespace, $reflection);
                     $name = $reflection->getShortName();
                 }
 
@@ -146,7 +130,6 @@ final class ExpectationFileContentAction
             if (Php::existClassInterfaceEnum($proposedType)) {
                 // Fix global namespace
                 $reflection = new ReflectionClass($proposedType);
-                $this->addUseByTypeAction->execute($namespace, $reflection);
                 $proposedType = $reflection->getName();
                 $proposedTypeShort = $reflection->getShortName();
             }
@@ -182,10 +165,9 @@ final class ExpectationFileContentAction
     }
 
     private function setParameterDefaultValue(
-        ReflectionClass $class,
+        string $classShortName,
         ReflectionParameter $parameter,
         PromotedParameter $constructorParameter,
-        PhpNamespace $namespace,
     ): void {
         if ($parameter->isDefaultValueAvailable() === false) {
             return;
@@ -194,10 +176,9 @@ final class ExpectationFileContentAction
         if ($parameter->isDefaultValueConstant()) {
             $constant = $parameter->getDefaultValueConstantName();
             // Ensure that constants are from global scope
-            $this->addUseByTypeAction->execute($namespace, $class);
             $constantLiteral = new Literal(str_replace(
                 ['parent', 'self', 'static'],
-                $class->getShortName(),
+                $classShortName,
                 (string) $constant
             ));
             $constructorParameter->setDefaultValue($constantLiteral);
@@ -215,5 +196,13 @@ final class ExpectationFileContentAction
         } else {
             $constructorParameter->setDefaultValue($defaultValue);
         }
+    }
+
+    private static function appendExpectationClass(PhpNamespace $namespace, string $className)
+    {
+        return $namespace->addClass($className)
+            ->setFinal()
+            ->setExtends(AbstractExpectation::class)
+            ->addComment('@internal');
     }
 }

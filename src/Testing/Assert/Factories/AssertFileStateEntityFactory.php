@@ -7,9 +7,9 @@ namespace StrictPhp\StrictMock\Testing\Assert\Factories;
 use Closure;
 use ReflectionClass;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
-use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
 use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use StrictPhp\StrictMock\Testing\Entities\FileSetupEntity;
+use StrictPhp\StrictMock\Testing\Helpers\PhpGenerator;
 
 final class AssertFileStateEntityFactory
 {
@@ -24,28 +24,16 @@ final class AssertFileStateEntityFactory
     public function create(ReflectionClass $class, ?FileSetupEntity $fileSetupEntity = null): AssertFileStateEntity
     {
         $assertObject = $this->assertObjectEntityFactory->create($class, $fileSetupEntity);
-        $oneByOne = false;
-        if (class_exists($assertObject->class)) {
-            $parentClass = (new ReflectionClass($assertObject->class))->getParentClass();
-            assert($parentClass instanceof ReflectionClass);
-            $oneByOne = $parentClass->getName() === AbstractExpectationCallsMap::class;
-        }
 
-        $assertNamespace = $assertObject->content->addNamespace($assertObject->exportSetup->namespace);
-        $assertNamespace->addUse($class->getName());
+        $phpNamespace = $assertObject->content->addNamespace($assertObject->exportSetup->namespace);
+        $phpNamespace->addUse(Closure::class);
 
-        $classType = $assertNamespace->addClass($assertObject->shortClassName);
+        $classType = $phpNamespace->addClass($assertObject->shortClassName);
         $classType->setFinal();
         $classType->addImplement($class->getName());
-        if ($oneByOne) {
-            $assertNamespace->addUse(AbstractExpectationCallsMap::class);
-            $classType->setExtends(AbstractExpectationCallsMap::class);
-        } else {
-            $assertNamespace->addUse(AbstractExpectationAllInOne::class);
-            $classType->setExtends(AbstractExpectationAllInOne::class);
-        }
-        $assertNamespace->addUse(Closure::class);
+        $classType->setExtends(AbstractExpectationAllInOne::class);
+        $classType->addMember(PhpGenerator::buildConstructor());
 
-        return new AssertFileStateEntity($classType, $assertNamespace, $assertObject, $oneByOne);
+        return new AssertFileStateEntity($classType, $phpNamespace, $assertObject);
     }
 }

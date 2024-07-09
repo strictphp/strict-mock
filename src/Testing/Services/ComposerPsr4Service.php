@@ -108,7 +108,7 @@ final class ComposerPsr4Service implements ComposerPsr4ServiceContract
                 $dirs[$section][$ns] = $basePath . DIRECTORY_SEPARATOR . trim((string) $path, '\\/');
             }
 
-            uasort($dirs[$section], static fn (string $a, string $b) => strlen($b) <=> strlen($a));
+            uasort($dirs[$section], static fn (string $a, string $b) => strlen($a) <=> strlen($b));
             reset($dirs[$section]);
         }
 

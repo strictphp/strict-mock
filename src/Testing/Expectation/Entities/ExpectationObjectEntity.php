@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace StrictPhp\StrictMock\Testing\Expectation\Entities;
 
+use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
-use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
 
-final class ExpectationFileEntity
+final class ExpectationObjectEntity
 {
     public function __construct(
-        public readonly ObjectEntity $object,
+        public readonly ClassType $classType,
         public readonly Method $constructor,
     ) {
-
     }
 }

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace StrictPhp\StrictMock\Testing\Assert\Actions;
 
+use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\Method;
+use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\PromotedParameter;
 use ReflectionClass;
 use ReflectionMethod;
@@ -14,20 +16,21 @@ use StrictPhp\StrictMock\Testing\Assert\Entities\AssertFileStateEntity;
 use StrictPhp\StrictMock\Testing\Assert\Factories\AssertFileStateEntityFactory;
 use StrictPhp\StrictMock\Testing\Attributes\Expectation;
 use StrictPhp\StrictMock\Testing\Attributes\IgnoreGenerateAssert;
+use StrictPhp\StrictMock\Testing\Constants\StubConstants;
 use StrictPhp\StrictMock\Testing\Entities\FileSetupEntity;
 use StrictPhp\StrictMock\Testing\Entities\ObjectEntity;
 use StrictPhp\StrictMock\Testing\Exceptions\IgnoreAssertException;
 use StrictPhp\StrictMock\Testing\Expectation\Actions\ExpectationFileContentAction;
-use StrictPhp\StrictMock\Testing\Expectation\Entities\ExpectationFileEntity;
+use StrictPhp\StrictMock\Testing\Expectation\Entities\ExpectationObjectEntity;
 use StrictPhp\StrictMock\Testing\Factories\PhpDocEntityFactory;
+use StrictPhp\StrictMock\Testing\Helpers\PhpGenerator;
 
 final class GenerateAssertClassAction
 {
     public function __construct(
-        private readonly RemoveAssertFileAction $removeAssertFileAction,
         private readonly AssertFileStateEntityFactory $assertFileStateEntityFactory,
         private readonly PhpDocEntityFactory $parsePhpDocAction,
-        private readonly ExpectationFileContentAction $expectationFileAction,
+        private readonly ExpectationFileContentAction $expectationClassBuilderAction,
         private readonly WritePhpFileAction $writePhpFileAction,
         private readonly GenerateAssertMethodAction $generateAssertMethodAction,
     ) {
@@ -37,60 +40,46 @@ final class GenerateAssertClassAction
      * @param ReflectionClass<object> $class
      *
      * @return array<ObjectEntity>
+     *
+     * @throws IgnoreAssertException
      */
-    public function execute(ReflectionClass $class, ?FileSetupEntity $exportSetup = null): array {
+    public function execute(ReflectionClass $class, ?FileSetupEntity $exportSetup = null): array
+    {
         self::checkIgnoreAttribute($class);
         $assertFileState = $this->assertFileStateEntityFactory->create($class, $exportSetup);
-        if (class_exists($assertFileState->object->class)) {
-            $reflectionAssert = new ReflectionClass($assertFileState->object->class);
-            self::checkIgnoreAttribute($reflectionAssert);
-            $this->removeAssertFileAction->execute($reflectionAssert);
-        }
-
-        $assertConstructor = self::buildAssertConstructor();
-        $assertFileState->class->addMember($assertConstructor);
 
         $expectationClasses = [];
         $generatedFiles = [$assertFileState->object];
         foreach ($class->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $phpDoc = $this->parsePhpDocAction->create($method);
 
-             $expectation = $this->expectationFileAction->execute(
-                 class: $class,
-                 assertFileState: $assertFileState,
-                 method: $method,
-                 phpDoc: $phpDoc,
-             );
+            $expectation = $this->expectationClassBuilderAction->execute(
+                classShortName: $class->getShortName(),
+                phpNamespace: $assertFileState->phpNamespace,
+                method: $method,
+                phpDoc: $phpDoc,
+            );
 
             $this->generateAssertMethodAction->execute(
                 assertFileState: $assertFileState,
                 method: $method,
-                expectationObject: $expectation->object,
+                expectationClassShortName: (string) $expectation->classType->getName(),
                 phpDoc: $phpDoc,
             );
 
-            $assertFileState->namespace->addUse($expectation->object->class);
             $staticMethodName = 'expectation' . ucfirst($method->getName());
-            $staticMethod = $assertFileState->class->addMethod($staticMethodName);
-            $this->staticExpectationMethodBuilder($expectation, $staticMethod);
+            $staticMethod = $assertFileState->classType->addMethod($staticMethodName);
+            $this->staticExpectationMethodBuilder($expectation, $staticMethod, $assertFileState->phpNamespace);
 
-            $expectationClasses[$method->getName()] = $expectation->object->shortClassName;
-
-            $generatedFiles[] = $expectation->object;
+            $expectationClasses[$method->getName()] = $expectation->classType->getName();
         }
-        $this->buildConstructorParameter($assertFileState, $expectationClasses, $assertConstructor);
+        $this->buildConstructorParameter($assertFileState, $expectationClasses);
 
         $this->writePhpFileAction->execute($assertFileState->object);
 
         return $generatedFiles;
     }
 
-    private static function buildAssertConstructor(): Method
-    {
-        return (new Method('__construct'))
-            ->setPublic()
-            ->addBody('parent::__construct();');
-    }
 
     private static function checkIgnoreAttribute(ReflectionClass $class): void
     {
@@ -105,54 +94,29 @@ final class GenerateAssertClassAction
     private function buildConstructorParameter(
         AssertFileStateEntity $assertFileState,
         array $expectationClasses,
-        Method $assertConstructor
-    ): void
-    {
+    ): void {
         if ($expectationClasses === []) {
             return;
         }
 
-        $assertFileState->namespace->addUse(Expectation::class);
+        $constructor = $assertFileState->classType->getMethod(PhpGenerator::Constructor);
+        $type = implode('|', $expectationClasses);
 
-        foreach ($expectationClasses as $methodName => $expectationClass) {
-            if ($assertFileState->oneParameterOneExpectation) {
-                $this->addConstructorParameter($assertConstructor, $expectationClass, $methodName);
-            }
+        $parameter = 'expectations';
+        $body = sprintf('$this->setExpectations($%s);', $parameter);
 
-            $assertFileState->class->addAttribute(Expectation::class, [
-                'class' => new Literal($expectationClass . '::class'),
-            ]);
-        }
-
-        if ($assertFileState->oneParameterOneExpectation === false) {
-            $this->addConstructorParameter($assertConstructor, implode('|', $expectationClasses));
-        }
-    }
-
-    private function addConstructorParameter(Method $constructor, string $type, ?string $parameter = null): void
-    {
-        if ($parameter === null) {
-            $parameter = 'expectations';
-            $body = sprintf('$this->setExpectations($%s);', $parameter);
-        } else {
-            $body = sprintf('$this->setExpectations(%s::class, $%s);', $type, $parameter);
-        }
-
-        $constructor->addComment(sprintf('@param array<%s|null> $%s', $type, $parameter));
-
-        $constructor->addBody($body);
-
-        $constructor
+        $constructor->addComment(sprintf('@param array<%s|null> $%s', $type, $parameter))
+            ->addBody($body)
             ->addParameter($parameter)
             ->setType('array')
             ->setDefaultValue(new Literal('[]'));
     }
 
     private function staticExpectationMethodBuilder(
-        ExpectationFileEntity $expectation,
-        Method $assertMethodStatic
-    ): Method
-    {
+        ExpectationObjectEntity $expectation,
+        Method $assertMethodStatic,
+        PhpNamespace $phpNamespace,
+    ): Method {
         $names = [];
         foreach ($expectation->constructor->getParameters() as $parameter) {
             assert($parameter instanceof PromotedParameter);
@@ -169,11 +133,11 @@ final class GenerateAssertClassAction
             }
         }
 
-        $assertMethodStatic->setReturnType($expectation->object->class);
-        $assertMethodStatic->setStatic();
-        $assertMethodStatic->setBody(
-            sprintf('return new %s(%s);', $expectation->object->shortClassName, implode(', ', $names))
-        );
+        $assertMethodStatic->setReturnType($phpNamespace->getName() . StubConstants::NameSpaceSeparator . $expectation->classType->getName())
+            ->setStatic()
+            ->setBody(
+                sprintf('return new %s(%s);', $expectation->classType->getName(), implode(', ', $names))
+            );
 
         return $assertMethodStatic;
     }

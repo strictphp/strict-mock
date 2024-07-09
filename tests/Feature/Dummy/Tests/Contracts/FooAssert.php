@@ -7,10 +7,9 @@ namespace Tests\StrictPhp\StrictMock\Feature\Dummy\Tests\Contracts;
 use Closure;
 use PHPUnit\Framework\Assert;
 use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationCallsMap;
-use StrictPhp\StrictMock\Testing\Attributes\Expectation;
+use StrictPhp\StrictMock\Testing\Expectation\AbstractExpectation;
 use Tests\StrictPhp\StrictMock\Feature\Dummy\App\Contracts\Foo;
 
-#[Expectation(class: FooExpectation::class)]
 final class FooAssert extends AbstractExpectationCallsMap implements Foo
 {
     /**
@@ -39,5 +38,18 @@ final class FooAssert extends AbstractExpectationCallsMap implements Foo
     public static function expectationBar(int $return, string $a, ?Closure $_hook = null): FooExpectation
     {
         return new FooExpectation($return, $a, $_hook);
+    }
+}
+
+final class FooExpectation extends AbstractExpectation
+{
+    /**
+     * @param Closure(string,self):void|null $_hook
+     */
+    public function __construct(
+        public readonly int $return,
+        public readonly string $a,
+        public readonly ?Closure $_hook = null,
+    ) {
     }
 }

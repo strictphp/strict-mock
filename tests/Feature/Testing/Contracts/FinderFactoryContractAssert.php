@@ -6,12 +6,8 @@ namespace Tests\StrictPhp\StrictMock\Feature\Testing\Contracts;
 
 use Closure;
 use PHPUnit\Framework\Assert;
-use StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne;
-use StrictPhp\StrictMock\Testing\Attributes\Expectation;
-use StrictPhp\StrictMock\Testing\Contracts\FinderFactoryContract;
 
-#[Expectation(class: FinderFactoryContractCreateExpectation::class)]
-final class FinderFactoryContractAssert extends AbstractExpectationAllInOne implements FinderFactoryContract
+final class FinderFactoryContractAssert extends \StrictPhp\StrictMock\Testing\Assert\AbstractExpectationAllInOne implements \StrictPhp\StrictMock\Testing\Contracts\FinderFactoryContract
 {
     /**
      * @param array<FinderFactoryContractCreateExpectation|null> $expectations
@@ -29,9 +25,7 @@ final class FinderFactoryContractAssert extends AbstractExpectationAllInOne impl
 
         Assert::assertEquals($_expectation->path, $path, $_message);
 
-        if ($_expectation->_hook !== null) {
-            ($_expectation->_hook)($path, $_expectation);
-        }
+        $_expectation->_hook !== null && ($_expectation->_hook)($path, $_expectation);
 
         return $_expectation->return;
     }
@@ -42,5 +36,21 @@ final class FinderFactoryContractAssert extends AbstractExpectationAllInOne impl
         ?Closure $_hook = null,
     ): FinderFactoryContractCreateExpectation {
         return new FinderFactoryContractCreateExpectation($return, $path, $_hook);
+    }
+}
+
+/**
+ * @internal
+ */
+final class FinderFactoryContractCreateExpectation extends \StrictPhp\StrictMock\Testing\Expectation\AbstractExpectation
+{
+    /**
+     * @param Closure(string,self):void|null $_hook
+     */
+    public function __construct(
+        public iterable $return,
+        public readonly string $path,
+        public readonly ?Closure $_hook = null,
+    ) {
     }
 }

@@ -57,7 +57,6 @@ $fileArg = $argv[1] ?? null;
 }
 
 { // DI
-    $addUseByType = new AddUseByTypeAction();
     $composerJsonService = new ComposerJsonService();
     $composerPsr4Service = new ComposerPsr4Service($composerJsonService);
     $filePathToClassAction = new FilePathToClassAction($composerPsr4Service);
@@ -71,18 +70,16 @@ $fileArg = $argv[1] ?? null;
 
     $reflectionClassToFileSetupEntity = new ReflectionClassToFileSetupEntity($setup, $filesystem, $composerPsr4Service);
     $phpFileFactory = new PhpFileFactory();
-    $expectationObjectEntityFactory = new ExpectationObjectEntityFactory($phpFileFactory);
     $assertObjectEntityFactory = new AssertObjectEntityFactory($reflectionClassToFileSetupEntity, $phpFileFactory);
 
     $phpDocEntityFactory = new PhpDocEntityFactory(new Lexer(), new PhpDocParser(new TypeParser(), new ConstExprParser()));
-    $expectationFileContentAction = new ExpectationFileContentAction($expectationObjectEntityFactory, $writePhpFileAction, $addUseByType);
+    $expectationFileContentAction = new ExpectationFileContentAction();
 
     $removeAssertFileAction = new RemoveAssertFileAction();
 
-    $generateAssertMethodAction = new GenerateAssertMethodAction(new TestFrameworkService(), $addUseByType);
+    $generateAssertMethodAction = new GenerateAssertMethodAction(new TestFrameworkService());
     $assertFileStateEntityFactory = new AssertFileStateEntityFactory($assertObjectEntityFactory);
     $generateAssertClass = new GenerateAssertClassAction(
-        $removeAssertFileAction,
         $assertFileStateEntityFactory,
         $phpDocEntityFactory,
         $expectationFileContentAction,
