@@ -39,7 +39,7 @@ final class FindAllGeneratedAssertClassesAction implements FindAllGeneratedAsser
 
             $classReflection = new ReflectionClass($class);
             $parentClass = $classReflection->getParentClass();
-            if ($parentClass === false || ($parentClass->getName() !== AbstractExpectationAllInOne::class && $parentClass->getName() !== AbstractExpectationCallsMap::class)) {
+            if ($parentClass === false || ($parentClass->getName() !== AbstractExpectationAllInOne::class )) {
                 continue;
             }
 

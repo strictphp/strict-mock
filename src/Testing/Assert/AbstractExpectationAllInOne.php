@@ -48,6 +48,26 @@ abstract class AbstractExpectationAllInOne
         return array_shift($this->_expectationMap);
     }
 
+    public function assertCalled(): void
+    {
+        $errors = [];
+        foreach ($this->_expectationMap as $class => $expectations) {
+            $called = $this->_callStep[$class] ?? 0;
+            $expected = count($expectations);
+            if ($expected === $called) {
+                continue;
+            }
+
+            $errors[] = sprintf('[%s] expected %d call/s but was called <%d> time/s', $class, $expected, $called);
+        }
+
+        if ($errors === []) {
+            return;
+        }
+
+        throw new LogicException(implode(PHP_EOL, array_map(static fn (string $e) => $e, $errors)));
+    }
+
     protected function getDebugMessage(?int $callStep = null, string $reason = 'failed', int $debugLevel = 1): string
     {
         $caller = debug_backtrace()[$debugLevel];

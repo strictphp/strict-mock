@@ -16,7 +16,7 @@ final class InputArgumentClassToClassesAction
     public function __construct(
         private readonly FindAllGeneratedAssertClassesActionContract $findAllClassesAction,
         private readonly ReflectionClassFactoryContract $reflectionClassFactory,
-        private readonly ProjectSetupEntity $projectSetupEntity,
+        private readonly ProjectSetupEntity $projectSetup,
     ) {
     }
 
@@ -34,7 +34,7 @@ final class InputArgumentClassToClassesAction
                 $classes = [$inputs];
             } else {
                 if (file_exists($inputs) === false) {
-                    $inputs = $this->projectSetupEntity->composerDir . DIRECTORY_SEPARATOR . ltrim(
+                    $inputs = $this->projectSetup->composerDir . DIRECTORY_SEPARATOR . ltrim(
                         $inputs,
                         DIRECTORY_SEPARATOR
                     );
