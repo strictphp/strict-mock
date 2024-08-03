@@ -14,7 +14,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 class MakeExpectationCommand extends Command
 {
     protected $signature = 'make:expectation
-        {class : Class name of path to class using PSR-4 specs}
+        {class* : Class name of path to class using PSR-4 specs}
     ';
 
     public function handle(
