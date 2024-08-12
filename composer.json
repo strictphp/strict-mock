@@ -3,11 +3,11 @@
     "type": "project",
     "description": "Strict mock is a strict type safe mock generated from your interfaces to use with any testing framework.",
     "keywords": [
-        "laravel",
         "php",
         "strictphp",
         "strict",
-        "mockery"
+        "mockery",
+        "testing"
     ],
     "license": "MIT",
     "homepage": "https://github.com/strictphp/strict-mock",
@@ -60,7 +60,10 @@
     "autoload": {
         "psr-4": {
             "StrictPhp\\StrictMock\\": "src/"
-        }
+        },
+        "files": [
+            "src/aliases.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
